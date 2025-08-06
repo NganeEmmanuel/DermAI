@@ -146,3 +146,7 @@ This \~5% drop is **normal** but also a sign your model slightly **overfits to v
 
 * You are on the **right track**. A \~75% val accuracy and \~69% test accuracy from a pretrained ResNet18 (with only layer4+fc unfrozen) is decent.
 * With the suggested techniques (especially unfreezing more layers and early stopping), you could likely push test accuracy closer to **75–78%** even without more data.
+
+
+
+NB: Remove rash dataset. allow just measles. temporarily delete the folder not permanently 

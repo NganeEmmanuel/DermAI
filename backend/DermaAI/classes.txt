@@ -22,9 +22,12 @@ Nevus
 Psoriasis
 Rash_Dermatitis
 Ringworm
+Scabies
 Seborrheic_Keratosis
 Shingles
 Squamous_Cell_Carcinoma
 Tungiasis
 Vascular_Lesion
 Warts
+vitiligo
+whitlow
