@@ -1,0 +1,128 @@
+---
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: true
+    includes:
+      in_header: preamble.tex
+      before_body: titlepage.tex
+  word_document:
+    reference_docx: apa-styled.docx
+fontsize: 12pt
+mainfont: Times New Roman
+linkcolor: black
+colorlinks: false
+linestretch: 1.5
+classoption: oneside
+geometry: margin=1in
+---
+
+
+### Preliminary Pages
+
+* **Declaration**
+* **Certification**
+* **Dedication**
+* **Acknowledgments**
+* **Faculty Approval**
+* **Abstract**
+* **Keywords**
+* **Table of Contents**
+* **List of Tables**
+* **List of Figures**
+* **List of Acronyms and Abbreviations**
+
+---
+
+### Chapter 1: Introduction
+
+* 1.1 Introduction
+* 1.2 Background to the Problem
+* 1.3 Problem Statement
+* 1.4 Objectives of the Study
+* 1.5 Scope of the Study
+* 1.6 Significance of the Study
+* 1.7 Limitations of the Study
+* 1.8 Organization of the Study
+
+---
+
+### Chapter 2: Literature Review
+
+* 2.1 Introduction
+* 2.2 Overview of Skin Lesions and Skin Cancer
+* 2.3 Role of Artificial Intelligence in Dermatology
+* 2.4 Convolutional Neural Networks (CNNs)
+* 2.5 Transfer Learning and ResNet Models
+* 2.6 Dataset Challenges in Medical Imaging
+* 2.7 Review of Existing Systems
+* 2.8 Research Gap
+* 2.9 Summary
+
+---
+
+### Chapter 3: Methodology
+
+* 3.1 Introduction
+* 3.2 Project Framework and Approach (e.g., CRISP-DM or Nunamaker)
+* 3.3 Dataset Description and Preprocessing
+* 3.4 Model Architecture (ResNet18 and Modifications)
+* 3.5 Training Strategy
+* 3.6 Evaluation Metrics
+* 3.7 Tools and Libraries Used
+* 3.8 Summary
+
+---
+
+### Chapter 4: System Design and Implementation
+
+* 4.1 System Overview
+* 4.2 Functional Requirements
+* 4.3 System Architecture Diagram
+* 4.4 Data Flow and Pipeline
+* 4.5 CLI and GUI Components
+* 4.6 Integration and Deployment
+* 4.7 Inference and Prediction Logic
+* 4.8 Summary
+
+---
+
+### Chapter 5: Testing, Results, and Discussion
+
+* 5.1 Dataset Splits (Train, Validation, Test)
+* 5.2 Accuracy, Loss, and Confusion Matrix
+* 5.3 ROC, Precision, Recall, F1-score
+* 5.4 Model Limitations and Observed Bias
+* 5.5 Comparison with Existing Systems
+* 5.6 Summary
+
+---
+
+### Chapter 6: Conclusion and Recommendations
+
+* 6.1 Summary of Findings
+* 6.2 Conclusion
+* 6.3 Contributions of the Study
+* 6.4 Recommendations for Future Work
+* 6.5 Final Remarks
+
+---
+
+### Appendices
+
+* Appendix A: Source Code Snippets
+* Appendix B: Model Configurations
+* Appendix C: Training Graphs
+* Appendix D: Screenshots of GUI
+* Appendix E: User Manual (if any)
+
+---
+
+### References
+
+* (Follow **APA Style**, minimum 25 sources)
+
+

@@ -1,0 +1,453 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  oneside]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+    \setmainfont[]{Times New Roman}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{14}{16}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{13}{15}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{14}\bfseries}{\thesubsubsection}{1em}{}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \centering
+    
+    % University logo (replace with actual path)
+    \IfFileExists{ictu-logo.png}{
+        \includegraphics[width=0.5\textwidth]{ictu-logo.png}
+    }{
+        \vspace*{1cm}
+        \textbf{\Large THE ICT UNIVERSITY}
+    }
+    
+    \vspace{1cm}
+    
+    {\Large Faculty of Information and Communication Technology}
+    
+    \vspace{1.2cm}
+    
+    {A dissertation presented and submitted in partial fulfilment of the requirements\\
+    for the degree of a Bachelor of Science in Computer Science}
+    
+    \vspace{0.5cm}
+
+    {Titile}
+    
+    \textbf{Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)}
+    
+    \vspace{0.4cm}
+    
+    \textbf{By}
+    
+    \text{Ngane Emmanuel}
+    
+    \vspace{0.5cm}
+    
+    {Registration Number: ICTU20222972}
+    
+    \vspace{1cm}
+    
+    {Supervised by: Engr. Nkiambo Tanwi}
+    
+    \vspace{2cm}
+    
+    \textbf{\today}
+    
+    \vfill
+\end{titlepage}
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large DECLARATION}
+\end{center}
+
+\vspace{1cm}
+
+I declare that the work entitled \textbf{``Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)''} is my own original work, conceived and presented in the partial fulfilment of the requirement for the degree of a Bachelor of Science in Computer Science at ICT University. This work has not been submitted for any degree or examination in any other university, and that all the sources I have used or quoted have been indicated and acknowledged as complete references.
+
+\vspace{1.2cm}
+
+\begin{tabular}{ll}
+Signed \rule{4cm}{0.15mm} \hspace{3cm} & Date: \rule{4cm}{0.15mm} \\ [0.5cm]
+Name: \rule{4cm}{0.15mm} & \\ [0.5cm]
+Registration Number: \rule{4cm}{0.15mm} & \\
+\end{tabular}
+\vfill
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large CERTIFICATION}
+\end{center}
+
+\vspace{1cm}
+
+This work entitled \textbf{``Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)''} has been submitted for examination with my approval as the Research Supervisor.
+
+\vspace{2cm}
+
+\begin{tabular}{ll}
+Signed \rule{4cm}{0.15mm} \hspace{3cm} & Date: \rule{4cm}{0.15mm} \\ [0.5cm]
+Name: \rule{4cm}{0.15mm} & \\
+\end{tabular}
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large DEDICATION}
+\end{center}
+
+\vspace{2cm} % Adjust spacing as needed
+
+I dedicate this work to my parents, Rev. Dr. Ntoko Samuel Eseh and Mme Ntoko Grace Melioge, and to my loving sister, Ntoko Racheal Edenge, for their unwavering support, encouragement, and sacrifices throughout my academic journey.
+
+\vfill % Pushes the text to the vertical center
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large Acknowledgments}
+\end{center}
+
+\vspace{2cm} % Adjust spacing as needed
+
+I would like to express my sincere appreciation to my project supervisor, Engr. Nkiambo Tanwi, whose guidance, feedback, and encouragement were invaluable throughout the course of this project. His expertise and support helped shape both the direction and quality of this research.
+
+I am also grateful to the faculty and staff of the Department of Computer Science, ICT University, for providing the academic foundation and resources necessary for the completion of this work. Their commitment to academic excellence has been instrumental in my development.
+
+Special thanks go to my classmates and friends for their collaboration, feedback, and moral support during the challenging phases of this project. Their insights and motivation helped me stay focused and persistent.
+
+Lastly, I appreciate my family for their continuous encouragement and understanding, which enabled me to dedicate the necessary time and energy to this project.
+
+This project has been a significant learning experience, and I am thankful to all who contributed to its successful completion.
+
+\vfill % Pushes the text to the vertical center
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large FACULTY APPROVAL}
+\end{center}
+
+\vspace{1cm}
+
+This dissertation has been duly reviewed by the Department and the Faculty and is ready for examination with our approval.
+
+\vspace{2cm}
+
+\begin{flushright}
+\textbf{Approved by}
+
+\vspace{1.5cm}
+
+\begin{tabular}{@{}r@{}}
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Engr. Nkiambo Tanwi \\ [0.3cm]
+Supervisor \\[1cm]
+
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Dr. Abdallah Ziraba \\ [0.3cm]
+Head of Department \\[1cm]
+
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Dr. Luc Einstein Ngend \\ [0.3cm]
+Dean \\
+\end{tabular}
+\end{flushright}
+
+\vfill
+\clearpage
+
+% Abstract Page
+\thispagestyle{empty}
+\begin{center}
+\textbf{\Large ABSTRACT}
+\end{center}
+
+\vspace{1cm}
+
+% \begin{justify}
+Skin cancer is one of the most common and potentially deadly forms of cancer worldwide, with early detection playing a critical role in improving patient outcomes. However, accurate diagnosis often requires specialized medical expertise, which may not be readily accessible in many parts of the world. This study presents the development of a skin lesion detection and classification system using Convolutional Neural Networks (CNNs), aiming to support early and accessible diagnosis through automated analysis of skin images.
+
+The system was trained on a publicly available dataset of dermoscopic images and utilizes a fine-tuned ResNet18 architecture to classify lesions into multiple diagnostic categories. Image preprocessing techniques were applied to normalize input data, and data augmentation was used to improve model generalization. The training process was conducted using supervised learning techniques with categorical cross-entropy loss and evaluation metrics including accuracy, precision, recall, and F1-score.
+
+The final model achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, indicating its potential as a supportive diagnostic tool. The implementation includes both a command-line inference tool for researchers and a user-friendly graphical interface for clinicians or general users.
+
+This project contributes to the growing field of medical AI by offering a cost-effective and scalable approach to skin lesion classification. It highlights the viability of CNN-based solutions in medical imaging, particularly in low-resource settings. Future improvements may include incorporating explainability features, expanding to multi-modal inputs, and validating the system in clinical environments.
+% \end{justify}
+
+\vfill
+\clearpage
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\setstretch{1.5}
+\subsubsection{Preliminary Pages}\label{preliminary-pages}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Declaration}
+\item
+  \textbf{Certification}
+\item
+  \textbf{Dedication}
+\item
+  \textbf{Acknowledgments}
+\item
+  \textbf{Faculty Approval}
+\item
+  \textbf{Abstract}
+\item
+  \textbf{Keywords}
+\item
+  \textbf{Table of Contents}
+\item
+  \textbf{List of Tables}
+\item
+  \textbf{List of Figures}
+\item
+  \textbf{List of Acronyms and Abbreviations}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 1: Introduction}\label{chapter-1-introduction}
+
+\begin{itemize}
+\tightlist
+\item
+  1.1 Introduction
+\item
+  1.2 Background to the Problem
+\item
+  1.3 Problem Statement
+\item
+  1.4 Objectives of the Study
+\item
+  1.5 Scope of the Study
+\item
+  1.6 Significance of the Study
+\item
+  1.7 Limitations of the Study
+\item
+  1.8 Organization of the Study
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 2: Literature
+Review}\label{chapter-2-literature-review}
+
+\begin{itemize}
+\tightlist
+\item
+  2.1 Introduction
+\item
+  2.2 Overview of Skin Lesions and Skin Cancer
+\item
+  2.3 Role of Artificial Intelligence in Dermatology
+\item
+  2.4 Convolutional Neural Networks (CNNs)
+\item
+  2.5 Transfer Learning and ResNet Models
+\item
+  2.6 Dataset Challenges in Medical Imaging
+\item
+  2.7 Review of Existing Systems
+\item
+  2.8 Research Gap
+\item
+  2.9 Summary
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 3: Methodology}\label{chapter-3-methodology}
+
+\begin{itemize}
+\tightlist
+\item
+  3.1 Introduction
+\item
+  3.2 Project Framework and Approach (e.g., CRISP-DM or Nunamaker)
+\item
+  3.3 Dataset Description and Preprocessing
+\item
+  3.4 Model Architecture (ResNet18 and Modifications)
+\item
+  3.5 Training Strategy
+\item
+  3.6 Evaluation Metrics
+\item
+  3.7 Tools and Libraries Used
+\item
+  3.8 Summary
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 4: System Design and
+Implementation}\label{chapter-4-system-design-and-implementation}
+
+\begin{itemize}
+\tightlist
+\item
+  4.1 System Overview
+\item
+  4.2 Functional Requirements
+\item
+  4.3 System Architecture Diagram
+\item
+  4.4 Data Flow and Pipeline
+\item
+  4.5 CLI and GUI Components
+\item
+  4.6 Integration and Deployment
+\item
+  4.7 Inference and Prediction Logic
+\item
+  4.8 Summary
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 5: Testing, Results, and
+Discussion}\label{chapter-5-testing-results-and-discussion}
+
+\begin{itemize}
+\tightlist
+\item
+  5.1 Dataset Splits (Train, Validation, Test)
+\item
+  5.2 Accuracy, Loss, and Confusion Matrix
+\item
+  5.3 ROC, Precision, Recall, F1-score
+\item
+  5.4 Model Limitations and Observed Bias
+\item
+  5.5 Comparison with Existing Systems
+\item
+  5.6 Summary
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Chapter 6: Conclusion and
+Recommendations}\label{chapter-6-conclusion-and-recommendations}
+
+\begin{itemize}
+\tightlist
+\item
+  6.1 Summary of Findings
+\item
+  6.2 Conclusion
+\item
+  6.3 Contributions of the Study
+\item
+  6.4 Recommendations for Future Work
+\item
+  6.5 Final Remarks
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Appendices}\label{appendices}
+
+\begin{itemize}
+\tightlist
+\item
+  Appendix A: Source Code Snippets
+\item
+  Appendix B: Model Configurations
+\item
+  Appendix C: Training Graphs
+\item
+  Appendix D: Screenshots of GUI
+\item
+  Appendix E: User Manual (if any)
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{References}\label{references}
+
+\begin{itemize}
+\tightlist
+\item
+  (Follow \textbf{APA Style}, minimum 25 sources)
+\end{itemize}
+
+\end{document}

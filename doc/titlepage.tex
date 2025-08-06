@@ -1,0 +1,172 @@
+
+\begin{titlepage}
+    \centering
+    
+    % University logo (replace with actual path)
+    \IfFileExists{ictu-logo.png}{
+        \includegraphics[width=0.5\textwidth]{ictu-logo.png}
+    }{
+        \vspace*{1cm}
+        \textbf{\Large THE ICT UNIVERSITY}
+    }
+    
+    \vspace{1cm}
+    
+    {\Large Faculty of Information and Communication Technology}
+    
+    \vspace{1.2cm}
+    
+    {A dissertation presented and submitted in partial fulfilment of the requirements\\
+    for the degree of a Bachelor of Science in Computer Science}
+    
+    \vspace{0.5cm}
+
+    {Titile}
+    
+    \textbf{Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)}
+    
+    \vspace{0.4cm}
+    
+    \textbf{By}
+    
+    \text{Ngane Emmanuel}
+    
+    \vspace{0.5cm}
+    
+    {Registration Number: ICTU20222972}
+    
+    \vspace{1cm}
+    
+    {Supervised by: Engr. Nkiambo Tanwi}
+    
+    \vspace{2cm}
+    
+    \textbf{\today}
+    
+    \vfill
+\end{titlepage}
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large DECLARATION}
+\end{center}
+
+\vspace{1cm}
+
+I declare that the work entitled \textbf{``Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)''} is my own original work, conceived and presented in the partial fulfilment of the requirement for the degree of a Bachelor of Science in Computer Science at ICT University. This work has not been submitted for any degree or examination in any other university, and that all the sources I have used or quoted have been indicated and acknowledged as complete references.
+
+\vspace{1.2cm}
+
+\begin{tabular}{ll}
+Signed \rule{4cm}{0.15mm} \hspace{3cm} & Date: \rule{4cm}{0.15mm} \\ [0.5cm]
+Name: \rule{4cm}{0.15mm} & \\ [0.5cm]
+Registration Number: \rule{4cm}{0.15mm} & \\
+\end{tabular}
+\vfill
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large CERTIFICATION}
+\end{center}
+
+\vspace{1cm}
+
+This work entitled \textbf{``Development of a Skin Lesion Detection and Classification System using Convolutional Neural Networks (CNNs)''} has been submitted for examination with my approval as the Research Supervisor.
+
+\vspace{2cm}
+
+\begin{tabular}{ll}
+Signed \rule{4cm}{0.15mm} \hspace{3cm} & Date: \rule{4cm}{0.15mm} \\ [0.5cm]
+Name: \rule{4cm}{0.15mm} & \\
+\end{tabular}
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large DEDICATION}
+\end{center}
+
+\vspace{2cm} % Adjust spacing as needed
+
+I dedicate this work to my parents, Rev. Dr. Ntoko Samuel Eseh and Mme Ntoko Grace Melioge, and to my loving sister, Ntoko Racheal Edenge, for their unwavering support, encouragement, and sacrifices throughout my academic journey.
+
+\vfill % Pushes the text to the vertical center
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large Acknowledgments}
+\end{center}
+
+\vspace{2cm} % Adjust spacing as needed
+
+I would like to express my sincere appreciation to my project supervisor, Engr. Nkiambo Tanwi, whose guidance, feedback, and encouragement were invaluable throughout the course of this project. His expertise and support helped shape both the direction and quality of this research.
+
+I am also grateful to the faculty and staff of the Department of Computer Science, ICT University, for providing the academic foundation and resources necessary for the completion of this work. Their commitment to academic excellence has been instrumental in my development.
+
+Special thanks go to my classmates and friends for their collaboration, feedback, and moral support during the challenging phases of this project. Their insights and motivation helped me stay focused and persistent.
+
+Lastly, I appreciate my family for their continuous encouragement and understanding, which enabled me to dedicate the necessary time and energy to this project.
+
+This project has been a significant learning experience, and I am thankful to all who contributed to its successful completion.
+
+\vfill % Pushes the text to the vertical center
+\clearpage
+
+\thispagestyle{empty}
+\begin{center}
+\textbf{\large FACULTY APPROVAL}
+\end{center}
+
+\vspace{1cm}
+
+This dissertation has been duly reviewed by the Department and the Faculty and is ready for examination with our approval.
+
+\vspace{2cm}
+
+\begin{flushright}
+\textbf{Approved by}
+
+\vspace{1.5cm}
+
+\begin{tabular}{@{}r@{}}
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Engr. Nkiambo Tanwi \\ [0.3cm]
+Supervisor \\[1cm]
+
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Dr. Abdallah Ziraba \\ [0.3cm]
+Head of Department \\[1cm]
+
+Signature \hspace{3cm} Date \\ [0.5cm]
+\rule{6cm}{0.15mm} \\ [0.2cm]
+Dr. Luc Einstein Ngend \\ [0.3cm]
+Dean \\
+\end{tabular}
+\end{flushright}
+
+\vfill
+\clearpage
+
+% Abstract Page
+\thispagestyle{empty}
+\begin{center}
+\textbf{\Large ABSTRACT}
+\end{center}
+
+\vspace{1cm}
+
+% \begin{justify}
+Skin cancer is one of the most common and potentially deadly forms of cancer worldwide, with early detection playing a critical role in improving patient outcomes. However, accurate diagnosis often requires specialized medical expertise, which may not be readily accessible in many parts of the world. This study presents the development of a skin lesion detection and classification system using Convolutional Neural Networks (CNNs), aiming to support early and accessible diagnosis through automated analysis of skin images.
+
+The system was trained on a publicly available dataset of dermoscopic images and utilizes a fine-tuned ResNet18 architecture to classify lesions into multiple diagnostic categories. Image preprocessing techniques were applied to normalize input data, and data augmentation was used to improve model generalization. The training process was conducted using supervised learning techniques with categorical cross-entropy loss and evaluation metrics including accuracy, precision, recall, and F1-score.
+
+The final model achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, indicating its potential as a supportive diagnostic tool. The implementation includes both a command-line inference tool for researchers and a user-friendly graphical interface for clinicians or general users.
+
+This project contributes to the growing field of medical AI by offering a cost-effective and scalable approach to skin lesion classification. It highlights the viability of CNN-based solutions in medical imaging, particularly in low-resource settings. Future improvements may include incorporating explainability features, expanding to multi-modal inputs, and validating the system in clinical environments.
+% \end{justify}
+
+\vfill
+\clearpage
