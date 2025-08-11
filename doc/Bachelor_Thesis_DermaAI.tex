@@ -2169,27 +2169,307 @@ Performance visualizations will be added to the final report:
 These plots aid in communicating results to both technical and clinical
 audiences.
 
-\section{Chapter 3: Methodology}\label{chapter-3-methodology-1}
+\subsection{System Deployment}\label{system-deployment}
+
+The deployment phase transforms the trained skin lesion classification
+model into a functional application ecosystem that is accessible to both
+researchers and end-users. This involves integrating the AI model into
+multiple delivery channels, a \textbf{command-line interface (CLI)} for
+advanced research workflows, and a \textbf{React Native mobile
+application} for primary care and public health use. Deployment
+considerations also include hosting infrastructure, scalability, data
+privacy, and regulatory compliance.
+
+\subsubsection{Deployment Objectives}\label{deployment-objectives}
+
+The system deployment aims to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Ensure accessibility} --- enable both technical and
+  non-technical users to interact with the model.
+\item
+  \textbf{Maintain efficiency} --- achieve low-latency inference, even
+  on resource-constrained devices.
+\item
+  \textbf{Support scalability} --- allow expansion to larger datasets,
+  additional disease classes, and multi-language support.
+\item
+  \textbf{Facilitate integration} --- ensure the model can be embedded
+  into broader healthcare systems or telemedicine platforms.
+\end{enumerate}
+
+\subsubsection{Command-Line Interface (CLI) for
+Researchers}\label{command-line-interface-cli-for-researchers}
+
+The CLI is designed to serve dermatology researchers and data scientists
+who require batch processing, model experimentation, and in-depth
+performance analytics.
+
+\paragraph{Key Features:}\label{key-features}
 
 \begin{itemize}
 \tightlist
 \item
-  3.1 Introduction
+  \textbf{Single-image and batch prediction modes}\\
+  Researchers can run predictions on individual lesion images or entire
+  folders.
 \item
-  3.2 Project Framework and Approach (e.g., CRISP-DM or Nunamaker)
+  \textbf{Output formats}\\
+  Predictions can be saved in CSV/JSON format, containing the predicted
+  class, confidence scores, and timestamp.
 \item
-  3.3 Dataset Description and Preprocessing
+  \textbf{Model evaluation tools}\\
+  Researchers can compute metrics such as accuracy, precision, recall,
+  F1-score, and generate confusion matrices on new datasets.
 \item
-  3.4 Model Architecture (ResNet18 and Modifications)
-\item
-  3.5 Training Strategy
-\item
-  3.6 Evaluation Metrics
-\item
-  3.7 Tools and Libraries Used
-\item
-  3.8 Summary
+  \textbf{Custom model loading}\\
+  Allows researchers to test alternative trained models by specifying
+  the path via a command-line argument.
 \end{itemize}
+
+\subsubsection{Mobile Application for
+End-Users}\label{mobile-application-for-end-users}
+
+The React Native mobile application is intended for healthcare
+practitioners, field workers, and potentially patients for preliminary
+lesion screening.\\
+The app will integrate the trained ResNet-18 model either
+\textbf{on-device} (for offline capability) or via \textbf{cloud-hosted
+inference APIs} (for lighter device workloads).
+
+\paragraph{Core Features:}\label{core-features}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Image Capture \& Upload}\\
+  Users can capture lesion images directly via the phone's camera or
+  upload from the gallery.
+\item
+  \textbf{Instant Classification}\\
+  The app provides top predictions with confidence scores.
+\item
+  \textbf{Educational Content}\\
+  Displays information about predicted conditions, including symptoms
+  and recommended next steps.
+\item
+  \textbf{Offline Mode (Planned)}\\
+  A lightweight, quantized version of the model can be embedded for use
+  in low-connectivity regions.
+\end{itemize}
+
+\subsubsection{Hosting and API
+Infrastructure}\label{hosting-and-api-infrastructure}
+
+The hosting approach will depend on the final budget and resource
+allocation. Two main configurations are under consideration:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Serverless Cloud Deployment} \emph{(initial preference)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Utilizes platforms like AWS Lambda or Google Cloud Functions.\\
+  \item
+    Advantages: automatic scaling, pay-per-use billing, minimal server
+    maintenance.\\
+  \item
+    Disadvantage: AWS credit expiry may require migration.
+  \end{itemize}
+\item
+  \textbf{Dedicated Cloud Server / Containerized Deployment}
+  \emph{(alternative plan)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Hosted on services like AWS EC2, DigitalOcean, or Azure VMs.\\
+  \item
+    Docker containers for consistent deployment environments.\\
+  \item
+    Potential GPU-enabled instances for faster inference.
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{Deployment Workflow}\label{deployment-workflow}
+
+The deployment workflow includes:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Model Export} --- trained model saved in \texttt{.pth} and
+  \texttt{.pt} formats for compatibility with both PyTorch and
+  TorchScript (mobile deployment).
+\item
+  \textbf{API Development} --- RESTful API endpoints for:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{/predict} --- accept image input, return classification
+    results.
+  \item
+    \texttt{/health} --- server health check.
+  \item
+    \texttt{/version} --- current model version.
+  \end{itemize}
+\item
+  \textbf{Integration Testing} --- ensuring consistent predictions
+  across CLI, mobile, and API-based requests.
+\item
+  \textbf{Security and Privacy} --- enforce HTTPS for data transfer,
+  anonymize image metadata, and comply with GDPR/HIPAA standards where
+  applicable.
+\end{enumerate}
+
+\subsubsection{Monitoring and
+Maintenance}\label{monitoring-and-maintenance}
+
+Post-deployment, the system will include:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Usage analytics} --- monitor API requests, app downloads, and
+  prediction frequency.
+\item
+  \textbf{Model performance tracking} --- periodic testing with new data
+  to detect performance drift.
+\item
+  \textbf{Continuous improvement cycle} --- retraining with new cases,
+  including rare or misclassified conditions.
+\end{itemize}
+
+\subsection{Summary of Methodology}\label{summary-of-methodology}
+
+This chapter presented the complete methodology adopted for the design,
+development, training, and deployment of the proposed \textbf{skin
+lesion detection and classification system}. The approach was guided by
+the \textbf{CRISP-DM} framework, ensuring that every stage --- from
+problem definition to system deployment --- followed a structured,
+iterative, and evidence-driven process.
+
+The \textbf{business understanding phase} established the project's core
+objective: to develop a multi-condition dermatological diagnostic aid
+that can assist healthcare practitioners and researchers by classifying
+a wide range of skin lesions. Unlike many prior works such as those
+based on the HAM10000 dataset, which focus primarily on melanoma and a
+few related conditions, our system targets \textbf{33 unique
+dermatological conditions} spanning viral, bacterial, fungal, parasitic,
+autoimmune, inflammatory, and neoplastic categories. This broad coverage
+is intended to make the system more relevant in \textbf{primary care,
+rural healthcare, and teledermatology contexts}, where clinicians may
+encounter a diverse set of skin disorders.
+
+The \textbf{data understanding phase} involved collecting images from
+multiple open-source dermatology datasets, open-access medical
+repositories, and selected institutional sources. Exploratory Data
+Analysis (EDA) was conducted to assess the dataset's structure, identify
+imbalances, and verify image quality. The EDA included:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Class distribution analysis}, revealing significant imbalances
+  (e.g., Acne and Eczema having hundreds of samples, while Tungiasis and
+  Cowpox had far fewer).
+\item
+  \textbf{Image dimension inspection}, confirming varied resolutions
+  before preprocessing.
+\item
+  \textbf{Visual inspection of samples} to validate labeling accuracy
+  and ensure lesion visibility.
+\end{itemize}
+
+The \textbf{data preparation phase} applied a comprehensive
+preprocessing pipeline tailored to dermatology-specific needs. Images
+were resized to \textbf{224×224 pixels} with padding to preserve aspect
+ratios, converted to RGB, and normalized to match ImageNet statistics
+(mean = {[}0.485, 0.456, 0.406{]}, std = {[}0.229, 0.224, 0.225{]}).
+Data augmentation techniques --- including random horizontal flips,
+small rotations (±10°), and color jitter were used to simulate
+variations in orientation, lighting, and camera quality, thereby
+improving model robustness. Class imbalance was addressed by calculating
+\textbf{class weights} from the training set and applying them in the
+loss function, ensuring rare conditions were not overshadowed by more
+common ones.
+
+The \textbf{modeling phase} implemented a \textbf{fine-tuned ResNet-18
+architecture} initialized with pretrained weights from ImageNet. Only
+the final residual block (layer4) and the fully connected classification
+layer were unfrozen to adapt high-level features to dermatological
+patterns, while earlier layers retained their pretrained weights to
+preserve general feature extraction capability. The model was trained
+with: - \textbf{Loss function} --- weighted cross-entropy. -
+\textbf{Optimizer} --- Adam (lr=0.001, weight\_decay=1e-4) to balance
+learning speed and regularization. - \textbf{Scheduler} ---
+ReduceLROnPlateau to adjust the learning rate when validation loss
+plateaued. - \textbf{Early stopping} --- halting training after 5 epochs
+without improvement to prevent overfitting. - \textbf{Batch size} ---
+32, selected to balance memory constraints and gradient stability.
+
+Performance metrics during training and evaluation included
+\textbf{accuracy, precision, recall, and F1-score}. Additional metrics,
+\textbf{confusion matrix, per-class precision/recall, and ROC curves},
+are planned for inclusion in the results chapter to provide a more
+granular performance breakdown.
+
+The \textbf{evaluation phase} ensured unbiased testing by maintaining a
+strict 70/15/15 train/validation/test split. The model that achieved the
+best validation loss was saved in both \texttt{.pth} (PyTorch format)
+and \texttt{.pt} (TorchScript format) for compatibility with different
+deployment targets.
+
+The \textbf{deployment phase} envisioned a two-pronged delivery
+approach:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Command-Line Interface (CLI)} --- Designed purely for
+  inference, enabling researchers to run single-image or batch
+  predictions and receive results in CSV/JSON formats, complete with
+  predicted class and confidence scores.
+\item
+  \textbf{React Native Mobile Application} --- Intended for healthcare
+  practitioners and general users. The final deployment will utilize a
+  \textbf{cloud-hosted API} for inference to keep the mobile application
+  lightweight, avoid excessive on-device computation, and enable easier
+  model updates without requiring app reinstallation.
+\end{enumerate}
+
+Hosting considerations focused on \textbf{cloud-based API deployment},
+with the initial preference being \textbf{serverless infrastructure}
+(e.g., AWS Lambda) for cost efficiency and automatic scaling. A
+containerized alternative (e.g., Docker on AWS EC2 or DigitalOcean) is
+reserved as a fallback option, particularly after the expiration of AWS
+credits. The deployment architecture will initially include only the
+currently planned components --- mobile app, API gateway, model
+inference service, and a minimal database for request logging --- with
+no hospital EMR integration at this stage.
+
+Throughout this methodology, careful attention was paid to both
+\textbf{technical performance} and \textbf{practical usability}. The
+CRISP-DM framework provided the flexibility to refine earlier stages
+based on insights from later phases --- for example, adjusting
+augmentation strategies in response to observed overfitting during model
+training. By combining robust deep learning techniques with a deployment
+design mindful of user needs and infrastructure realities, the system is
+positioned to deliver both \textbf{research-grade accuracy} and
+\textbf{field-ready accessibility}.
+
+The next chapter, \textbf{Results and Discussion}, will present the
+outcomes of this methodology, including quantitative performance
+metrics, visualizations of training dynamics, and an analysis of
+strengths and limitations relative to existing solutions.
 
 \newpage
 

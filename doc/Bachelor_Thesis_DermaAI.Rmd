@@ -746,18 +746,144 @@ Performance visualizations will be added to the final report:
 These plots aid in communicating results to both technical and clinical audiences.
 
 
+## System Deployment
+
+The deployment phase transforms the trained skin lesion classification model into a functional application ecosystem that is accessible to both researchers and end-users. This involves integrating the AI model into multiple delivery channels, a **command-line interface (CLI)** for advanced research workflows, and a **React Native mobile application** for primary care and public health use. Deployment considerations also include hosting infrastructure, scalability, data privacy, and regulatory compliance.
 
 
-# Chapter 3: Methodology
+### Deployment Objectives
 
-* 3.1 Introduction
-* 3.2 Project Framework and Approach (e.g., CRISP-DM or Nunamaker)
-* 3.3 Dataset Description and Preprocessing
-* 3.4 Model Architecture (ResNet18 and Modifications)
-* 3.5 Training Strategy
-* 3.6 Evaluation Metrics
-* 3.7 Tools and Libraries Used
-* 3.8 Summary
+The system deployment aims to:
+
+1. **Ensure accessibility** — enable both technical and non-technical users to interact with the model.
+2. **Maintain efficiency** — achieve low-latency inference, even on resource-constrained devices.
+3. **Support scalability** — allow expansion to larger datasets, additional disease classes, and multi-language support.
+4. **Facilitate integration** — ensure the model can be embedded into broader healthcare systems or telemedicine platforms.
+
+
+### Command-Line Interface (CLI) for Researchers
+
+The CLI is designed to serve dermatology researchers and data scientists who require batch processing, model experimentation, and in-depth performance analytics.
+
+#### Key Features:
+
+- **Single-image and batch prediction modes**  
+  Researchers can run predictions on individual lesion images or entire folders.
+- **Output formats**  
+  Predictions can be saved in CSV/JSON format, containing the predicted class, confidence scores, and timestamp.
+- **Model evaluation tools**  
+  Researchers can compute metrics such as accuracy, precision, recall, F1-score, and generate confusion matrices on new datasets.
+- **Custom model loading**  
+  Allows researchers to test alternative trained models by specifying the path via a command-line argument.
+
+<!-- @todo 
+**[Placeholder: Screenshot of CLI prediction output]**
+--->
+
+### Mobile Application for End-Users
+
+The React Native mobile application is intended for healthcare practitioners, field workers, and potentially patients for preliminary lesion screening.  
+The app will integrate the trained ResNet-18 model either **on-device** (for offline capability) or via **cloud-hosted inference APIs** (for lighter device workloads).
+
+#### Core Features:
+
+- **Image Capture & Upload**  
+  Users can capture lesion images directly via the phone’s camera or upload from the gallery.
+- **Instant Classification**  
+  The app provides top predictions with confidence scores.
+- **Educational Content**  
+  Displays information about predicted conditions, including symptoms and recommended next steps.
+- **Offline Mode (Planned)**  
+  A lightweight, quantized version of the model can be embedded for use in low-connectivity regions.
+
+<!--
+**[Placeholder: Mobile UI mockup showing classification screen]**
+--->
+
+### Hosting and API Infrastructure
+
+The hosting approach will depend on the final budget and resource allocation. Two main configurations are under consideration:
+
+1. **Serverless Cloud Deployment** *(initial preference)*
+
+   - Utilizes platforms like AWS Lambda or Google Cloud Functions.  
+   - Advantages: automatic scaling, pay-per-use billing, minimal server maintenance.  
+   - Disadvantage: AWS credit expiry may require migration.
+
+2. **Dedicated Cloud Server / Containerized Deployment** *(alternative plan)* 
+
+   - Hosted on services like AWS EC2, DigitalOcean, or Azure VMs.  
+   - Docker containers for consistent deployment environments.  
+   - Potential GPU-enabled instances for faster inference.
+
+
+<!--
+**[Placeholder: System architecture diagram — mobile app, API gateway, model inference, database, user interface]**
+--->
+
+### Deployment Workflow
+
+The deployment workflow includes:
+
+1. **Model Export** — trained model saved in `.pth` and `.pt` formats for compatibility with both PyTorch and TorchScript (mobile deployment).
+2. **API Development** — RESTful API endpoints for:
+
+   - `/predict` — accept image input, return classification results.
+   - `/health` — server health check.
+   - `/version` — current model version.
+
+3. **Integration Testing** — ensuring consistent predictions across CLI, mobile, and API-based requests.
+4. **Security and Privacy** — enforce HTTPS for data transfer, anonymize image metadata, and comply with GDPR/HIPAA standards where applicable.
+
+
+### Monitoring and Maintenance
+
+Post-deployment, the system will include:
+
+- **Usage analytics** — monitor API requests, app downloads, and prediction frequency.
+- **Model performance tracking** — periodic testing with new data to detect performance drift.
+- **Continuous improvement cycle** — retraining with new cases, including rare or misclassified conditions.
+
+<!--
+**[Placeholder: Deployment timeline Gantt chart — from model export to production launch]**
+-->
+
+## Summary of Methodology
+
+This chapter presented the complete methodology adopted for the design, development, training, and deployment of the proposed **skin lesion detection and classification system**. The approach was guided by the **CRISP-DM** framework, ensuring that every stage — from problem definition to system deployment — followed a structured, iterative, and evidence-driven process.
+
+The **business understanding phase** established the project’s core objective: to develop a multi-condition dermatological diagnostic aid that can assist healthcare practitioners and researchers by classifying a wide range of skin lesions. Unlike many prior works such as those based on the HAM10000 dataset, which focus primarily on melanoma and a few related conditions, our system targets **33 unique dermatological conditions** spanning viral, bacterial, fungal, parasitic, autoimmune, inflammatory, and neoplastic categories. This broad coverage is intended to make the system more relevant in **primary care, rural healthcare, and teledermatology contexts**, where clinicians may encounter a diverse set of skin disorders.
+
+The **data understanding phase** involved collecting images from multiple open-source dermatology datasets, open-access medical repositories, and selected institutional sources. Exploratory Data Analysis (EDA) was conducted to assess the dataset’s structure, identify imbalances, and verify image quality. The EDA included:
+
+- **Class distribution analysis**, revealing significant imbalances (e.g., Acne and Eczema having hundreds of samples, while Tungiasis and Cowpox had far fewer).
+- **Image dimension inspection**, confirming varied resolutions before preprocessing.
+- **Visual inspection of samples** to validate labeling accuracy and ensure lesion visibility.
+
+The **data preparation phase** applied a comprehensive preprocessing pipeline tailored to dermatology-specific needs. Images were resized to **224×224 pixels** with padding to preserve aspect ratios, converted to RGB, and normalized to match ImageNet statistics (mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]). Data augmentation techniques — including random horizontal flips, small rotations (±10°), and color jitter were used to simulate variations in orientation, lighting, and camera quality, thereby improving model robustness. Class imbalance was addressed by calculating **class weights** from the training set and applying them in the loss function, ensuring rare conditions were not overshadowed by more common ones.
+
+The **modeling phase** implemented a **fine-tuned ResNet-18 architecture** initialized with pretrained weights from ImageNet. Only the final residual block (layer4) and the fully connected classification layer were unfrozen to adapt high-level features to dermatological patterns, while earlier layers retained their pretrained weights to preserve general feature extraction capability. The model was trained with:
+- **Loss function** — weighted cross-entropy.
+- **Optimizer** — Adam (lr=0.001, weight_decay=1e-4) to balance learning speed and regularization.
+- **Scheduler** — ReduceLROnPlateau to adjust the learning rate when validation loss plateaued.
+- **Early stopping** — halting training after 5 epochs without improvement to prevent overfitting.
+- **Batch size** — 32, selected to balance memory constraints and gradient stability.
+
+Performance metrics during training and evaluation included **accuracy, precision, recall, and F1-score**. Additional metrics, **confusion matrix, per-class precision/recall, and ROC curves**, are planned for inclusion in the results chapter to provide a more granular performance breakdown.
+
+The **evaluation phase** ensured unbiased testing by maintaining a strict 70/15/15 train/validation/test split. The model that achieved the best validation loss was saved in both `.pth` (PyTorch format) and `.pt` (TorchScript format) for compatibility with different deployment targets.
+
+The **deployment phase** envisioned a two-pronged delivery approach:
+
+1. **Command-Line Interface (CLI)** — Designed purely for inference, enabling researchers to run single-image or batch predictions and receive results in CSV/JSON formats, complete with predicted class and confidence scores.
+2. **React Native Mobile Application** — Intended for healthcare practitioners and general users. The final deployment will utilize a **cloud-hosted API** for inference to keep the mobile application lightweight, avoid excessive on-device computation, and enable easier model updates without requiring app reinstallation.
+
+Hosting considerations focused on **cloud-based API deployment**, with the initial preference being **serverless infrastructure** (e.g., AWS Lambda) for cost efficiency and automatic scaling. A containerized alternative (e.g., Docker on AWS EC2 or DigitalOcean) is reserved as a fallback option, particularly after the expiration of AWS credits. The deployment architecture will initially include only the currently planned components — mobile app, API gateway, model inference service, and a minimal database for request logging — with no hospital EMR integration at this stage.
+
+Throughout this methodology, careful attention was paid to both **technical performance** and **practical usability**. The CRISP-DM framework provided the flexibility to refine earlier stages based on insights from later phases — for example, adjusting augmentation strategies in response to observed overfitting during model training. By combining robust deep learning techniques with a deployment design mindful of user needs and infrastructure realities, the system is positioned to deliver both **research-grade accuracy** and **field-ready accessibility**.
+
+The next chapter, **Results and Discussion**, will present the outcomes of this methodology, including quantitative performance metrics, visualizations of training dynamics, and an analysis of strengths and limitations relative to existing solutions.
+
 
 
 \newpage
