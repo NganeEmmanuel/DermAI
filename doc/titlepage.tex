@@ -37,7 +37,7 @@
     
     \vspace{1cm}
     
-    {Supervised by: Engr. Nkiambo Tanwi}
+    {Supervised by: Engr. Nkiamboh Tanwi}
     
     \vspace{2cm}
     
@@ -132,7 +132,7 @@ This dissertation has been duly reviewed by the Department and the Faculty and i
 \begin{tabular}{@{}r@{}}
 Signature \hspace{3cm} Date \\ [0.5cm]
 \rule{6cm}{0.15mm} \\ [0.2cm]
-Engr. Nkiambo Tanwi \\ [0.3cm]
+Engr. Nkiamboh Tanwi \\ [0.3cm]
 Supervisor \\[1cm]
 
 Signature \hspace{3cm} Date \\ [0.5cm]
@@ -158,15 +158,18 @@ Dean \\
 
 \vspace{1cm}
 
-% \begin{justify}
-Skin cancer is one of the most common and potentially deadly forms of cancer worldwide, with early detection playing a critical role in improving patient outcomes. However, accurate diagnosis often requires specialized medical expertise, which may not be readily accessible in many parts of the world. This study presents the development of a skin lesion detection and classification system using Convolutional Neural Networks (CNNs), aiming to support early and accessible diagnosis through automated analysis of skin images.
+Skin lesions encompass a wide spectrum of conditions, ranging from benign disorders such as eczema, fungal infections, and psoriasis to malignant forms like melanoma and squamous cell carcinoma. Globally, these conditions impose significant public health and economic burdens, with their impact being particularly acute in low-resource regions where specialized dermatological expertise is scarce. In Cameroon and much of sub-Saharan Africa, access to timely and accurate dermatological diagnosis is hindered by limited specialist availability, under-resourced health facilities, and geographic barriers to care. 
 
-The system was trained on a publicly available dataset of dermoscopic images and utilizes a fine-tuned ResNet18 architecture to classify lesions into multiple diagnostic categories. Image preprocessing techniques were applied to normalize input data, and data augmentation was used to improve model generalization. The training process was conducted using supervised learning techniques with categorical cross-entropy loss and evaluation metrics including accuracy, precision, recall, and F1-score.
+This study presents the development of a multi-class skin lesion detection and classification system using Convolutional Neural Networks (CNNs), designed to enhance diagnostic accessibility through automated image analysis. The system was trained on a curated, high-quality dataset compiled from multiple open-access sources, including Kaggle dermatology repositories and the DermNetNZ medical image database. Careful preprocessing and augmentation techniques were employed to normalize image quality, address class imbalance, and improve model robustness across diverse lesion presentations and skin tones.
 
-The final model achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, indicating its potential as a supportive diagnostic tool. The implementation includes both a command-line inference tool for researchers and a user-friendly graphical interface for clinicians or general users.
+A fine-tuned ResNet-18 architecture, leveraging transfer learning from the ImageNet dataset, was implemented to classify lesions into multiple diagnostic categories, covering both malignant and non-malignant conditions. The model was trained using supervised learning with categorical cross-entropy loss, and evaluated using metrics including accuracy, precision, recall, and F1-score. The final system achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, underscoring its potential as a supportive diagnostic aid.
 
-This project contributes to the growing field of medical AI by offering a cost-effective and scalable approach to skin lesion classification. It highlights the viability of CNN-based solutions in medical imaging, particularly in low-resource settings. Future improvements may include incorporating explainability features, expanding to multi-modal inputs, and validating the system in clinical environments.
-% \end{justify}
+The implementation includes a command-line interface (CLI) for research use and a prototype mobile application framework aimed at offline deployment in rural and underserved settings. By combining computational efficiency with diagnostic breadth, the system offers a cost-effective and scalable approach to skin lesion classification in contexts where traditional healthcare access is limited. 
+
+This project contributes to the growing field of AI-assisted dermatology by emphasizing inclusivity across skin tones and lesion types, while maintaining technical feasibility for low-resource environments. Future improvements will focus on expanding the dataset, integrating explainable AI features, incorporating multi-modal patient data, and validating the system in real-world clinical settings.
+
+\vspace{1cm}
+\noindent\textbf{Keywords:} Skin lesion detection, convolutional neural networks, ResNet-18, transfer learning, dataset diversity, mobile health, Cameroon, medical imaging.
 
 \vfill
 \clearpage

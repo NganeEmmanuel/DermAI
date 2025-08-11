@@ -59,6 +59,39 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{titlesec}
 \titleformat{\section}{\normalfont\fontsize{14}{16}\bfseries}{\thesection}{1em}{}
@@ -115,7 +148,7 @@
     
     \vspace{1cm}
     
-    {Supervised by: Engr. Nkiambo Tanwi}
+    {Supervised by: Engr. Nkiamboh Tanwi}
     
     \vspace{2cm}
     
@@ -210,7 +243,7 @@ This dissertation has been duly reviewed by the Department and the Faculty and i
 \begin{tabular}{@{}r@{}}
 Signature \hspace{3cm} Date \\ [0.5cm]
 \rule{6cm}{0.15mm} \\ [0.2cm]
-Engr. Nkiambo Tanwi \\ [0.3cm]
+Engr. Nkiamboh Tanwi \\ [0.3cm]
 Supervisor \\[1cm]
 
 Signature \hspace{3cm} Date \\ [0.5cm]
@@ -236,15 +269,18 @@ Dean \\
 
 \vspace{1cm}
 
-% \begin{justify}
-Skin cancer is one of the most common and potentially deadly forms of cancer worldwide, with early detection playing a critical role in improving patient outcomes. However, accurate diagnosis often requires specialized medical expertise, which may not be readily accessible in many parts of the world. This study presents the development of a skin lesion detection and classification system using Convolutional Neural Networks (CNNs), aiming to support early and accessible diagnosis through automated analysis of skin images.
+Skin lesions encompass a wide spectrum of conditions, ranging from benign disorders such as eczema, fungal infections, and psoriasis to malignant forms like melanoma and squamous cell carcinoma. Globally, these conditions impose significant public health and economic burdens, with their impact being particularly acute in low-resource regions where specialized dermatological expertise is scarce. In Cameroon and much of sub-Saharan Africa, access to timely and accurate dermatological diagnosis is hindered by limited specialist availability, under-resourced health facilities, and geographic barriers to care. 
 
-The system was trained on a publicly available dataset of dermoscopic images and utilizes a fine-tuned ResNet18 architecture to classify lesions into multiple diagnostic categories. Image preprocessing techniques were applied to normalize input data, and data augmentation was used to improve model generalization. The training process was conducted using supervised learning techniques with categorical cross-entropy loss and evaluation metrics including accuracy, precision, recall, and F1-score.
+This study presents the development of a multi-class skin lesion detection and classification system using Convolutional Neural Networks (CNNs), designed to enhance diagnostic accessibility through automated image analysis. The system was trained on a curated, high-quality dataset compiled from multiple open-access sources, including Kaggle dermatology repositories and the DermNetNZ medical image database. Careful preprocessing and augmentation techniques were employed to normalize image quality, address class imbalance, and improve model robustness across diverse lesion presentations and skin tones.
 
-The final model achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, indicating its potential as a supportive diagnostic tool. The implementation includes both a command-line inference tool for researchers and a user-friendly graphical interface for clinicians or general users.
+A fine-tuned ResNet-18 architecture, leveraging transfer learning from the ImageNet dataset, was implemented to classify lesions into multiple diagnostic categories, covering both malignant and non-malignant conditions. The model was trained using supervised learning with categorical cross-entropy loss, and evaluated using metrics including accuracy, precision, recall, and F1-score. The final system achieved a validation accuracy of 75\% and demonstrated consistent performance on the test set, underscoring its potential as a supportive diagnostic aid.
 
-This project contributes to the growing field of medical AI by offering a cost-effective and scalable approach to skin lesion classification. It highlights the viability of CNN-based solutions in medical imaging, particularly in low-resource settings. Future improvements may include incorporating explainability features, expanding to multi-modal inputs, and validating the system in clinical environments.
-% \end{justify}
+The implementation includes a command-line interface (CLI) for research use and a prototype mobile application framework aimed at offline deployment in rural and underserved settings. By combining computational efficiency with diagnostic breadth, the system offers a cost-effective and scalable approach to skin lesion classification in contexts where traditional healthcare access is limited. 
+
+This project contributes to the growing field of AI-assisted dermatology by emphasizing inclusivity across skin tones and lesion types, while maintaining technical feasibility for low-resource environments. Future improvements will focus on expanding the dataset, integrating explainable AI features, incorporating multi-modal patient data, and validating the system in real-world clinical settings.
+
+\vspace{1cm}
+\noindent\textbf{Keywords:} Skin lesion detection, convolutional neural networks, ResNet-18, transfer learning, dataset diversity, mobile health, Cameroon, medical imaging.
 
 \vfill
 \clearpage
@@ -254,88 +290,951 @@ This project contributes to the growing field of medical AI by offering a cost-e
 \tableofcontents
 }
 \setstretch{1.5}
-\subsubsection{Preliminary Pages}\label{preliminary-pages}
+\newpage
+
+\listoffigures
+\newpage
+
+\newpage
+
+\section{Chapter 1: Introduction}\label{chapter-1-introduction}
+
+\subsection{Introduction}\label{introduction}
+
+Skin lesions encompass a broad spectrum of abnormalities in the skin,
+ranging from benign conditions such as moles and warts to malignant
+manifestations like melanoma and squamous cell carcinoma. Globally,
+these dermatological disorders present a significant public health
+challenge, with skin cancers alone accounting for millions of new cases
+annually and exerting substantial socioeconomic and healthcare burdens
+(\citeproc{ref-ogudo2023optimal}{Ogudo et al., 2023}),
+(\citeproc{ref-kassem2021machine}{Kassem et al., 2021}). The prevalence
+of skin lesions has been amplified by factors such as increased
+ultraviolet (UV) exposure due to climate change, demographic
+transitions, and lifestyle changes, contributing to both malignant and
+non-malignant skin disorders (\citeproc{ref-zafar2023skin}{Zafar et al.,
+2023}).
+
+In high-income countries, early diagnosis is often facilitated by access
+to trained dermatologists, advanced imaging technologies, and
+well-established referral systems. However, in low- and middle-income
+countries (LMICs), particularly in sub-Saharan Africa, dermatology
+services remain sparse, with a severe shortage of qualified
+dermatologists and specialized diagnostic tools
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}). This disparity often
+leads to delayed diagnoses, inappropriate treatments, and preventable
+morbidity and mortality from conditions that are otherwise treatable
+when detected early.
+
+Cameroon, like many African nations, faces a dual challenge: the burden
+of infectious skin diseases such as fungal infections, scabies, and
+bacterial dermatitis coexists with a growing incidence of
+non-communicable skin disorders, including actinic keratosis, psoriasis,
+and malignant lesions (\citeproc{ref-van2005common}{Hees \& Naafs,
+2005}). The limited integration of dermatological screening into primary
+healthcare, coupled with the absence of large-scale public awareness
+campaigns, exacerbates the problem.
+
+Recent advancements in artificial intelligence (AI) and machine learning
+(ML), particularly deep learning-based image analysis, have demonstrated
+remarkable potential in automating the detection and classification of
+skin lesions with performance levels approaching or surpassing that of
+experienced dermatologists (\citeproc{ref-khan2021multi}{Khan et al.,
+2021}), (\citeproc{ref-adegun2020fcn}{Adegun \& Viriri, 2020}). Such
+systems leverage large annotated datasets to learn discriminative
+features directly from dermoscopic or clinical images, enabling fast,
+scalable, and cost-effective screening.
+
+This research seeks to harness these technological advancements to
+develop a skin lesion detection and classification system capable of
+accurately identifying multiple common skin lesion types. The proposed
+system integrates a convolutional neural network (CNN) trained on
+diverse, high-quality datasets sourced from publicly available
+repositories such as Kaggle and curated medical image databases like
+DermNetNZ. In addition to the AI model, the system will include a
+graphical user interface (GUI) for clinical use, a command-line
+interface (CLI) for research purposes, and a mobile application to
+extend accessibility to rural and underserved communities. This
+comprehensive approach aims to bridge the diagnostic gap, improve early
+detection rates, and contribute to the broader objective of reducing the
+dermatological disease burden in Cameroon and similar contexts.
+
+\subsection{Background to the Problem}\label{background-to-the-problem}
+
+Dermatological diseases represent one of the most common categories of
+health complaints worldwide, with conditions ranging from self-limiting
+skin irritations to life-threatening malignancies. The World Health
+Organization (WHO) has repeatedly emphasized that skin diseases are
+among the top ten causes of non-fatal disease burden globally, and in
+certain regions of sub-Saharan Africa, they are among the most frequent
+reasons for outpatient consultations (\citeproc{ref-hay2006skin}{Hay et
+al., 2006}), (\citeproc{ref-van2005common}{Hees \& Naafs, 2005}). While
+conditions like melanoma and basal cell carcinoma dominate skin cancer
+statistics in developed nations, the disease landscape in Africa and
+particularly Cameroon is more heterogeneous, encompassing a mix of
+infectious, inflammatory, and neoplastic disorders.
+
+Traditionally, diagnosis of skin lesions has relied heavily on visual
+inspection by a dermatologist, often supplemented by dermoscopic
+evaluation or histopathological examination for suspicious cases
+(\citeproc{ref-yap2018multimodal}{Yap et al., 2018}). However, this
+process is inherently subjective and highly dependent on the clinician's
+expertise and experience. In many LMICs, including Cameroon, the ratio
+of dermatologists to the population is critically low, often less than
+one dermatologist per million inhabitants, leading to substantial
+diagnostic delays. Moreover, general practitioners and nurses, who often
+serve as first-line healthcare providers, may lack specialized training
+in dermatology, further compounding the risk of misdiagnosis or missed
+diagnoses.
+
+The advent of AI in medical imaging, particularly the application of
+convolutional neural networks (CNNs) to dermoscopic and clinical images,
+has opened new possibilities for addressing these challenges
+(\citeproc{ref-harangi2018skin}{Harangi, 2018}),
+(\citeproc{ref-mahbod2019skin}{Mahbod et al., 2019}). CNNs can
+automatically extract hierarchical features from raw image data,
+allowing them to differentiate between lesion types with minimal human
+intervention. Studies have demonstrated that AI-based diagnostic tools
+can achieve diagnostic accuracy comparable to or exceeding that of
+experienced dermatologists in controlled settings
+(\citeproc{ref-albahar2019skin}{Albahar, 2019}),
+(\citeproc{ref-jinnai2020development}{Jinnai et al., 2020}).
+
+Despite these advancements, most existing AI models for skin lesion
+classification have been trained and validated on datasets that
+predominantly contain images from lighter-skinned populations in Europe,
+North America, and Australia (\citeproc{ref-gouda2022detection}{Gouda et
+al., 2022}). This raises concerns about model generalizability to
+populations with darker skin tones, such as those in sub-Saharan Africa.
+Additionally, existing research has often focused on detecting malignant
+lesions, particularly melanoma, with limited emphasis on the broader
+spectrum of common lesions prevalent in African contexts, such as
+eczema, tinea infections, or Kaposi's sarcoma.
+
+This project responds to these gaps by developing a multi-class lesion
+classification system specifically curated to include a diverse set of
+common skin conditions affecting African populations. The dataset
+compilation process involves selecting high-quality images from multiple
+Kaggle repositories and supplementing them with clinically verified
+images from DermNetNZ, ensuring representation across various lesion
+categories and skin tones. Through this approach, the proposed system
+aims to offer a clinically relevant, context-sensitive diagnostic
+support tool that addresses both the technical challenges of AI
+implementation and the pressing healthcare needs of the target
+population.
+
+\subsection{Problem Statement}\label{problem-statement}
+
+The early and accurate diagnosis of skin lesions remains a critical
+public health challenge in Cameroon and across much of sub-Saharan
+Africa. While skin lesions may appear trivial in their initial stages,
+certain forms such as malignant melanomas, squamous cell carcinomas, and
+basal cell carcinomas, can rapidly progress to life-threatening stages
+if left untreated. In parallel, other non-malignant but common
+conditions, such as fungal infections, eczema, and psoriasis, can cause
+significant discomfort, social stigma, and economic loss due to
+chronicity and recurrence.
+
+In many urban centers of high-income countries, advanced diagnostic
+services and dermatology specialists are accessible, enabling early
+detection and management. However, in Cameroon, the number of
+dermatologists is grossly inadequate relative to the population size,
+with some regions having no specialist at all
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}),
+(\citeproc{ref-van2005common}{Hees \& Naafs, 2005}). This shortage
+forces patients to rely on general practitioners or traditional healers,
+which often leads to delayed diagnoses, mismanagement, or complete
+neglect of skin-related health issues.
+
+Furthermore, conventional diagnostic workflows are limited by two key
+barriers:\\
+1. \textbf{Geographic accessibility} -- Many patients in rural areas
+must travel long distances to reach healthcare facilities, resulting in
+missed opportunities for early diagnosis.\\
+2. \textbf{Resource limitations} -- Even in urban hospitals, dermoscopic
+imaging equipment and histopathological services are often scarce or
+prohibitively expensive.
+
+Recent developments in artificial intelligence, specifically
+convolutional neural networks (CNNs), have shown promise in automating
+skin lesion detection and classification with high accuracy
+(\citeproc{ref-khan2021multi}{Khan et al., 2021}),
+(\citeproc{ref-adegun2020fcn}{Adegun \& Viriri, 2020}). Nonetheless,
+most existing models are trained on datasets from lighter-skinned
+populations and focus primarily on malignant lesions, limiting their
+applicability in African contexts where lesion diversity and skin tone
+variations differ significantly (\citeproc{ref-gouda2022detection}{Gouda
+et al., 2022}).
+
+The central problem, therefore, is the absence of an accessible,
+accurate, and context-specific diagnostic tool for multiple types of
+skin lesions prevalent in Cameroon. There is a need for an integrated
+system that combines AI-powered lesion detection with user-friendly
+interfaces, ranging from clinical desktop applications to mobile apps
+that can bridge the diagnostic gap between rural patients, urban
+hospitals, and research institutions.
+
+\subsection{Objectives of the Study}\label{objectives-of-the-study}
+
+The overarching aim of this study is to develop a comprehensive skin
+lesion detection and classification system that leverages deep learning
+techniques to address the diagnostic challenges faced in Cameroon and
+similar low-resource settings.
+
+\subsubsection{General Objective}\label{general-objective}
+
+To design and implement an AI-driven system capable of accurately
+detecting and classifying multiple types of common skin lesions, with
+deployment across desktop, command-line, and mobile platforms to improve
+diagnostic accessibility.
+
+\subsubsection{Specific Objectives}\label{specific-objectives}
+
+\begin{enumerate}
+    \item To compile and curate a diverse, high-quality dataset of common skin lesion images from multiple open-access sources, including Kaggle repositories and the DermNetNZ medical image database.
+    \item To preprocess and augment image data to enhance model robustness..
+    \item To train a convolutional neural network (CNN) model optimized for multi-class lesion classification, ensuring high performance on both malignant and non-malignant categories.
+    \item To develop a command-line interface (CLI) for research and model testing purposes.
+    \item To design and implement a mobile application capable of performing on-device lesion classification for remote and rural healthcare access.
+    \item To evaluate the system's performance against standard diagnostic accuracy metrics, including sensitivity, specificity, and overall classification accuracy.
+    \item To assess the feasibility of integrating the system into existing telemedicine frameworks in Cameroon.
+\end{enumerate}
+
+\subsection{Scope of the Study}\label{scope-of-the-study}
+
+This study focuses on the development of a skin lesion detection and
+classification system tailored for the Cameroonian healthcare context,
+while incorporating global best practices in AI-assisted dermatological
+diagnosis. The scope of the research spans four key dimensions: the
+dataset, the technical solution, the deployment platforms, and the
+evaluation process.
+
+From a \textbf{data perspective}, the system will be trained and
+validated using a carefully curated dataset compiled from multiple
+publicly available repositories on Kaggle, supplemented with
+high-quality dermatological images sourced from DermNetNZ. These sources
+offer a broad spectrum of lesion categories, ranging from malignant
+cancers such as melanoma and squamous cell carcinoma to non-malignant
+conditions like eczema, psoriasis, and fungal infections. Selection
+criteria will prioritize image clarity, correct annotation, diversity of
+skin tones, and representation of lesion variations to ensure the
+model's applicability across a wide demographic.
+
+From a \textbf{technical perspective}, the system will employ a
+convolutional neural network (CNN) architecture fine-tuned for
+multi-class classification. Advanced preprocessing techniques, such as
+data augmentation and normalization, will be applied to enhance the
+model's generalizability across different imaging conditions. While the
+primary focus is on image-based diagnosis, the system is not intended to
+replace histopathological confirmation, which remains the gold standard
+for definitive lesion classification.
+
+From a \textbf{deployment perspective}, the project encompasses three
+interfaces:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A \textbf{Command-Line Interface (CLI)}, primarily intended for
+  researchers and developers for testing and evaluating the AI model.\\
+\item
+  A \textbf{Mobile Application}, optimized for both offline and online
+  usage, to enable healthcare workers and patients in rural areas to
+  perform preliminary lesion assessments without constant internet
+  connectivity.
+\end{enumerate}
+
+From an \textbf{evaluation perspective}, the model will be tested using
+standard performance metrics, including accuracy, sensitivity,
+specificity, and confusion matrix analysis. The evaluation will
+emphasize the system's ability to handle variations in lesion
+presentation due to differences in skin pigmentation, image quality, and
+environmental lighting.
+
+The project does not aim to cover the entire spectrum of dermatological
+conditions, rare or highly complex lesions requiring specialized
+diagnostic equipment fall outside the intended operational scope.
+Instead, the focus is on delivering a reliable, accessible, and scalable
+solution for the most common and clinically significant skin lesions
+encountered in Cameroon and similar resource-limited environments.
+
+\subsection{Significance of the Study}\label{significance-of-the-study}
+
+Skin diseases are among the most common health concerns globally, with
+billions of people affected each year, spanning all socioeconomic groups
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}). In Cameroon and much of
+sub-Saharan Africa, the impact of skin lesions is amplified by a
+combination of high prevalence, limited specialist care, and widespread
+misinformation about skin health. Misdiagnosed or untreated lesions,
+whether malignant or non-malignant, can lead to severe health
+complications, disfigurement, psychological distress, and in the case of
+cancers, increased mortality rates.
+
+The significance of this study lies in its potential to bridge the
+diagnostic gap through a context-specific, AI-driven approach. By
+leveraging deep learning algorithms and multi-platform deployment, the
+system offers a means of providing timely and accurate lesion assessment
+to populations that currently lack access to dermatological expertise.
+For healthcare providers, this could translate to earlier interventions,
+better patient outcomes, and a reduction in the burden on tertiary
+healthcare facilities.
+
+From a \textbf{public health perspective}, the project addresses a
+critical need in preventive care. Early detection and classification can
+significantly reduce treatment costs and improve survival rates in
+malignant cases, while minimizing chronic complications in non-malignant
+cases. Moreover, the system's mobile deployment makes it a practical
+tool for community health workers conducting outreach in rural and
+peri-urban areas.
+
+From a \textbf{technological perspective}, the research contributes to
+the growing field of AI in medical imaging by demonstrating how existing
+machine learning methods can be adapted to underrepresented populations.
+Many existing AI models for skin lesion classification are trained
+predominantly on lighter-skinned datasets, making them less effective
+for darker skin tones (\citeproc{ref-gouda2022detection}{Gouda et al.,
+2022}). By incorporating diverse skin tone representation from datasets
+like DermNetNZ and Kaggle repositories, this study advances the
+inclusivity and fairness of medical AI systems.
+
+From an \textbf{academic perspective}, the project provides a valuable
+reference for future studies in both computer vision and health
+informatics within the African context. The integration of a
+research-oriented CLI, a mobile health application, and a clinical GUI
+sets a precedent for multi-platform medical AI systems designed for
+low-resource settings.
+
+Ultimately, the study seeks to contribute toward Sustainable Development
+Goal 3 (Good Health and Well-being) by enabling accessible, affordable,
+and high-quality dermatological diagnostics in regions where such
+services are currently limited or absent.
+
+\subsubsection{1.7 Limitations of the
+Study}\label{limitations-of-the-study}
+
+While this study seeks to develop a comprehensive, AI-powered skin
+lesion detection and classification system, several constraints
+inevitably shape the scope and potential impact of the research. First,
+the dataset, although carefully curated from high-quality open-access
+sources such as Kaggle repositories and the DermNetNZ medical image
+database, may not capture the full diversity of skin lesion
+presentations across all ethnic groups and age categories. This
+limitation is particularly relevant for sub-Saharan African populations,
+where variations in skin pigmentation can influence lesion visibility
+and morphology, potentially impacting model generalization
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}),
+(\citeproc{ref-van2005common}{Hees \& Naafs, 2005}).
+
+Second, although image preprocessing and augmentation techniques are
+employed to mitigate overfitting and improve robustness, the absence of
+histopathological confirmation for all dataset images introduces an
+inherent diagnostic uncertainty. Clinical image-based diagnosis, while
+valuable, cannot entirely substitute for biopsy-confirmed ground truth,
+especially in differentiating visually similar lesion types
+(\citeproc{ref-zafar2023skin}{Zafar et al., 2023}).
+
+Third, computational resource limitations constrain the complexity and
+scale of model experimentation. While transfer learning with established
+CNN architectures, such as ResNet, offers strong baseline performance,
+exploring more computationally intensive models or ensemble methods may
+be restricted due to hardware constraints. This also impacts the breadth
+of hyperparameter optimization that can be conducted within the project
+timeline.
+
+Fourth, the current implementation focuses primarily on classification
+accuracy and does not yet incorporate a complete clinical decision
+support framework, such as integration with electronic health records
+(EHRs) or automated referral systems. Similarly, the system's deployment
+is confined to a mobile application and a research-oriented command-line
+interface, without the immediate inclusion of a graphical interface for
+clinical integration, an enhancement reserved for future development
+phases.
+
+Finally, while the study includes performance evaluation using standard
+diagnostic metrics (e.g., sensitivity, specificity, overall accuracy),
+real-world clinical validation with dermatologists or in live
+telemedicine settings is beyond the scope of the present work. This
+limits immediate translation into routine healthcare workflows but
+provides a foundation for subsequent validation studies.
+
+\subsubsection{1.8 Organization of the
+Study}\label{organization-of-the-study}
+
+The remainder of this thesis is organized into five chapters, each
+systematically addressing a core component of the research.
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Declaration}
+  \textbf{Chapter 1 -- Introduction}: Provides an overview of the
+  research problem, contextual background, study objectives, scope,
+  significance, and limitations, setting the stage for the
+  investigation.
 \item
-  \textbf{Certification}
+  \textbf{Chapter 2 -- Literature Review}: Presents a comprehensive
+  examination of existing studies on skin lesion detection and
+  classification, machine learning and deep learning techniques applied
+  to medical imaging, and relevant mobile health (mHealth) application
+  frameworks. This chapter critically evaluates the strengths and
+  weaknesses of prior approaches, identifying gaps that this study seeks
+  to address.
 \item
-  \textbf{Dedication}
+  \textbf{Chapter 3 -- Methodology}: Describes the research design,
+  dataset collection and curation process, preprocessing and
+  augmentation strategies, CNN architecture selection, training
+  procedures, and performance evaluation metrics. It also outlines the
+  mobile application and CLI implementation details.
 \item
-  \textbf{Acknowledgments}
+  \textbf{Chapter 4 -- Results and Discussion}: Reports and analyzes
+  experimental results, including classification performance, error
+  analysis, and comparative evaluation against existing methods. The
+  discussion interprets these findings in the context of the study
+  objectives and broader literature.
 \item
-  \textbf{Faculty Approval}
-\item
-  \textbf{Abstract}
-\item
-  \textbf{Keywords}
-\item
-  \textbf{Table of Contents}
-\item
-  \textbf{List of Tables}
-\item
-  \textbf{List of Figures}
-\item
-  \textbf{List of Acronyms and Abbreviations}
+  \textbf{Chapter 5 -- Conclusion and Future Work}: Summarizes key
+  findings, reiterates the contributions of the study, and outlines
+  limitations alongside recommended directions for future research,
+  including potential clinical integration and large-scale deployment
+  strategies.
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+This structured organization ensures a logical progression from problem
+identification through methodological implementation to empirical
+validation and future considerations, facilitating clarity and coherence
+for both technical and non-technical readers.
 
-\subsubsection{Chapter 1: Introduction}\label{chapter-1-introduction}
+\newpage
 
-\begin{itemize}
-\tightlist
-\item
-  1.1 Introduction
-\item
-  1.2 Background to the Problem
-\item
-  1.3 Problem Statement
-\item
-  1.4 Objectives of the Study
-\item
-  1.5 Scope of the Study
-\item
-  1.6 Significance of the Study
-\item
-  1.7 Limitations of the Study
-\item
-  1.8 Organization of the Study
-\end{itemize}
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\subsubsection{Chapter 2: Literature
+\section{Chapter 2: Literature
 Review}\label{chapter-2-literature-review}
 
-\begin{itemize}
-\tightlist
-\item
-  2.1 Introduction
-\item
-  2.2 Overview of Skin Lesions and Skin Cancer
-\item
-  2.3 Role of Artificial Intelligence in Dermatology
-\item
-  2.4 Convolutional Neural Networks (CNNs)
-\item
-  2.5 Transfer Learning and ResNet Models
-\item
-  2.6 Dataset Challenges in Medical Imaging
-\item
-  2.7 Review of Existing Systems
-\item
-  2.8 Research Gap
-\item
-  2.9 Summary
-\end{itemize}
+\subsection{Introduction}\label{introduction-1}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+The human skin, as the largest organ of the body, serves as the first
+line of defense against environmental insults, pathogens, and physical
+trauma. It performs essential physiological roles including
+thermoregulation, sensory perception, and immunological protection.
+However, the skin is susceptible to a wide range of pathological
+conditions, collectively referred to as skin lesions, which can
+significantly impair an individual's quality of life and, in severe
+cases, become life-threatening (\citeproc{ref-hay2006skin}{Hay et al.,
+2006}). These lesions may arise from infectious agents, autoimmune
+disorders, genetic anomalies, or prolonged environmental exposure, with
+their clinical presentation varying from benign and self-limiting forms
+to aggressive malignancies (\citeproc{ref-van2005common}{Hees \& Naafs,
+2005}).
 
-\subsubsection{Chapter 3: Methodology}\label{chapter-3-methodology}
+Globally, skin diseases constitute a substantial public health
+challenge, ranking among the top causes of non-fatal disease burden.
+According to the Global Burden of Disease Study, conditions such as
+eczema, acne, and fungal infections collectively affect billions of
+individuals worldwide, while skin cancers contribute significantly to
+morbidity and mortality in certain regions
+(\citeproc{ref-zafar2023skin}{Zafar et al., 2023}). In sub-Saharan
+Africa, and specifically in Cameroon, the prevalence of skin lesions is
+amplified by climatic factors such as high ultraviolet (UV) index,
+tropical humidity, and widespread infectious disease exposure, combined
+with limited access to dermatological specialists and diagnostic
+facilities (\citeproc{ref-hay2006skin}{Hay et al., 2006}). Rural
+communities often face the most acute challenges, where early detection
+and treatment are hindered by geographical, infrastructural, and
+socioeconomic constraints.
+
+Recent advances in Artificial Intelligence (AI), particularly in
+computer vision, have opened promising avenues for automated skin lesion
+analysis. Machine learning and deep learning techniques, particularly
+Convolutional Neural Networks (CNNs), have demonstrated superior
+performance in differentiating between lesion types, sometimes rivalling
+trained dermatologists in diagnostic accuracy
+(\citeproc{ref-kassem2021machine}{Kassem et al., 2021}),
+(\citeproc{ref-ogudo2023optimal}{Ogudo et al., 2023}). Leveraging such
+tools in low-resource settings could significantly enhance early
+diagnosis, improve treatment outcomes, and reduce the long-term health
+and economic burdens associated with skin diseases.
+
+This chapter reviews the existing literature on skin lesion types, their
+epidemiology, and the role of AI in dermatological diagnostics, with
+particular emphasis on the African context. It also outlines the
+technical underpinnings of CNN-based approaches, dataset challenges, and
+existing AI-enabled systems for skin lesion detection.
+
+\subsection{Overview of Skin Lesions and Skin
+Cancer}\label{overview-of-skin-lesions-and-skin-cancer}
+
+Skin lesions represent a broad spectrum of structural or functional
+abnormalities affecting the skin's epidermal, dermal, or subcutaneous
+layers. They are typically classified according to their clinical
+appearance, etiology, and pathological significance, ranging from
+benign, non-cancerous conditions to malignant cancers that pose
+significant health risks (\citeproc{ref-zafar2023skin}{Zafar et al.,
+2023}). Understanding the characteristics, prevalence, and diagnostic
+challenges associated with each category is crucial for designing
+AI-assisted diagnostic systems capable of reliable, multi-class
+classification across diverse lesion types.
+
+\subsubsection{Non-Cancerous Lesions}\label{non-cancerous-lesions}
+
+Non-cancerous lesions comprise the majority of dermatological cases
+encountered in both primary and specialized care. These include
+inflammatory conditions such as eczema and psoriasis, infectious
+diseases like fungal infections and bacterial dermatoses, pigmentary
+disorders such as vitiligo, and benign growths including seborrheic
+keratoses and skin tags (\citeproc{ref-hay2006skin}{Hay et al., 2006}).
+While these lesions are typically non-fatal, they can cause chronic
+discomfort, psychological distress, and social stigma, especially when
+affecting visible body areas.
+
+In Africa, the high prevalence of infectious dermatoses is closely
+linked to environmental and socioeconomic conditions. Fungal infections
+such as tinea capitis are particularly common among children in rural
+and peri-urban areas due to overcrowding, limited hygiene facilities,
+and humid climatic conditions (\citeproc{ref-van2005common}{Hees \&
+Naafs, 2005}). Similarly, bacterial skin infections like impetigo and
+cellulitis are widespread, often arising as secondary infections in
+individuals with compromised skin barriers from insect bites, eczema, or
+other dermatological conditions.
+
+Chronic inflammatory diseases such as eczema and psoriasis, though less
+prevalent than infectious dermatoses, represent a significant health
+burden due to their recurrent nature and the need for long-term
+management. In many low-resource settings, limited access to
+dermatologists and diagnostic tools leads to misdiagnosis, inappropriate
+treatment, and poor disease control. Pigmentary disorders such as
+vitiligo and post-inflammatory hyperpigmentation are also of particular
+concern in African populations, where cultural perceptions and stigma
+may influence healthcare-seeking behavior
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}).
+
+From a diagnostic perspective, the visual similarity between
+non-cancerous and cancerous lesions can pose a challenge, particularly
+for general practitioners without specialized dermatological training.
+AI-driven image analysis tools have the potential to assist in
+differentiating these lesions, improving diagnostic accuracy in settings
+where specialist input is scarce.
+
+\subsubsection{Cancerous Lesions}\label{cancerous-lesions}
+
+Cancerous lesions, though less common than non-cancerous forms, are of
+critical concern due to their potential for metastasis and mortality.
+The most prevalent malignant skin cancers include melanoma, squamous
+cell carcinoma (SCC), and basal cell carcinoma (BCC). While melanoma is
+less frequent in darker skin tones, its prognosis is often poorer in
+African populations due to late-stage diagnosis
+(\citeproc{ref-zafar2023skin}{Zafar et al., 2023}). SCC and BCC, on the
+other hand, may occur in sun-exposed or chronically damaged skin
+regardless of skin tone.
+
+Globally, skin cancers represent a significant proportion of all cancer
+diagnoses, with an estimated 1.5 million new cases annually
+(\citeproc{ref-kassem2021machine}{Kassem et al., 2021}). In high-income
+countries, public health campaigns and widespread access to
+dermatological care have improved early detection rates, leading to
+better survival outcomes. In contrast, in many African countries,
+including Cameroon, public awareness of skin cancer remains low, and
+access to diagnostic biopsies and histopathology services is limited.
+Consequently, patients often present with advanced disease stages,
+reducing treatment options and survival prospects.
+
+Risk factors for skin cancer in African populations include albinism,
+chronic scarring from burns or ulcers, prolonged exposure to UV
+radiation (especially among outdoor workers), and certain viral
+infections such as human papillomavirus (HPV). Individuals with
+albinism, in particular, face a dramatically elevated risk of developing
+SCC due to the absence of protective melanin in the skin.
+
+Diagnosing skin cancer in low-resource settings is challenging due to
+both infrastructural and human resource constraints. Dermoscopy,
+histopathology, and other confirmatory diagnostic modalities may be
+unavailable outside urban tertiary hospitals. In such contexts, mobile
+AI-assisted diagnostic tools can play an instrumental role in triaging
+suspicious lesions, guiding referrals, and facilitating earlier
+intervention.
+
+\subsection{Role of Artificial Intelligence in
+Dermatology}\label{role-of-artificial-intelligence-in-dermatology}
+
+Artificial Intelligence (AI) has emerged as a transformative force in
+medical diagnostics, with dermatology standing out as a field
+particularly well-suited to AI-driven interventions. This suitability
+stems from the inherently visual nature of dermatological assessment,
+where clinical diagnosis often relies heavily on visual inspection of
+lesion morphology, color, texture, and distribution patterns. AI
+systems, especially those based on computer vision, can replicate and,
+in some cases, surpass human pattern recognition capabilities by
+analyzing large volumes of annotated images
+(\citeproc{ref-kassem2021machine}{Kassem et al., 2021}),
+(\citeproc{ref-ogudo2023optimal}{Ogudo et al., 2023}).
+
+In recent years, deep learning algorithms have demonstrated diagnostic
+performance comparable to, and occasionally exceeding, that of
+board-certified dermatologists
+(\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017}). These
+advancements have been facilitated by the availability of large-scale
+annotated image datasets, improvements in computational power, and
+algorithmic innovations in neural network architectures. AI-powered
+systems have been successfully developed to identify and differentiate
+between multiple skin lesion types, including both malignant and
+non-malignant conditions, with high sensitivity and specificity.
+
+Beyond diagnostic accuracy, AI offers significant advantages in
+scalability and accessibility. Once trained, AI models can be deployed
+on a wide range of devices from high-performance clinical workstations
+to mobile smartphones, making them particularly valuable in low-resource
+environments. In rural areas of Cameroon, for example, where access to
+dermatologists is limited, AI-powered mobile applications could enable
+preliminary screening and triage, directing patients with suspicious
+lesions to specialized care.
+
+Another important role of AI in dermatology lies in \textbf{decision
+support}. AI systems can assist clinicians by highlighting regions of
+interest, providing probability scores for different lesion classes, and
+integrating clinical metadata (such as patient age, lesion history, and
+risk factors) into predictive models. This reduces the likelihood of
+oversight in busy clinical environments and supports more consistent
+diagnostic outcomes.
+
+Furthermore, AI-based lesion analysis is not limited to classification.
+Emerging research is exploring its application in lesion segmentation,
+disease progression tracking, and even predictive analytics for
+treatment response. Such capabilities could support not only individual
+patient management but also large-scale epidemiological surveillance.
+
+Despite these strengths, AI adoption in dermatology is not without
+challenges. Issues such as dataset bias, lack of diverse representation
+(especially for darker skin tones), and limited interpretability of deep
+learning models can affect trust and clinical uptake
+(\citeproc{ref-gouda2022detection}{Gouda et al., 2022}). Ethical and
+regulatory considerations ranging from patient data privacy to liability
+in the event of misdiagnosis, also remain critical hurdles. Addressing
+these concerns will be essential for ensuring that AI complements rather
+than replaces clinical judgment, particularly in sensitive medical
+contexts.
+
+\subsection{Convolutional Neural Networks
+(CNNs)}\label{convolutional-neural-networks-cnns}
+
+Convolutional Neural Networks (CNNs) represent the cornerstone of modern
+computer vision and have become the dominant architecture for image
+classification tasks, including dermatological image analysis. Inspired
+by the organization of the animal visual cortex, CNNs are designed to
+automatically learn hierarchical feature representations directly from
+raw pixel data, eliminating the need for manual feature engineering
+(\citeproc{ref-lecun2015deep}{LeCun et al., 2015}).
+
+A typical CNN architecture comprises several key components:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Convolutional Layers} -- These layers apply a series of
+  learnable filters to the input image, producing feature maps that
+  capture spatial hierarchies such as edges, textures, and shapes. Early
+  layers detect simple patterns, while deeper layers learn more complex
+  and abstract features relevant to classification.
+\item
+  \textbf{Pooling Layers} -- Pooling operations (e.g., max pooling,
+  average pooling) reduce the spatial dimensions of feature maps,
+  thereby decreasing computational load and controlling overfitting
+  while retaining the most salient information.
+\item
+  \textbf{Activation Functions} -- Non-linear activation functions, such
+  as ReLU (Rectified Linear Unit), introduce non-linearity into the
+  network, enabling it to learn complex decision boundaries.
+\item
+  \textbf{Fully Connected Layers} -- These layers interpret the
+  high-level features extracted by convolutional and pooling layers,
+  ultimately producing class probability scores through a softmax or
+  sigmoid activation function.
+\end{enumerate}
+
+The strength of CNNs in dermatology lies in their ability to extract
+discriminative features from lesion images, even in the presence of
+significant variability in lesion size, shape, color, and background
+noise. This is particularly important for differentiating between
+lesions with subtle morphological differences, such as differentiating
+an atypical mole from early-stage melanoma.
+
+In the context of skin lesion classification, CNNs have been
+successfully applied to both binary classification tasks (e.g., benign
+vs malignant) and multi-class classification covering a range of lesion
+types (\citeproc{ref-kassem2021machine}{Kassem et al., 2021}). Their
+performance is further enhanced through techniques such as \textbf{data
+augmentation} (rotations, flips, scaling, color jittering) and
+\textbf{regularization} (dropout, weight decay), which improve
+generalization and robustness.
+
+However, training CNNs from scratch requires large, balanced datasets,
+an obstacle in medical imaging where data is often scarce and unevenly
+distributed across classes. This limitation has driven widespread
+adoption of \textbf{transfer learning}, wherein CNN architectures
+pre-trained on large general-purpose datasets (such as ImageNet) are
+fine-tuned on specific medical datasets. Models like ResNet, Inception,
+and EfficientNet have been extensively leveraged in this manner,
+yielding strong results even with limited medical image data.
+
+For this project, CNNs form the foundational architecture of the lesion
+detection and classification system, enabling automated feature
+extraction and classification in a manner that is both scalable and
+adaptable to diverse deployment environments. Their proven success in
+similar tasks makes them a natural choice for addressing the diagnostic
+challenges associated with skin lesions in Cameroon and other
+low-resource settings.
+
+\subsection{Transfer Learning and ResNet
+Models}\label{transfer-learning-and-resnet-models}
+
+Training deep learning models from scratch typically requires vast
+datasets containing millions of annotated images. In medical imaging,
+however, such large-scale datasets are rare due to privacy concerns, the
+cost of expert annotations, and the limited prevalence of certain
+conditions (\citeproc{ref-gouda2022detection}{Gouda et al., 2022}). This
+scarcity makes \textbf{transfer learning} a practical and effective
+approach for developing high-performing models with limited
+domain-specific data.
+
+Transfer learning involves leveraging a model pre-trained on a large,
+general-purpose dataset such as ImageNet, which contains over 14 million
+images across 1,000 classes and adapting it to a new but related task
+(\citeproc{ref-lecun2015deep}{LeCun et al., 2015}). In this paradigm,
+the lower layers of the pre-trained model, which capture generic
+features like edges, textures, and shapes, are retained, while the
+higher layers, which learn task-specific features, are fine-tuned on the
+target medical dataset. This approach reduces training time, lowers
+computational requirements, and mitigates the risk of overfitting.
+
+Among the various architectures used for transfer learning,
+\textbf{Residual Networks (ResNet)} have become particularly prominent
+due to their ability to train very deep networks without succumbing to
+the vanishing gradient problem (\citeproc{ref-he2016deep}{He et al.,
+2016}). ResNet's innovation lies in its \emph{residual blocks}, which
+introduce shortcut connections that allow gradients to flow more easily
+through the network during backpropagation. This architecture enables
+the training of models with hundreds of layers while maintaining
+stability and accuracy.
+
+ResNet-18, ResNet-34, and ResNet-50 are among the most widely used
+variants in medical imaging applications, each offering a trade-off
+between computational complexity and representational power. For skin
+lesion classification, ResNet architectures have consistently
+demonstrated strong performance, particularly when fine-tuned with
+domain-specific data and augmented through preprocessing techniques such
+as rotation, scaling, and color normalization
+(\citeproc{ref-kassem2021machine}{Kassem et al., 2021}).
+
+In the context of this study, ResNet-18 was selected for its balance
+between accuracy and computational efficiency, making it suitable for
+deployment on both research environments and resource-constrained
+devices like smartphones. Transfer learning with ResNet-18 allows the
+model to benefit from robust, pre-learned visual features while adapting
+to the nuances of dermatological imagery from diverse sources, including
+those representing darker skin tones and non-cancerous lesions that are
+often underrepresented in global datasets.
+
+\subsection{Dataset Challenges in Medical
+Imaging}\label{dataset-challenges-in-medical-imaging}
+
+The success of AI systems in medical imaging is intrinsically tied to
+the quality, diversity, and representativeness of the datasets used for
+training and evaluation. In dermatology, this presents several
+significant challenges.
+
+\textbf{1. Data Scarcity and Class Imbalance} -- High-quality, annotated
+dermatological datasets are limited, particularly for rare conditions
+and underrepresented demographics. Publicly available datasets such as
+those on Kaggle or DermNetNZ often contain disproportionate numbers of
+images for certain lesion types, leading to class imbalance. Models
+trained on such datasets risk becoming biased toward majority classes,
+resulting in reduced accuracy for minority categories
+(\citeproc{ref-gouda2022detection}{Gouda et al., 2022}).
+
+\textbf{2. Limited Skin Tone Representation} -- Many benchmark datasets
+are heavily skewed toward lighter skin tones, reflecting their origins
+in high-income, predominantly Caucasian populations
+(\citeproc{ref-gouda2022detection}{Gouda et al., 2022}). This lack of
+diversity can lead to systematic biases, where models perform well on
+lighter skin but poorly on darker tones---a critical limitation when
+deploying AI tools in African contexts.
+
+\textbf{3. Variability in Image Acquisition} -- Images in dermatology
+can be captured under a wide range of conditions, including variations
+in lighting, background, focus, and resolution. Differences in equipment
+from professional dermatoscopes to smartphone cameras, introduce further
+heterogeneity, making model generalization more difficult
+(\citeproc{ref-zafar2023skin}{Zafar et al., 2023}). Robust preprocessing
+pipelines, including color correction, normalization, and augmentation,
+are essential to mitigate these effects.
+
+\textbf{4. Annotation Quality and Consistency} -- Accurate labeling of
+lesion types often requires expert dermatological input. In public
+datasets, annotations may be inconsistent or based solely on visual
+inspection rather than biopsy-confirmed diagnoses. This introduces noise
+into the training data, potentially lowering model performance
+(\citeproc{ref-van2005common}{Hees \& Naafs, 2005}).
+
+\textbf{5. Ethical and Privacy Concerns} -- Medical image datasets must
+comply with strict privacy regulations to protect patient identities.
+This can limit the sharing of comprehensive datasets, particularly those
+including metadata such as patient age, sex, and medical history.
+De-identification processes, while necessary, may also remove
+potentially valuable contextual information.
+
+For this project, these challenges were addressed through
+\textbf{multi-source dataset compilation}, selecting high-quality images
+from multiple Kaggle repositories and the DermNetNZ image database.
+Images were chosen based on clarity, annotation reliability, and
+diversity in lesion presentation. Preprocessing steps, including
+augmentation techniques, were applied to improve model robustness. While
+this approach does not entirely eliminate dataset-related limitations,
+it provides a strong foundation for training a model capable of handling
+real-world variability in skin lesion imagery.
+
+\subsubsection{Review of Existing
+Systems}\label{review-of-existing-systems}
+
+The development of automated skin lesion detection systems has evolved
+significantly over the past three decades, transitioning from rule-based
+image processing algorithms to advanced deep learning frameworks capable
+of multi-class classification. Early computer-aided diagnosis (CAD)
+systems, developed in the late 1990s and early 2000s, primarily relied
+on handcrafted features such as color histograms, shape descriptors, and
+texture measures, combined with classical classifiers like Support
+Vector Machines (SVMs) and k-Nearest Neighbors (k-NN). While these
+systems achieved moderate success in controlled environments, their
+reliance on manually engineered features made them highly sensitive to
+variations in lighting, resolution, and lesion morphology
+(\citeproc{ref-gouda2022detection}{Gouda et al., 2022}).
+
+Over the past decade, deep learning, particularly Convolutional Neural
+Networks (CNNs) has revolutionized dermatological image analysis.
+CNN-based models eliminate the need for manual feature extraction by
+learning hierarchical feature representations directly from pixel data
+(\citeproc{ref-lecun2015deep}{LeCun et al., 2015}). Notable milestones
+include the work of Esteva et al., who demonstrated dermatologist-level
+classification of skin cancer using a CNN trained on over 129,000
+clinical images (\citeproc{ref-esteva2017dermatologist}{Esteva et al.,
+2017}), and the introduction of transfer learning approaches that
+significantly reduce the data requirements for effective model training
+(\citeproc{ref-he2016deep}{He et al., 2016}).
+
+Several prominent publicly available systems illustrate the current
+state of the art. For example, the \textbf{ISIC (International Skin
+Imaging Collaboration)} challenge platforms have driven substantial
+progress by providing standardized datasets and benchmarking
+opportunities for skin lesion classification and segmentation tasks.
+Solutions from top-performing teams often integrate deep CNN
+architectures such as ResNet, Inception, and EfficientNet, combined with
+ensemble learning and advanced data augmentation techniques.
+
+In commercial and practical deployment contexts, mobile applications
+such as \emph{SkinVision} and \emph{Miiskin} leverage AI to provide
+lesion risk assessments directly to users via smartphone cameras. While
+these tools have expanded public access to preliminary screening, they
+often focus on binary classification (e.g., suspicious
+vs.~non-suspicious) and may not comprehensively cover the range of
+benign and malignant lesion types relevant in diverse populations,
+particularly in low-resource settings like Cameroon.
+
+Within academic research, several studies have explored multi-class
+lesion classification. Kassem et al.~proposed a CNN-based framework
+achieving high accuracy across seven lesion classes in the HAM10000
+dataset (\citeproc{ref-kassem2021machine}{Kassem et al., 2021}), while
+Ogudo et al.~adapted a transfer learning approach for African skin
+tones, underscoring the importance of dataset diversity
+(\citeproc{ref-ogudo2023optimal}{Ogudo et al., 2023}). These studies
+highlight the growing focus on inclusivity and generalizability in AI
+dermatology systems.
+
+Despite these advancements, limitations persist. Many existing systems
+are trained on datasets that lack representation of darker skin tones,
+have a narrow lesion type coverage, or fail to address deployment
+constraints such as offline functionality and low computational
+resources. Furthermore, while commercial solutions often reach end-users
+quickly, they may not undergo the same level of clinical validation or
+peer-reviewed scrutiny as academic research outputs.
+
+\subsection{Research Gap}\label{research-gap}
+
+While the progress in AI-powered dermatological diagnostics over the
+last decade has been remarkable, several gaps remain, particularly in
+the context of African healthcare systems.
+
+\textbf{1. Dataset Representation} -- Most high-performing models are
+trained on datasets dominated by images from lighter skin tones. This
+limits their diagnostic accuracy when applied to African populations,
+where lesion appearance can differ significantly due to higher melanin
+content and unique environmental exposure patterns
+(\citeproc{ref-gouda2022detection}{Gouda et al., 2022}). The lack of
+comprehensive datasets covering both malignant and non-malignant lesions
+in darker skin is a critical barrier.
+
+\textbf{2. Multi-Class Coverage} -- Many commercial and academic systems
+prioritize melanoma detection due to its high mortality rate in
+fair-skinned populations. However, in African contexts, non-cancerous
+lesions, such as fungal infections, eczema, and pigmentary disorders,
+constitute the majority of dermatological cases and therefore require
+equal diagnostic attention.
+
+\textbf{3. Deployment in Low-Resource Settings} -- Existing systems
+often assume reliable internet connectivity and high-performance
+computing infrastructure, making them unsuitable for rural or
+underserved regions. Offline-capable, computationally efficient models
+are needed to bridge this gap.
+
+\textbf{4. Clinical Integration and Trust} -- Limited collaboration
+between AI developers and healthcare providers in Africa has slowed the
+integration of AI tools into clinical workflows. Moreover, clinicians
+may be hesitant to adopt AI systems without clear interpretability,
+validation on local datasets, and regulatory approval.
+
+\textbf{5. Comprehensive Diagnostic Workflow} -- While classification
+accuracy is a major focus of existing research, other aspects of the
+diagnostic process such as lesion segmentation, tracking over time, and
+integration with patient health records, remain underexplored in
+resource-constrained contexts.
+
+This study addresses these gaps by developing a \textbf{multi-class skin
+lesion classification system} optimized for deployment in Cameroon. The
+approach combines a curated dataset from multiple open-access sources
+(Kaggle repositories and DermNetNZ), robust preprocessing and
+augmentation, transfer learning using ResNet-18, and deployment pathways
+that accommodate both research and mobile application environments. By
+doing so, it aims to improve diagnostic accuracy across a broader range
+of lesions, enhance representation for darker skin tones, and enable
+accessibility in low-resource healthcare settings.
+
+\subsection{Summary}\label{summary}
+
+This chapter has provided a comprehensive review of the literature
+relevant to the development of AI-powered skin lesion detection and
+classification systems. The discussion began with an overview of skin
+lesions, distinguishing between non-cancerous and cancerous categories,
+and emphasizing their prevalence and diagnostic challenges both globally
+and within the African context. The role of AI in dermatology was
+examined, with a particular focus on CNN architectures, transfer
+learning strategies, and the ResNet model family, which has proven
+highly effective in medical imaging tasks.
+
+Dataset challenges in medical imaging were explored in detail,
+highlighting issues such as class imbalance, limited representation of
+darker skin tones, variability in image acquisition, and annotation
+quality. The review of existing systems illustrated the evolution of
+lesion detection technologies from early handcrafted-feature approaches
+to modern deep learning-based solutions, while also identifying their
+limitations in terms of inclusivity, deployment feasibility, and
+comprehensive lesion coverage.
+
+Finally, the research gap analysis underscored the need for multi-class,
+skin-tone-inclusive, resource-efficient diagnostic systems that can be
+deployed effectively in low-resource settings such as Cameroon. The
+following chapter will present the methodology adopted for this study,
+detailing the dataset compilation, preprocessing, model training,
+evaluation, and deployment strategies used to develop the proposed skin
+lesion classification system.
+
+\newpage
+
+\section{Chapter 3: Methodology}\label{chapter-3-methodology}
 
 \begin{itemize}
 \tightlist
@@ -357,9 +1256,9 @@ Review}\label{chapter-2-literature-review}
   3.8 Summary
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
 
-\subsubsection{Chapter 4: System Design and
+\section{Chapter 4: System Design and
 Implementation}\label{chapter-4-system-design-and-implementation}
 
 \begin{itemize}
@@ -382,9 +1281,9 @@ Implementation}\label{chapter-4-system-design-and-implementation}
   4.8 Summary
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
 
-\subsubsection{Chapter 5: Testing, Results, and
+\section{Chapter 5: Testing, Results, and
 Discussion}\label{chapter-5-testing-results-and-discussion}
 
 \begin{itemize}
@@ -403,9 +1302,9 @@ Discussion}\label{chapter-5-testing-results-and-discussion}
   5.6 Summary
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
 
-\subsubsection{Chapter 6: Conclusion and
+\section{Chapter 6: Conclusion and
 Recommendations}\label{chapter-6-conclusion-and-recommendations}
 
 \begin{itemize}
@@ -422,9 +1321,9 @@ Recommendations}\label{chapter-6-conclusion-and-recommendations}
   6.5 Final Remarks
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
 
-\subsubsection{Appendices}\label{appendices}
+\section{Appendices}\label{appendices}
 
 \begin{itemize}
 \tightlist
@@ -437,17 +1336,99 @@ Recommendations}\label{chapter-6-conclusion-and-recommendations}
 \item
   Appendix D: Screenshots of GUI
 \item
-  Appendix E: User Manual (if any)
+  Appendix E: User Manual
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
 
-\subsubsection{References}\label{references}
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
 
-\begin{itemize}
-\tightlist
-\item
-  (Follow \textbf{APA Style}, minimum 25 sources)
-\end{itemize}
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-adegun2020fcn}
+Adegun, A. A., \& Viriri, S. (2020). FCN-based DenseNet framework for
+automated detection and classification of skin lesions in dermoscopy
+images. \emph{IEEE Access}, \emph{8}, 150377--150396.
+
+\bibitem[\citeproctext]{ref-albahar2019skin}
+Albahar, M. A. (2019). Skin lesion classification using convolutional
+neural network with novel regularizer. \emph{IEEE Access}, \emph{7},
+38306--38313.
+
+\bibitem[\citeproctext]{ref-esteva2017dermatologist}
+Esteva, A., Kuprel, B., Novoa, R. A., Ko, J., Swetter, S. M., Blau, H.
+M., \& Thrun, S. (2017). Dermatologist-level classification of skin
+cancer with deep neural networks. \emph{Nature}, \emph{542}(7639),
+115--118.
+
+\bibitem[\citeproctext]{ref-gouda2022detection}
+Gouda, W., Sama, N. U., Al-Waakid, G., Humayun, M., \& Jhanjhi, N. Z.
+(2022). Detection of skin cancer based on skin lesion images using deep
+learning. \emph{Healthcare}, \emph{10}, 1183.
+
+\bibitem[\citeproctext]{ref-harangi2018skin}
+Harangi, B. (2018). Skin lesion classification with ensembles of deep
+convolutional neural networks. \emph{Journal of Biomedical Informatics},
+\emph{86}, 25--32.
+
+\bibitem[\citeproctext]{ref-hay2006skin}
+Hay, R., Bendeck, S. E., Chen, S., Estrada, R., Haddix, A., McLeod, T.,
+\& Mahé, A. (2006). Skin diseases. \emph{Disease Control Priorities in
+Developing Countries. 2nd Edition}.
+
+\bibitem[\citeproctext]{ref-he2016deep}
+He, K., Zhang, X., Ren, S., \& Sun, J. (2016). Deep residual learning
+for image recognition. \emph{Proceedings of the IEEE Conference on
+Computer Vision and Pattern Recognition}, 770--778.
+
+\bibitem[\citeproctext]{ref-van2005common}
+Hees, C. van, \& Naafs, B. (2005). \emph{Common skin diseases africa}.
+
+\bibitem[\citeproctext]{ref-jinnai2020development}
+Jinnai, S., Yamazaki, N., Hirano, Y., Sugawara, Y., Ohe, Y., \&
+Hamamoto, R. (2020). The development of a skin cancer classification
+system for pigmented skin lesions using deep learning.
+\emph{Biomolecules}, \emph{10}(8), 1123.
+
+\bibitem[\citeproctext]{ref-kassem2021machine}
+Kassem, M. A., Hosny, K. M., Damaševičius, R., \& Eltoukhy, M. M.
+(2021). Machine learning and deep learning methods for skin lesion
+classification and diagnosis: A systematic review. \emph{Diagnostics},
+\emph{11}(8), 1390.
+
+\bibitem[\citeproctext]{ref-khan2021multi}
+Khan, M. A., Muhammad, K., Sharif, M., Akram, T., \& Albuquerque, V. H.
+C. de. (2021). Multi-class skin lesion detection and classification via
+teledermatology. \emph{IEEE Journal of Biomedical and Health
+Informatics}, \emph{25}(12), 4267--4275.
+
+\bibitem[\citeproctext]{ref-lecun2015deep}
+LeCun, Y., Bengio, Y., \& Hinton, G. (2015). Deep learning.
+\emph{Nature}, \emph{521}(7553), 436--444.
+
+\bibitem[\citeproctext]{ref-mahbod2019skin}
+Mahbod, A., Schaefer, G., Wang, C., Ecker, R., \& Ellinge, I. (2019).
+Skin lesion classification using hybrid deep neural networks.
+\emph{ICASSP 2019-2019 IEEE International Conference on Acoustics,
+Speech and Signal Processing (ICASSP)}, 1229--1233.
+
+\bibitem[\citeproctext]{ref-ogudo2023optimal}
+Ogudo, K. A., Surendran, R., \& Khalaf, O. I. (2023). Optimal artificial
+intelligence based automated skin lesion detection and classification
+model. \emph{Computer Systems Science \& Engineering}, \emph{44}(1).
+
+\bibitem[\citeproctext]{ref-yap2018multimodal}
+Yap, J., Yolland, W., \& Tschandl, P. (2018). Multimodal skin lesion
+classification using deep learning. \emph{Experimental Dermatology},
+\emph{27}(11), 1261--1267.
+
+\bibitem[\citeproctext]{ref-zafar2023skin}
+Zafar, M., Sharif, M. I., Sharif, M. I., Kadry, S., Bukhari, S. A. C.,
+\& Rauf, H. T. (2023). Skin lesion analysis and cancer detection based
+on machine/deep learning techniques: A comprehensive survey.
+\emph{Life}, \emph{13}(1), 146.
+
+\end{CSLReferences}
 
 \end{document}
