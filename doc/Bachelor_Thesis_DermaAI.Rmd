@@ -317,6 +317,439 @@ Finally, the research gap analysis underscored the need for multi-class, skin-to
 
 # Chapter 3: Methodology
 
+## Introduction
+
+The methodology adopted for this research project provides a systematic framework for developing, training, and evaluating a skin lesion detection and classification system. The primary objective of the methodology is to ensure that each stage of the project, from data acquisition to model deployment is structured, reproducible, and grounded in established machine learning best practices. The complexity of dermatological image analysis, combined with the variability of skin lesion types, demands a rigorous approach to both data handling and algorithmic design. In this study, the methodology not only addresses the technical aspects of convolutional neural network (CNN) implementation but also incorporates considerations for application development, user interaction, and deployment.
+
+Skin lesion classification presents unique challenges. Unlike standard image classification tasks, dermatological images often exhibit high intra-class variability and subtle inter-class differences. Conditions such as **melanoma** and **nevus** can appear visually similar under certain imaging conditions, while diseases like **chickenpox**, **measles**, and **monkeypox** may share overlapping lesion morphologies. This complexity is further compounded by variations in image acquisition methods, lighting conditions, skin tones, and anatomical locations. A robust methodology must therefore be capable of addressing these challenges through appropriate data preprocessing, feature extraction, and model optimization techniques.
+
+The development of this system follows a structured lifecycle that draws upon the **CRoss Industry Standard Process for Data Mining (CRISP-DM)** methodology, widely recognized for its flexibility and applicability to data science projects. The CRISP-DM model consists of six iterative phases: **Business Understanding**, **Data Understanding**, **Data Preparation**, **Modeling**, **Evaluation**, and **Deployment**, each of which is adapted to the specific context of this project. This structure facilitates not only the creation of a high-performing CNN-based classifier but also ensures that the final product can be integrated into practical diagnostic workflows through both a Command-Line Interface (CLI) and a mobile application.
+
+A key differentiator of this project, compared to many prior works [@ogudo2023optimal; @khan2021multi; @zafar2023skin], is the scope of the dataset. While datasets such as HAM10000 primarily focus on malignant and benign skin tumors, the dataset in this study encompasses a broader range of dermatological conditions, including viral, bacterial, fungal, autoimmune, and parasitic skin diseases. This comprehensive dataset, covering **33 distinct categories** such as **Acne**, **Actinic Keratosis**, **Ringworm**, **Leprosy**, **Basal Cell Carcinoma**, and **Vitiligo**, allows for a more inclusive diagnostic support system capable of handling diverse clinical scenarios.
+
+The methodology outlined in this chapter provides the foundation for:
+
+- Efficient preprocessing and augmentation techniques to enhance dataset diversity.
+- Fine-tuning of a **ResNet-18** architecture pre-trained on ImageNet to adapt to the specific features of dermatological imagery.
+- Training strategies incorporating **class weighting**, **early stopping**, and **learning rate scheduling** to improve generalization and avoid overfitting.
+- Evaluation protocols employing multiple performance metrics, including **accuracy**, **precision**, **recall**, and **F1-score**.
+- Integration of the trained model into an accessible and user-friendly application environment.
+
+Ultimately, the methodological approach ensures that the system is both technically sound and practically relevant, with the potential for deployment in clinical and teledermatology contexts.
+
+
+## Project Framework and Approach
+
+The **CRoss Industry Standard Process for Data Mining (CRISP-DM)** methodology serves as the guiding framework for the development of the skin lesion detection and classification system. Originally designed for data mining projects, CRISP-DM has been widely adapted in the field of machine learning and artificial intelligence due to its structured yet flexible nature [@ruparelia2010software; @shafiq2021literature]. The six phases of CRISP-DM, **Business Understanding**, **Data Understanding**, **Data Preparation**, **Modeling**, **Evaluation**, and **Deployment**, are not strictly linear but rather iterative, allowing for feedback loops and refinements at any stage.
+
+### Business Understanding
+
+The primary goal of this project is to develop an automated skin lesion classification system that can aid healthcare professionals and patients in the early detection and differentiation of dermatological conditions. The motivation stems from several factors:
+
+1. **Rising global incidence of skin diseases** – Both malignant and non-malignant skin conditions are increasingly prevalent worldwide, with skin cancer alone affecting millions annually [@hay2006skin; @esteva2017dermatologist].
+2. **Shortage of dermatologists in certain regions** – Many rural and under-resourced areas lack access to specialist care, creating a need for supportive diagnostic tools [@van2005common].
+3. **Potential for teledermatology** – Mobile and cloud-based diagnostic systems can extend dermatological services to remote areas, enabling earlier interventions.
+
+The **business objectives** for this project include:
+
+- Developing a CNN-based classification model capable of identifying multiple dermatological conditions with high accuracy.
+- Providing a CLI for researchers and dermatology students to perform batch classification, evaluation, and model experimentation.
+- Creating a mobile application for non-technical users, enabling on-device or cloud-assisted skin lesion classification.
+- Designing the system to be scalable for future integration with electronic medical records (EMR) and telemedicine platforms.
+
+The **success criteria** for the project are defined by:
+
+- Achieving a **minimum validation accuracy of 75%** across all classes.
+- Demonstrating robustness in real-world conditions with varying lighting, angles, and skin tones.
+- Ensuring inference times suitable for near real-time use in both CLI and mobile environments.
+
+
+### Data Understanding
+
+The dataset is a curated collection of high-resolution dermatological images representing **33 distinct categories** of skin conditions. Unlike traditional datasets such as HAM10000 [@khan2021multi], which primarily focus on tumor detection, this dataset spans multiple disease types including:
+
+- **Viral infections** (e.g., Chickenpox, Monkeypox, Measles, Shingles)
+- **Bacterial infections** (e.g., Impetigo, Leprosy, Whitlow)
+- **Fungal infections** (e.g., Athlete’s foot, Ringworm, Nail fungus)
+- **Parasitic infestations** (e.g., Scabies, Tungiasis, Larva Migrans)
+- **Inflammatory and autoimmune conditions** (e.g., Eczema, Psoriasis, Autoimmune diseases)
+- **Benign and malignant tumors** (e.g., Basal Cell Carcinoma, Squamous Cell Carcinoma, Melanoma, Seborrheic Keratosis)
+
+The images vary in background context, lighting conditions, and anatomical site, reflecting real-world diagnostic challenges. This diversity enhances the model’s generalization capability but also necessitates careful preprocessing to normalize image characteristics. Each image is labeled according to expert annotation or verified dataset metadata, ensuring label reliability.
+
+
+### Data Preparation
+
+Data preparation is a critical stage in CRISP-DM, directly influencing model performance. For this project, data preparation involved:
+
+- **Data cleaning** – Removing duplicate images, mislabeled samples, and corrupted files.
+- **Dataset partitioning** – Splitting the dataset into training (70%), validation (15%), and testing (15%) sets to ensure robust performance evaluation.
+- **Data augmentation** – Applying transformations such as random horizontal flips, small rotations, and color jitter to simulate variations in real-world conditions and mitigate overfitting [@lecun2015deep].
+
+The final preprocessing pipeline, implemented using the **Torchvision Transforms API**, included:
+
+- **RandomHorizontalFlip** – to account for left-right orientation differences.
+- **RandomRotation (10°)** – to simulate variations in image capture angles.
+- **ColorJitter** – to replicate differences in lighting and camera exposure.
+- **Resize to (224×224)** – to match the input dimensions expected by ResNet-18.
+- **Normalization** – using the mean and standard deviation values from ImageNet, facilitating optimal transfer learning.
+
+
+### Modeling
+
+The **Modeling** phase centered on adapting a pre-trained **ResNet-18** architecture [@he2016deep] for multi-class skin lesion classification. The transfer learning approach leveraged ImageNet-trained weights, allowing the network to benefit from generalized feature extraction capabilities while focusing fine-tuning on dermatological features. Specific modifications included:
+
+- Unfreezing the **layer4** and **fully connected (fc)** layers for fine-tuning, while freezing earlier layers to retain learned low-level features.
+- Replacing the final classification layer with a fully connected layer matching the number of classes (**33**).
+- Applying **class-weighted cross-entropy loss** to address class imbalance.
+- Utilizing the **Adam optimizer** with a learning rate of 0.001 and **L2 weight decay** to enhance generalization.
+- Implementing a **ReduceLROnPlateau** learning rate scheduler to adaptively lower the learning rate upon performance plateaus.
+
+
+### Evaluation
+
+Evaluation metrics for the system include:
+
+- **Accuracy** – for overall classification performance.
+- **Precision, Recall, and F1-score** – for per-class performance evaluation.
+- **Confusion matrix** – to visualize misclassification patterns.
+- **ROC and AUC curves** – <!-- @todo (Placeholder: to be generated post-training) -->.
+- **Inference time measurements** – for both CLI and mobile deployment environments.
+
+<!-- @todo **[Placeholder for: Training Loss Curve, Training Accuracy Curve, Confusion Matrix Figure, ROC/AUC Graph]** --->
+
+### Deployment
+
+The **Deployment** phase of CRISP-DM for this project covers integration into:
+
+1. **CLI tool** – enabling bulk image classification, metric computation, and dataset testing.
+2. **Mobile application** – developed in **React Native**, allowing on-device image capture and cloud-assisted classification.
+3. **Cloud hosting** – <!-- @todo (Placeholder: Hosting architecture to be determined—potential options include AWS EC2, Google Cloud Run, or serverless architectures pending cost and credit considerations).-->
+
+Deployment will also involve developing user interfaces for both technical and non-technical audiences, ensuring accessibility while maintaining performance.
+
+
+### CRISP-DM Iteration
+
+CRISP-DM emphasizes iteration. During development, multiple cycles of model training, hyperparameter tuning, and evaluation were conducted. Feedback from early experimental results informed adjustments to data augmentation parameters, class weighting strategies, and model layer unfreezing policies. The iterative nature of this process ensured that each phase benefited from empirical insights, ultimately improving model robustness.
+
+<!-- @todo **[Placeholder for CRISP-DM Process Diagram tailored to this project]**-->
+
+## Dataset Description and Preprocessing
+
+The dataset used in this study was curated from multiple open-source dermatological image repositories and validated clinical sources. It comprises high-quality images covering **33 unique skin condition categories**, spanning viral, bacterial, fungal, parasitic, autoimmune, inflammatory, and neoplastic conditions. Unlike conventional dermatological datasets such as **HAM10000**, which focus predominantly on melanocytic lesions [@khan2021multi; @tschandl2018ham10000], this dataset extends coverage to a broader spectrum of dermatological manifestations, enabling a more versatile diagnostic tool.
+
+### Dataset Composition
+
+The dataset categories are as follows:
+
+- **Viral Infections:** Chickenpox, Monkeypox, Measles, Shingles, Herpes, Cowpox.
+- **Bacterial Infections:** Impetigo, Leprosy, Whitlow.
+- **Fungal Infections:** Athlete’s Foot, Ringworm, Nail Fungus.
+- **Parasitic Infestations:** Scabies, Tungiasis, Larva Migrans.
+- **Inflammatory and Autoimmune Conditions:** Eczema, Psoriasis, Autoimmune Disease, Rash Dermatitis, Vitiligo.
+- **Benign and Malignant Tumors:** Basal Cell Carcinoma (BCC), Squamous Cell Carcinoma (SCC), Actinic Keratosis, Melanoma, Nevus, Seborrheic Keratosis, Benign Tumor, Moles.
+- **Other Dermatological Conditions:** Acne, Neurofibromatosis, Vascular Lesion, Healthy skin.
+
+This broad coverage is particularly valuable for **primary care and teledermatology**, where non-specialist practitioners encounter diverse skin pathologies [@zafar2023skin; @adegun2020fcn].
+
+
+### Data Sources
+
+The dataset was compiled from:
+
+- **Public dermatology datasets** — e.g., HAM10000, ISIC Archive (for melanoma, nevus, keratosis, and carcinoma images).
+- **Open-access image repositories** — curated collections for conditions such as chickenpox, monkeypox, and scabies.
+- **Institutional contributions** — small-scale, ethically approved clinical image sets for rare conditions such as tungiasis and larva migrans.
+
+All images were reviewed to ensure:
+
+- Minimum resolution of 224×224 pixels before resizing.
+- Clear lesion visibility with minimal occlusions.
+- Correct disease labeling by source datasets.
+
+
+### Dataset Distribution and Class Imbalance
+
+The dataset is **imbalanced**:  
+Classes like *Acne* and *Eczema* have large sample counts, while rare conditions such as *Tungiasis* or *Larva Migrans* have far fewer. Such imbalance can bias models toward majority classes, leading to reduced recall for rare categories [@buda2018systematic; @kassem2021machine].
+
+Mitigation strategies applied:
+
+- **Class weighting** — Computed via `sklearn.utils.class_weight` and incorporated into the cross-entropy loss.
+- **Data augmentation** — Uniformly applied at runtime, with possible further targeted augmentation for minority classes in future iterations.
+
+<!-- @todo 
+**[Placeholder: Table — Number of images per class for train, validation, and test sets]**  
+**[Placeholder: Figure — Class distribution plot across splits]**
+-->
+
+
+### 3.3.4 Data Partitioning
+
+Images were split into:
+
+- **Training set:** 70%
+- **Validation set:** 15%
+- **Test set:** 15%
+
+Splitting was **stratified per class** to preserve class proportions across sets, ensuring fair evaluation.
+
+
+### Exploratory Data Analysis (EDA)
+
+Before training, **EDA** was conducted on the processed dataset to assess its suitability:
+
+1. **Class distribution analysis** — Generated bar plots to visualize image counts per class for each dataset split, confirming imbalance patterns.
+2. **Sample inspection** — Random samples per class were displayed to verify label correctness and assess intra-class variability.
+3. **Image dimension profiling** — Recorded resolutions and aspect ratios from random subsets to guide resizing and padding strategies.
+
+<!-- @todo **[Placeholder: Figure — Example sample images per class]** -->
+
+
+### Preprocessing Pipeline
+
+A reproducible preprocessing pipeline was implemented in Python, combining **offline standardization** and **online augmentation**:
+
+#### Offline Processing
+
+- **Image Conversion** — Ensured all images were in RGB mode to match the pretrained ResNet input format.
+- **Resizing with Padding** — Used **Lanczos resampling** to resize while preserving aspect ratio, padding with a neutral grey background (128, 128, 128) to reach 224×224 pixels.
+- **Format Standardization** — Saved all outputs as high-quality JPEG files for consistency.
+- **Directory Structuring** — Images organized into `train`, `val`, and `test` directories by class.
+
+#### Online Augmentation (During Training)
+
+| Transformation | Purpose | Parameters |
+|----------------|----------------------------------|----------------------------------|
+| Random Horizontal Flip | Simulate left/right lesion orientation | p = 0.5 |
+| Random Rotation | Account for patient positioning differences | ±10° |
+| Color Jitter | Simulate lighting variations | brightness=0.2, contrast=0.2, saturation=0.2 |
+| Normalization | Match ImageNet statistics | mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225] |
+
+These augmentations improve generalization and reduce overfitting [@lecun2015deep; @mahbod2019skin].
+
+<!-- @todo **[Placeholder: Figure — Raw vs. preprocessed image examples]** -->
+
+
+### Impact of Preprocessing and Augmentation
+
+The chosen preprocessing and augmentation steps:
+
+- Improved robustness to variations in lighting, camera quality, and orientation.
+- Reduced the risk of overfitting by diversifying the training data.
+- Preserved lesion geometry, which is essential for dermatology-specific feature learning.
+
+## Model Architecture
+
+The classification model is based on a **fine-tuned ResNet-18** [@he2016deep], selected for its favorable trade-off between accuracy and computational cost. This architecture is well-suited for mobile and edge deployment due to its small parameter count and competitive accuracy in medical image tasks [@esteva2017dermatologist].
+
+
+### Baseline Architecture
+
+ResNet-18 comprises:
+
+- An initial convolutional layer (7×7 kernel, stride 2) followed by batch normalization and ReLU activation.
+- Four sequential residual blocks (layers 1–4) with skip connections to facilitate gradient flow.
+- Global average pooling, followed by a fully connected (fc) layer for classification.
+
+
+### Transfer Learning Adaptations
+
+To adapt ResNet-18 for multi-class lesion classification:
+
+- **Weights** initialized from ImageNet-pretrained ResNet-18 (`ResNet18_Weights.DEFAULT`).
+- **Frozen layers:** Layers 1–3 kept frozen to retain generic visual features.
+- **Unfrozen layers:** Layer 4 and the fc layer trained for dermatology-specific adaptation.
+- **Modified final layer:** Replaced `fc` with `nn.Linear(512, 33)` for 33-class output.
+
+This selective fine-tuning strategy combines pretrained low- and mid-level feature extraction with high-level feature specialization [@yosinski2014transfer].
+
+
+### Loss Function and Class Balancing
+
+A **weighted cross-entropy loss** was employed, where each class weight was inversely proportional to its frequency in the training set. This approach ensured that minority classes contributed more to gradient updates, improving detection rates for rare conditions.
+
+
+### Optimization and Regularization
+
+Training configuration:
+
+- **Optimizer:** Adam (`lr=0.001`, `weight_decay=1e-4`).
+- **Scheduler:** ReduceLROnPlateau (factor=0.5, patience=2).
+- **Early Stopping:** Stop if validation loss fails to improve for 5 epochs.
+- **Batch Size:** 32.
+
+Regularization via L2 weight decay and early stopping reduced overfitting, while dynamic learning rate adjustment improved convergence stability.
+
+
+### Rationale for ResNet-18 Selection
+
+ResNet-18 was chosen because:
+
+1. It delivers high accuracy with relatively low inference time.
+2. Prior studies confirm ResNet’s effectiveness for skin lesion classification [@albahar2019skin; @harangi2018skin].
+3. Its moderate depth supports deployment on resource-constrained devices without heavy hardware requirements.
+
+<!-- @todo **[Placeholder: Diagram — Modified ResNet-18 highlighting unfrozen layers and custom classification head]**-->
+
+
+## Training Strategy
+
+The training phase was carefully designed to achieve a balance between **computational efficiency**, **classification accuracy**, and **generalization capability** to unseen images. This section describes the training configuration, rationale for hyperparameter selection, and mechanisms adopted to handle the inherent challenges of medical image classification.
+
+### Hardware and Frameworks
+
+All model training was conducted on a GPU-enabled workstation equipped with CUDA support. This significantly reduced training time compared to CPU-based execution, enabling faster experimentation and hyperparameter tuning. The model was implemented in **PyTorch**, chosen for its flexibility and strong community support in research-oriented deep learning tasks. Supporting libraries included:
+
+- **torchvision** for pretrained model loading and image transformation pipelines.
+- **scikit-learn** for computing class weights and auxiliary evaluation metrics.
+- **tqdm** for real-time progress tracking.
+- **TensorBoard** for monitoring loss, accuracy, and learning rate trends over epochs.
+
+### Data Loading and Batching
+
+The processed dataset (Section 3.3) was loaded via PyTorch’s `DataLoader` class with the following configurations:
+
+- **Batch Size:** 32 images per iteration — a compromise between computational efficiency and GPU memory constraints.
+- **Shuffling:** Enabled for the training set to ensure diverse sample exposure per batch, breaking any inherent ordering in the data.
+- **Parallelism:** Four worker threads (`num_workers=4`) with a prefetch factor of four, minimizing idle GPU time due to data loading delays.
+
+This setup ensured that each training iteration received a randomized, memory-optimized batch, which has been shown to improve convergence rates [@goodfellow2016deep].
+
+### Transfer Learning and Layer Freezing
+
+Given the limited availability of dermatological images for certain rare conditions, training a deep convolutional neural network from scratch was deemed impractical. Instead, **transfer learning** was employed using a ResNet-18 architecture pretrained on the ImageNet dataset. The transfer learning strategy included:
+
+- **Freezing layers 1–3:** Preserving generic feature extractors (edges, textures, shapes) learned from the large-scale ImageNet dataset.
+- **Unfreezing layer 4 and the fully connected layer:** Allowing adaptation of higher-level feature representations to the unique textures and lesion patterns in dermatological images.
+- **Classifier replacement:** Modifying the final fully connected layer to output 33 logits corresponding to the target disease categories.
+
+Selective unfreezing reduced the risk of overfitting while allowing enough flexibility for domain adaptation [@yap2018multimodal].
+
+### Loss Function and Class Balancing
+
+A major challenge identified during exploratory data analysis (EDA) was **class imbalance**, with conditions like *Eczema* and *Acne* having significantly more samples than rare diseases such as *Tungiasis* or *Cowpox*. Without correction, the model would bias predictions toward majority classes. To address this:
+
+- **Weighted Cross-Entropy Loss** was used, with per-class weights computed using:
+
+\[
+w_c = \frac{N}{n_c \cdot K}
+\]
+
+where:
+
+- \(N\) is the total number of training samples,
+- \(n_c\) is the sample count for class \(c\),
+- \(K\) is the number of classes.
+
+These weights were passed directly to PyTorch’s `nn.CrossEntropyLoss`, ensuring that errors on minority classes contributed proportionally more to gradient updates. This method is well-supported in medical imaging literature for combating imbalance [@krawczyk2016learning].
+
+### Optimization and Learning Rate Scheduling
+
+Optimization was handled by the **Adam** optimizer with:
+
+- Learning rate \( \alpha = 0.001 \),
+- Weight decay \( = 1\times 10^{-4} \) for L2 regularization.
+
+Adam was chosen for its adaptive learning rates and robustness to sparse gradients [@adam2014method]. To avoid stagnation, the `ReduceLROnPlateau` scheduler was employed, reducing the learning rate by a factor of 0.5 if validation loss failed to improve for two consecutive epochs.
+
+### Early Stopping
+
+To prevent overfitting and unnecessary computation, **early stopping** was implemented with a patience of 5 epochs, if no improvement in validation loss was observed during this period, training terminated. This approach aligns with best practices in deep learning model regularization [@prechelt1998early].
+
+### Epochs, Monitoring, and Logging
+
+The model was trained for a maximum of **20 epochs**. Real-time metrics were logged to TensorBoard, capturing:
+
+- Training and validation loss curves,
+- Training and validation accuracy curves,
+- Learning rate schedules.
+
+<!-- @todo
+**[Placeholder: Figure — Training and validation loss curves]**  
+**[Placeholder: Figure — Training and validation accuracy curves]**
+--->
+
+## Evaluation Strategy
+
+The evaluation methodology was designed to quantify not only the **overall classification performance** but also the **per-class diagnostic reliability**, given the medical context of the task.
+
+### Test Set Protocol
+
+All reported results are based on the **test set**, which was strictly isolated from training and validation data to ensure unbiased performance estimates. This set simulates real-world deployment conditions by containing images unseen by the model at any training stage.
+
+### Evaluation Metrics
+
+Given the dataset imbalance and the multi-class nature of the problem, we employed the following metrics:
+
+- **Accuracy:**
+\[
+\text{Accuracy} = \frac{\text{Number of correct predictions}}{\text{Total number of predictions}}
+\]
+
+While intuitive, accuracy alone may mask poor minority-class performance in imbalanced datasets.
+
+- **Precision (per class and macro-averaged):**
+\[
+\text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}
+\]
+
+Precision is critical in medical applications where false positives can lead to unnecessary anxiety or treatment.
+
+- **Recall / Sensitivity:**
+\[
+\text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Negatives}}
+\]
+
+High recall ensures that most true cases are detected, reducing missed diagnoses.
+
+- **F1-Score:**
+\[
+\text{F1} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\]
+
+Balances the trade-off between precision and recall.
+
+- **Confusion Matrix:**
+
+Visualizes per-class prediction performance and highlights common misclassifications (e.g., *Seborrheic Keratosis* misclassified as *Actinic Keratosis*).
+
+- **ROC AUC (One-vs-Rest):**
+Measures separability between each class and all others, providing insight into decision threshold robustness.
+
+<!-- @todo
+**[Placeholder: Table — Overall accuracy, macro/micro precision, recall, and F1-score]**  
+**[Placeholder: Figure — Confusion matrix heatmap]**  
+**[Placeholder: Figure — ROC curves per class]**
+-->
+
+### Rationale for Metric Selection
+
+These metrics were selected based on clinical relevance. In dermatology AI, high recall is often prioritized to minimize missed malignant cases, while high precision reduces unnecessary biopsies or referrals. Macro-averaging ensures all classes contribute equally to the overall performance measure, regardless of prevalence.
+
+### Additional Performance Considerations
+
+Given the intended integration into a **CLI** for research and a **React Native** mobile application, additional evaluations were made on:
+
+- **Inference latency** — to ensure acceptable response times on standard mobile hardware.
+- **Model size and memory footprint** — to confirm feasibility for mobile and edge deployment.
+
+### Visualizations
+
+Performance visualizations will be added to the final report:
+
+- Loss and accuracy curves across epochs,
+- Confusion matrix heatmap for error analysis,
+- ROC curves for multi-class separability assessment.
+
+These plots aid in communicating results to both technical and clinical audiences.
+
+
+
+
+# Chapter 3: Methodology
+
 * 3.1 Introduction
 * 3.2 Project Framework and Approach (e.g., CRISP-DM or Nunamaker)
 * 3.3 Dataset Description and Preprocessing
