@@ -7,3 +7,8 @@ cli/raw_sample_images
 cli/sample_images
 cli/processed_sample_images
 .idea
+
+
+IAC/.terraform
+IAC/.terraform.lock.hcl
+IAC/envs

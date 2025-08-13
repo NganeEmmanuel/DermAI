@@ -1563,6 +1563,422 @@ unfreezing policies. The iterative nature of this process ensured that
 each phase benefited from empirical insights, ultimately improving model
 robustness.
 
+\subsection{Data and Requirements
+Gathering}\label{data-and-requirements-gathering}
+
+Requirements gathering is a critical stage in the development of any
+complex system, particularly in healthcare-oriented artificial
+intelligence (AI) applications. For a skin lesion detection and
+classification system, eliciting accurate and comprehensive requirements
+ensures that the technical design aligns with both medical best
+practices and user expectations. This phase bridges the gap between the
+theoretical capabilities of AI models and the practical needs of
+end-users, which in this case include dermatologists, general
+practitioners, researchers, and non-technical individuals seeking
+self-assessment tools. As noted by Ruparelia
+(\citeproc{ref-ruparelia2010software}{Ruparelia, 2010}), effective
+requirements elicitation not only enhances system relevance but also
+minimizes costly redesigns during later stages of development.
+
+The approach adopted in this project combined multiple requirement
+gathering methods, consistent with methodological recommendations in
+software engineering and health informatics research
+(\citeproc{ref-hay2006skin}{Hay et al., 2006};
+\citeproc{ref-khan2021multi}{Khan et al., 2021}). Using a combination of
+qualitative and quantitative strategies increased the robustness of our
+findings by allowing cross-verification of insights (triangulation) and
+by capturing both statistical trends and nuanced, context-specific
+needs.
+
+\subsubsection{Interviews}\label{interviews}
+
+Semi-structured interviews were conducted with subject-matter experts,
+particularly dermatologists, general practitioners, and AI researchers.
+The purpose of these interviews was to explore diagnostic workflows,
+common challenges in skin lesion assessment, and expectations for
+integrating automated systems into clinical and teledermatology
+practice. Interview questions were guided by literature on the adoption
+of AI in dermatology (\citeproc{ref-esteva2017dermatologist}{Esteva et
+al., 2017}; \citeproc{ref-zafar2023skin}{Zafar et al., 2023}) and
+covered:
+
+\begin{itemize}
+\tightlist
+\item
+  The perceived accuracy and reliability thresholds acceptable for
+  clinical decision support tools.
+\item
+  Preferred output formats (e.g., probability scores, lesion type
+  classification, urgency recommendations).
+\item
+  Integration concerns with existing patient record systems and
+  telemedicine platforms.
+\item
+  Ethical considerations, including patient consent and data privacy.
+\end{itemize}
+
+Interviews were audio-recorded, transcribed, and coded for thematic
+analysis in later stages.
+
+\subsubsection{Surveys and
+Questionnaires}\label{surveys-and-questionnaires}
+
+Two online survey instruments were designed, one targeting technical and
+health professionals, and another aimed at non-technical individuals.
+The former included domain-specific questions regarding AI model
+transparency, explainability, and integration with clinical workflows,
+while the latter focused on usability, trust, and perceived usefulness
+of the proposed system.
+
+The surveys comprised both closed-ended questions (for quantitative
+analysis) and open-ended prompts (for qualitative insights).
+Distribution was carried out via professional mailing lists, social
+media groups, and university networks. In line with Hay et al.
+(\citeproc{ref-hay2006skin}{Hay et al., 2006}), survey design
+incorporated clear definitions of medical terms to ensure comprehension
+among non-specialist respondents.
+
+\subsubsection{Documentation Review}\label{documentation-review}
+
+In addition to primary data collection, a review of relevant
+documentation was undertaken. This included:
+
+\begin{itemize}
+\tightlist
+\item
+  Published clinical guidelines for skin cancer detection and
+  management.
+\item
+  Existing research on automated lesion detection and classification
+  (\citeproc{ref-kassem2021machine}{Kassem et al., 2021};
+  \citeproc{ref-ogudo2023optimal}{Ogudo et al., 2023}).
+\item
+  Technical specifications of public skin lesion datasets such as
+  HAM10000 (\citeproc{ref-tschandl2018ham10000}{Tschandl et al., 2018}).
+\item
+  Regulatory standards related to AI in healthcare, including data
+  protection protocols.
+\end{itemize}
+
+The documentation review informed the selection of lesion categories,
+the choice of evaluation metrics, and constraints for model deployment.
+
+\subsubsection{Focus Groups}\label{focus-groups}
+
+Focus groups were organized with a mixed composition of technical
+experts, medical practitioners, and potential end-users. Unlike
+individual interviews, focus groups facilitated dynamic discussions that
+revealed collective priorities and concerns. For example, non-technical
+users expressed apprehension about over-reliance on automated outputs
+without human oversight, whereas clinicians emphasized the importance of
+false negative minimization over overall accuracy.
+
+\subsubsection{Synthesis of Findings}\label{synthesis-of-findings}
+
+Findings from all methods were synthesized using a multi-step process:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Extraction of key points from each method.
+\item
+  Cross-referencing to identify recurring requirements.
+\item
+  Prioritization using the MoSCoW method (Must have, Should have, Could
+  have, Won't have) as recommended in agile software
+  development(\citeproc{ref-srivastava2017scrum}{Srivastava et al.,
+  2017}).
+\end{enumerate}
+
+This synthesis process ensured that the final requirements specification
+incorporated both the functional and non-functional needs of diverse
+stakeholders, and that the resulting system design balanced technical
+feasibility with practical utility.
+
+\subsection{Population and Sample}\label{population-and-sample}
+
+\subsubsection{Target Population}\label{target-population}
+
+The target population for this study consisted of individuals and groups
+who would either directly use or influence the adoption of the proposed
+skin lesion detection and classification system. This included:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Health Professionals}: Dermatologists, general practitioners,
+  and other medical personnel involved in skin disease diagnosis and
+  treatment. Their expertise was vital in validating clinical accuracy
+  requirements, determining acceptable error thresholds, and ensuring
+  the system aligned with established diagnostic workflows
+  (\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017};
+  \citeproc{ref-hay2006skin}{Hay et al., 2006}).\\
+\item
+  \textbf{Technical Experts}: Machine learning researchers, computer
+  vision engineers, and software developers with experience in
+  healthcare applications. Their input guided architectural design
+  choices, algorithm selection, and system integration strategies
+  (\citeproc{ref-khan2021multi}{Khan et al., 2021}).\\
+\item
+  \textbf{Non-Technical Individuals}: Members of the general public,
+  particularly those with limited access to dermatological services.
+  This group provided insight into usability, accessibility, and trust
+  factors, especially in contexts where teledermatology may serve as a
+  first point of consultation (\citeproc{ref-zafar2023skin}{Zafar et
+  al., 2023}).
+\end{itemize}
+
+\subsubsection{Sampling Strategy}\label{sampling-strategy}
+
+Given the diversity of the target population, a \textbf{stratified
+sampling approach} was adopted, dividing respondents into two broad
+strata:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Technical and Health Professionals} --- selected using
+  \textbf{purposive sampling}, ensuring that only individuals with
+  relevant domain knowledge and professional experience were included.
+  Recruitment was facilitated through professional associations,
+  academic networks, and LinkedIn outreach.\\
+\item
+  \textbf{Non-Technical Individuals} --- selected using
+  \textbf{convenience sampling}, leveraging community networks, social
+  media outreach, and university mailing lists. This method was chosen
+  for its practicality and efficiency in reaching a large pool of
+  respondents in a limited timeframe.
+\end{enumerate}
+
+This mixed approach ensured both the depth of expert feedback and the
+breadth of general user perspectives.
+
+\subsubsection{Sample Size}\label{sample-size}
+
+A total of \textbf{25} responses were collected from technical and
+health professionals, and \textbf{50} responses from non-technical
+individuals. While the sample size for each group was constrained by
+resource availability and the duration of the requirement gathering
+phase, it was sufficient to capture recurring patterns and requirements
+for system design.
+
+\subsubsection{Justification of Sample
+Size}\label{justification-of-sample-size}
+
+In requirement elicitation for specialized healthcare AI systems, depth
+of insight is often more critical than sheer volume of responses
+(\citeproc{ref-ruparelia2010software}{Ruparelia, 2010}). For technical
+and health professionals, a smaller but highly relevant participant pool
+can yield actionable requirements without unnecessary redundancy. The
+non-technical sample size, while larger, was chosen to ensure diversity
+in age, education, and technology literacy, thereby reflecting the
+heterogeneity of potential end-users.
+
+\subsubsection{Limitations of Sampling
+Approach}\label{limitations-of-sampling-approach}
+
+Despite its effectiveness, the sampling approach had limitations:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Selection Bias}: Purposive sampling may have excluded certain
+  professional subgroups, particularly in rural or resource-limited
+  regions.
+\item
+  \textbf{Geographical Constraints}: The majority of respondents were
+  located in urban centers, potentially under-representing rural
+  healthcare contexts where teledermatology may have the highest impact.
+\item
+  \textbf{Response Bias}: Online surveys can disproportionately attract
+  participants with higher digital literacy, possibly skewing usability
+  feedback.
+\end{itemize}
+
+These limitations are acknowledged and considered when interpreting the
+requirement gathering results and in the subsequent system design
+stages.
+
+\subsection{Quantitative Analysis}\label{quantitative-analysis}
+
+\subsubsection{Data Analysis Techniques}\label{data-analysis-techniques}
+
+Quantitative analysis was performed on the closed-ended questions from
+the surveys, focusing on numerical and categorical variables. The
+primary objective was to extract measurable trends regarding user
+expectations, clinical requirements, and perceived usability of the
+proposed skin lesion detection system.
+
+Descriptive statistics, including \textbf{mean}, \textbf{median},
+\textbf{mode}, and \textbf{standard deviation}, were calculated for
+ordinal and interval-scale responses. For nominal data, frequency
+distributions and percentages were computed. Cross-tabulation was
+employed to explore potential relationships between demographic
+variables (e.g., profession, years of experience, age group) and
+perceptions of the system (\citeproc{ref-hay2006skin}{Hay et al., 2006};
+\citeproc{ref-ruparelia2010software}{Ruparelia, 2010}).
+
+To ensure robustness, data analysis adhered to established guidelines
+for handling mixed healthcare and technology survey data
+(\citeproc{ref-khan2021multi}{Khan et al., 2021}). Data cleaning
+included the removal of incomplete responses and the normalization of
+Likert-scale entries for comparability across questions.
+
+\subsubsection{Data Visualization}\label{data-visualization}
+
+Data visualization was used extensively to communicate quantitative
+findings clearly. Bar charts, pie charts, and stacked column graphs were
+employed to depict categorical distributions, while histograms
+illustrated the spread of numerical responses. For relationship
+analysis, clustered bar charts and side-by-side box plots were applied.
+
+For example:
+
+\begin{itemize}
+\tightlist
+\item
+  Distribution of confidence levels in AI-assisted diagnosis among
+  professionals versus non-technical users.
+\item
+  Comparative importance ratings of system features such as
+  \textbf{diagnosis speed}, \textbf{accuracy}, and
+  \textbf{explainability}.
+\item
+  Patterns in willingness to adopt the system across different age
+  groups.
+\end{itemize}
+
+Visualizations were produced using spreadsheet software and statistical
+tools, ensuring clarity for both technical and non-technical audiences.
+
+\subsubsection{Interpretation and
+Findings}\label{interpretation-and-findings}
+
+Quantitative results revealed several key trends:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Accuracy Thresholds}: Health professionals consistently
+  identified a minimum acceptable accuracy rate above 90\% for clinical
+  decision support, while non-technical users were more tolerant of
+  slightly lower accuracy levels if accompanied by clear explanations
+  (\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017}).
+\item
+  \textbf{Feature Prioritization}: Across both groups, the most highly
+  rated features were real-time analysis, mobile accessibility, and
+  privacy safeguards.
+\item
+  \textbf{Adoption Willingness}: Willingness to adopt was highest among
+  younger respondents and those with prior telemedicine experience,
+  suggesting that digital familiarity positively influences acceptance.
+\end{itemize}
+
+These findings highlight the importance of tailoring the system's
+feature set and communication style to different user categories.
+
+\subsubsection{Conclusion}\label{conclusion}
+
+The quantitative analysis provided objective, measurable insights into
+user requirements and priorities. By quantifying trends and preferences,
+the results served as a foundation for setting design specifications,
+performance benchmarks, and usability targets. This ensured that
+subsequent system development steps were guided by evidence-based
+requirements rather than assumptions.
+
+\subsection{Qualitative Analysis}\label{qualitative-analysis}
+
+\subsubsection{Thematic Analysis
+Approach}\label{thematic-analysis-approach}
+
+Qualitative analysis was conducted on the open-ended survey responses,
+interview transcripts, and focus group discussions. The primary
+objective was to identify recurring themes, contextual nuances, and
+stakeholder concerns that could not be captured through purely numerical
+measures.
+
+A \textbf{thematic analysis} approach was adopted, following the steps
+outlined by Braun and Clarke (\citeproc{ref-braun2006using}{Braun \&
+Clarke, 2006})*:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Familiarization}: Repeated reading of the raw text data to
+  immerse in the content and context.
+\item
+  \textbf{Initial Coding}: Assigning descriptive labels to meaningful
+  segments of text, capturing both explicit statements and implied
+  sentiments.
+\item
+  \textbf{Theme Development}: Grouping related codes into broader
+  thematic categories.
+\item
+  \textbf{Reviewing Themes}: Cross-checking against the dataset to
+  ensure themes accurately represented the participants' views.
+\item
+  \textbf{Defining and Naming Themes}: Refining theme descriptions for
+  clarity and relevance.
+\item
+  \textbf{Reporting}: Selecting illustrative quotes to convey the
+  essence of each theme.
+\end{enumerate}
+
+\subsubsection{Coding and
+Categorization}\label{coding-and-categorization}
+
+Responses were coded manually using spreadsheet-based coding tables.
+This process produced multiple overarching categories: -
+\textbf{Accuracy and Trust}: Emphasis on clinical reliability and the
+need for human oversight in diagnosis
+(\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017};
+\citeproc{ref-zafar2023skin}{Zafar et al., 2023}). - \textbf{Usability
+and Accessibility}: Concerns over interface simplicity, language
+localization, and mobile optimization for low-bandwidth environments. -
+\textbf{Privacy and Ethics}: Demand for strict compliance with data
+protection regulations and transparent data usage policies
+(\citeproc{ref-khan2021multi}{Khan et al., 2021}). - \textbf{Educational
+Value}: Interest in integrating explanations and visual aids to help
+users understand lesion classifications and potential risks.
+
+\subsubsection{Interpretation of Qualitative
+Findings}\label{interpretation-of-qualitative-findings}
+
+The qualitative data revealed several insights that influenced design
+decisions:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Differing Risk Tolerance}: Medical professionals prioritized
+  minimizing false negatives, even at the cost of slightly lower overall
+  accuracy, whereas non-technical users valued a balance between speed
+  and reliability.
+\item
+  \textbf{Need for Explainability}: Across all groups, participants
+  favored outputs accompanied by visual indicators and textual
+  explanations, supporting findings in explainable AI literature.
+\item
+  \textbf{Cultural and Language Considerations}: Participants from
+  non-English-speaking backgrounds stressed the importance of
+  multilingual support for both the interface and educational materials.
+\end{itemize}
+
+These findings underscored the necessity of designing a system that is
+not only technically sound but also socially and ethically acceptable.
+
+\subsubsection{Conclusion}\label{conclusion-1}
+
+By capturing and analyzing the rich detail of participants'
+perspectives, the qualitative analysis complemented the quantitative
+results, providing a holistic understanding of user and stakeholder
+needs. The combination of both methods ensured that the system's design
+was informed by statistically significant trends as well as the subtler,
+contextual factors that can impact adoption and trust.
+
 \subsection{Dataset Description and
 Preprocessing}\label{dataset-description-and-preprocessing}
 
@@ -2352,9 +2768,9 @@ Post-deployment, the system will include:
 This chapter presented the complete methodology adopted for the design,
 development, training, and deployment of the proposed \textbf{skin
 lesion detection and classification system}. The approach was guided by
-the \textbf{CRISP-DM} framework, ensuring that every stage --- from
-problem definition to system deployment --- followed a structured,
-iterative, and evidence-driven process.
+the \textbf{CRISP-DM} framework, ensuring that every stage, from problem
+definition to system deployment, followed a structured, iterative, and
+evidence-driven process.
 
 The \textbf{business understanding phase} established the project's core
 objective: to develop a multi-condition dermatological diagnostic aid
@@ -2393,13 +2809,12 @@ preprocessing pipeline tailored to dermatology-specific needs. Images
 were resized to \textbf{224×224 pixels} with padding to preserve aspect
 ratios, converted to RGB, and normalized to match ImageNet statistics
 (mean = {[}0.485, 0.456, 0.406{]}, std = {[}0.229, 0.224, 0.225{]}).
-Data augmentation techniques --- including random horizontal flips,
-small rotations (±10°), and color jitter were used to simulate
-variations in orientation, lighting, and camera quality, thereby
-improving model robustness. Class imbalance was addressed by calculating
-\textbf{class weights} from the training set and applying them in the
-loss function, ensuring rare conditions were not overshadowed by more
-common ones.
+Data augmentation techniques including random horizontal flips, small
+rotations (±10°), and color jitter were used to simulate variations in
+orientation, lighting, and camera quality, thereby improving model
+robustness. Class imbalance was addressed by calculating \textbf{class
+weights} from the training set and applying them in the loss function,
+ensuring rare conditions were not overshadowed by more common ones.
 
 The \textbf{modeling phase} implemented a \textbf{fine-tuned ResNet-18
 architecture} initialized with pretrained weights from ImageNet. Only
@@ -2407,13 +2822,25 @@ the final residual block (layer4) and the fully connected classification
 layer were unfrozen to adapt high-level features to dermatological
 patterns, while earlier layers retained their pretrained weights to
 preserve general feature extraction capability. The model was trained
-with: - \textbf{Loss function} --- weighted cross-entropy. -
-\textbf{Optimizer} --- Adam (lr=0.001, weight\_decay=1e-4) to balance
-learning speed and regularization. - \textbf{Scheduler} ---
-ReduceLROnPlateau to adjust the learning rate when validation loss
-plateaued. - \textbf{Early stopping} --- halting training after 5 epochs
-without improvement to prevent overfitting. - \textbf{Batch size} ---
-32, selected to balance memory constraints and gradient stability.
+with:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Loss function} --- weighted cross-entropy.
+\item
+  \textbf{Optimizer} --- Adam (lr=0.001, weight\_decay=1e-4) to balance
+  learning speed and regularization.
+\item
+  \textbf{Scheduler} --- ReduceLROnPlateau to adjust the learning rate
+  when validation loss plateaued.
+\item
+  \textbf{Early stopping} --- halting training after 5 epochs without
+  improvement to prevent overfitting.
+\item
+  \textbf{Batch size} --- 32, selected to balance memory constraints and
+  gradient stability.
+\end{itemize}
 
 Performance metrics during training and evaluation included
 \textbf{accuracy, precision, recall, and F1-score}. Additional metrics,
@@ -2452,17 +2879,17 @@ with the initial preference being \textbf{serverless infrastructure}
 containerized alternative (e.g., Docker on AWS EC2 or DigitalOcean) is
 reserved as a fallback option, particularly after the expiration of AWS
 credits. The deployment architecture will initially include only the
-currently planned components --- mobile app, API gateway, model
-inference service, and a minimal database for request logging --- with
-no hospital EMR integration at this stage.
+currently planned components, mobile app, API gateway, model inference
+service, and a minimal database for request logging, with no hospital
+EMR integration at this stage.
 
 Throughout this methodology, careful attention was paid to both
 \textbf{technical performance} and \textbf{practical usability}. The
 CRISP-DM framework provided the flexibility to refine earlier stages
-based on insights from later phases --- for example, adjusting
-augmentation strategies in response to observed overfitting during model
-training. By combining robust deep learning techniques with a deployment
-design mindful of user needs and infrastructure realities, the system is
+based on insights from later phases, for example, adjusting augmentation
+strategies in response to observed overfitting during model training. By
+combining robust deep learning techniques with a deployment design
+mindful of user needs and infrastructure realities, the system is
 positioned to deliver both \textbf{research-grade accuracy} and
 \textbf{field-ready accessibility}.
 
@@ -2575,6 +3002,11 @@ Albahar, M. A. (2019). Skin lesion classification using convolutional
 neural network with novel regularizer. \emph{IEEE Access}, \emph{7},
 38306--38313.
 
+\bibitem[\citeproctext]{ref-braun2006using}
+Braun, V., \& Clarke, V. (2006). Using thematic analysis in psychology.
+\emph{Qualitative Research in Psychology}, \emph{3}(2), 77--101.
+\url{https://doi.org/10.1191/1478088706qp063oa}
+
 \bibitem[\citeproctext]{ref-buda2018systematic}
 Buda, M., Maki, A., \& Mazurowski, M. A. (2018). A systematic study of
 the class imbalance problem in convolutional neural networks.
@@ -2664,6 +3096,11 @@ Ruparelia, N. B. (2010). Software development lifecycle models.
 Shafiq, S., Mashkoor, A., Mayr-Dorn, C., \& Egyed, A. (2021). A
 literature review of using machine learning in software development life
 cycle stages. \emph{IEEe Access}, \emph{9}, 140896--140920.
+
+\bibitem[\citeproctext]{ref-srivastava2017scrum}
+Srivastava, A., Bhardwaj, S., \& Saraswat, S. (2017). SCRUM model for
+agile methodology. \emph{2017 International Conference on Computing,
+Communication and Automation (ICCCA)}, 864--869.
 
 \bibitem[\citeproctext]{ref-tschandl2018ham10000}
 Tschandl, P., Rosendahl, C., \& Kittler, H. (2018). The HAM10000
