@@ -77,4 +77,39 @@ module "description_lambda_role" {
   })
 }
 
+# Classification Lambda
+module "lambda_classification" {
+  source                = "./modules/lambda_function"
+  function_name         = "dermaai-classification"
+  role_arn              = module.classification_lambda_role.role_arn
+  handler               = "app.handler"
+  runtime               = "python3.12"
+  lambda_package        = "${path.module}/lambda_packages/classification.zip"
+  timeout               = 60
+  memory_size           = 1024
+  sqs_arn               = module.classification_queue.queue_arn
+  environment_variables = {
+    MODEL_BUCKET = "dermaai-model-bucket"
+    RESULTS_TABLE = "dermaai-results"
+    OUTPUT_QUEUE  = module.description_queue.queue_url
+  }
+}
+
+# Description Lambda
+module "lambda_description" {
+  source                = "./modules/lambda_function"
+  function_name         = "dermaai-description"
+  role_arn              = module.description_lambda_role.role_arn
+  handler               = "app.handler"
+  runtime               = "python3.12"
+  lambda_package        = "${path.module}/lambda_packages/description.zip"
+  timeout               = 60
+  memory_size           = 1024
+  sqs_arn               = module.description_queue.queue_arn
+  environment_variables = {
+    RESULTS_TABLE = "dermaai-results"
+    OPENAI_SECRET_NAME = "openai-api-key"
+  }
+}
+
 
