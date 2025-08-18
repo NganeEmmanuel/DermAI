@@ -1525,7 +1525,8 @@ Evaluation metrics for the system include:
 \item
   \textbf{Confusion matrix} -- to visualize misclassification patterns.
 \item
-  \textbf{ROC and AUC curves} -- .
+  \textbf{ROC and AUC curves} -- to visualize tradeoff between
+  sensitivity (recall) and specificity
 \item
   \textbf{Inference time measurements} -- for both CLI and mobile
   deployment environments.
@@ -1546,7 +1547,8 @@ integration into:
   \textbf{Mobile application} -- developed in \textbf{React Native},
   allowing on-device image capture and cloud-assisted classification.
 \item
-  \textbf{Cloud hosting} --
+  \textbf{Cloud hosting} -- Serverless architecture for cost efficiency,
+  scalability and security. Used AWS for infrastruture
 \end{enumerate}
 
 Deployment will also involve developing user interfaces for both
@@ -1562,6 +1564,14 @@ augmentation parameters, class weighting strategies, and model layer
 unfreezing policies. The iterative nature of this process ensured that
 each phase benefited from empirical insights, ultimately improving model
 robustness.
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio]{CRISP-DM-Diagram.png}}
+\caption{CRISP-DM Process Diagram}
+\end{figure}
+
+\newpage
 
 \subsection{Data and Requirements
 Gathering}\label{data-and-requirements-gathering}
@@ -1931,18 +1941,28 @@ Clarke, 2006})*:
 Categorization}\label{coding-and-categorization}
 
 Responses were coded manually using spreadsheet-based coding tables.
-This process produced multiple overarching categories: -
-\textbf{Accuracy and Trust}: Emphasis on clinical reliability and the
-need for human oversight in diagnosis
-(\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017};
-\citeproc{ref-zafar2023skin}{Zafar et al., 2023}). - \textbf{Usability
-and Accessibility}: Concerns over interface simplicity, language
-localization, and mobile optimization for low-bandwidth environments. -
-\textbf{Privacy and Ethics}: Demand for strict compliance with data
-protection regulations and transparent data usage policies
-(\citeproc{ref-khan2021multi}{Khan et al., 2021}). - \textbf{Educational
-Value}: Interest in integrating explanations and visual aids to help
-users understand lesion classifications and potential risks.
+This process produced multiple overarching categories:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Accuracy and Trust}: Emphasis on clinical reliability and the
+  need for human oversight in diagnosis
+  (\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017};
+  \citeproc{ref-zafar2023skin}{Zafar et al., 2023}).
+\item
+  \textbf{Usability and Accessibility}: Concerns over interface
+  simplicity, language localization, and mobile optimization for
+  low-bandwidth environments.
+\item
+  \textbf{Privacy and Ethics}: Demand for strict compliance with data
+  protection regulations and transparent data usage policies
+  (\citeproc{ref-khan2021multi}{Khan et al., 2021}).
+\item
+  \textbf{Educational Value}: Interest in integrating explanations and
+  visual aids to help users understand lesion classifications and
+  potential risks.
+\end{itemize}
 
 \subsubsection{Interpretation of Qualitative
 Findings}\label{interpretation-of-qualitative-findings}
@@ -2081,7 +2101,25 @@ Mitigation strategies applied:
   iterations.
 \end{itemize}
 
-\subsubsection{3.3.4 Data Partitioning}\label{data-partitioning}
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{images_per_class} 
+
+}
+
+\caption{Number of images per class}\label{fig:unnamed-chunk-1}
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{class_distribution} 
+
+}
+
+\caption{Class distribution plot across splits}\label{fig:unnamed-chunk-2}
+\end{figure}
+
+\subsubsection{Data Partitioning}\label{data-partitioning}
 
 Images were split into:
 
@@ -2118,6 +2156,15 @@ assess its suitability:
   \textbf{Image dimension profiling} --- Recorded resolutions and aspect
   ratios from random subsets to guide resizing and padding strategies.
 \end{enumerate}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{class_sample_images} 
+
+}
+
+\caption{Example sample images per class}\label{fig:unnamed-chunk-3}
+\end{figure}
 
 \subsubsection{Preprocessing Pipeline}\label{preprocessing-pipeline}
 
@@ -2294,6 +2341,15 @@ ResNet-18 was chosen because:
   without heavy hardware requirements.
 \end{enumerate}
 
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{unfrozen_layers} 
+
+}
+
+\caption{Modified ResNet-18 highlighting unfrozen layers}\label{fig:unnamed-chunk-4}
+\end{figure}
+
 \subsection{Training Strategy}\label{training-strategy}
 
 The training phase was carefully designed to achieve a balance between
@@ -2460,6 +2516,24 @@ metrics were logged to TensorBoard, capturing:
 \item
   Learning rate schedules.
 \end{itemize}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{loss_curve_v3} 
+
+}
+
+\caption{Training and validation loss curves}\label{fig:unnamed-chunk-5}
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{accuracy_curve_v3} 
+
+}
+
+\caption{Training and validation accuracy curves}\label{fig:unnamed-chunk-6}
+\end{figure}
 
 \subsection{Evaluation Strategy}\label{evaluation-strategy}
 
@@ -2680,38 +2754,40 @@ inference APIs} (for lighter device workloads).
 \subsubsection{Hosting and API
 Infrastructure}\label{hosting-and-api-infrastructure}
 
-The hosting approach will depend on the final budget and resource
-allocation. Two main configurations are under consideration:
+The system will be deployed using a \textbf{serverless cloud
+architecture} on Amazon Web Services (AWS). This approach was selected
+to ensure scalability, cost efficiency, and simplified maintenance. Key
+components include:
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
+\begin{itemize}
+\tightlist
 \item
-  \textbf{Serverless Cloud Deployment} \emph{(initial preference)}
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Utilizes platforms like AWS Lambda or Google Cloud Functions.\\
-  \item
-    Advantages: automatic scaling, pay-per-use billing, minimal server
-    maintenance.\\
-  \item
-    Disadvantage: AWS credit expiry may require migration.
-  \end{itemize}
+  \textbf{Amazon API Gateway} -- Handles user requests and routes them
+  securely to backend services.\\
 \item
-  \textbf{Dedicated Cloud Server / Containerized Deployment}
-  \emph{(alternative plan)}
+  \textbf{AWS Lambda} -- Executes serverless functions for
+  classification inference, enrichment processing, and result handling,
+  with automatic scaling based on demand.\\
+\item
+  \textbf{Amazon S3 (on Outposts)} -- Provides secure and reliable
+  storage for the trained model and related assets.\\
+\item
+  \textbf{Amazon SQS} -- Manages asynchronous request queues to decouple
+  processes and enhance reliability.\\
+\item
+  \textbf{Amazon DynamoDB} -- Serves as the primary database for storing
+  predictions, enriched descriptions, and user-related data.\\
+\item
+  \textbf{OpenAI LLM Integration} -- Provides automated text enrichment
+  for clinical explanations and user-friendly feedback.
+\end{itemize}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Hosted on services like AWS EC2, DigitalOcean, or Azure VMs.\\
-  \item
-    Docker containers for consistent deployment environments.\\
-  \item
-    Potential GPU-enabled instances for faster inference.
-  \end{itemize}
-\end{enumerate}
+This configuration eliminates the need for dedicated server management,
+reduces operational overhead, and ensures the system can seamlessly
+scale to accommodate varying user loads. Furthermore, the
+\textbf{pay-per-use billing model} minimizes costs during periods of low
+activity, making the solution sustainable in both testing and production
+environments.
 
 \subsubsection{Deployment Workflow}\label{deployment-workflow}
 

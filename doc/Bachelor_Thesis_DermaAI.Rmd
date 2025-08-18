@@ -413,10 +413,9 @@ Evaluation metrics for the system include:
 - **Accuracy** – for overall classification performance.
 - **Precision, Recall, and F1-score** – for per-class performance evaluation.
 - **Confusion matrix** – to visualize misclassification patterns.
-- **ROC and AUC curves** – <!-- @todo (Placeholder: to be generated post-training) -->.
+- **ROC and AUC curves** – to visualize tradeoff between sensitivity (recall) and specificity
 - **Inference time measurements** – for both CLI and mobile deployment environments.
 
-<!-- @todo **[Placeholder for: Training Loss Curve, Training Accuracy Curve, Confusion Matrix Figure, ROC/AUC Graph]** --->
 
 ### Deployment
 
@@ -424,7 +423,7 @@ The **Deployment** phase of CRISP-DM for this project covers integration into:
 
 1. **CLI tool** – enabling bulk image classification, metric computation, and dataset testing.
 2. **Mobile application** – developed in **React Native**, allowing on-device image capture and cloud-assisted classification.
-3. **Cloud hosting** – <!-- @todo (Placeholder: Hosting architecture to be determined—potential options include AWS EC2, Google Cloud Run, or serverless architectures pending cost and credit considerations).-->
+3. **Cloud hosting** – Serverless architecture for cost efficiency, scalability and security. Used AWS for infrastruture
 
 Deployment will also involve developing user interfaces for both technical and non-technical audiences, ensuring accessibility while maintaining performance.
 
@@ -433,7 +432,10 @@ Deployment will also involve developing user interfaces for both technical and n
 
 CRISP-DM emphasizes iteration. During development, multiple cycles of model training, hyperparameter tuning, and evaluation were conducted. Feedback from early experimental results informed adjustments to data augmentation parameters, class weighting strategies, and model layer unfreezing policies. The iterative nature of this process ensured that each phase benefited from empirical insights, ultimately improving model robustness.
 
-<!-- @todo **[Placeholder for CRISP-DM Process Diagram tailored to this project]**-->
+![CRISP-DM Process Diagram ](CRISP-DM-Diagram.png)
+
+\newpage
+
 
 ## Data and Requirements Gathering
 
@@ -518,10 +520,11 @@ These limitations are acknowledged and considered when interpreting the requirem
 
 ## Quantitative Analysis
 
-### Data Analysis Techniques
+### Data Analysis Techniques 
+<!-- @todo The things said in this section need to be read and updated to only what was done -->
 Quantitative analysis was performed on the closed-ended questions from the surveys, focusing on numerical and categorical variables. The primary objective was to extract measurable trends regarding user expectations, clinical requirements, and perceived usability of the proposed skin lesion detection system.
 
-Descriptive statistics, including **mean**, **median**, **mode**, and **standard deviation**, were calculated for ordinal and interval-scale responses. For nominal data, frequency distributions and percentages were computed. Cross-tabulation was employed to explore potential relationships between demographic variables (e.g., profession, years of experience, age group) and perceptions of the system [@hay2006skin; @ruparelia2010software].  
+Descriptive statistics, including **mean**, **median**, **mode**, and **standard deviation**, <!--@todo ask how to calculate and include these in the results sections    -->were calculated for ordinal and interval-scale responses. For nominal data, frequency distributions and percentages were computed. Cross-tabulation was employed to explore potential relationships between demographic variables (e.g., profession, years of experience, age group) and perceptions of the system [@hay2006skin; @ruparelia2010software].  
 
 To ensure robustness, data analysis adhered to established guidelines for handling mixed healthcare and technology survey data [@khan2021multi]. Data cleaning included the removal of incomplete responses and the normalization of Likert-scale entries for comparability across questions.
 
@@ -564,6 +567,7 @@ A **thematic analysis** approach was adopted, following the steps outlined by Br
 
 ### Coding and Categorization
 Responses were coded manually using spreadsheet-based coding tables. This process produced multiple overarching categories:
+
 - **Accuracy and Trust**: Emphasis on clinical reliability and the need for human oversight in diagnosis [@esteva2017dermatologist; @zafar2023skin].
 - **Usability and Accessibility**: Concerns over interface simplicity, language localization, and mobile optimization for low-bandwidth environments.
 - **Privacy and Ethics**: Demand for strict compliance with data protection regulations and transparent data usage policies [@khan2021multi].
@@ -626,13 +630,17 @@ Mitigation strategies applied:
 - **Class weighting** — Computed via `sklearn.utils.class_weight` and incorporated into the cross-entropy loss.
 - **Data augmentation** — Uniformly applied at runtime, with possible further targeted augmentation for minority classes in future iterations.
 
-<!-- @todo 
-**[Placeholder: Table — Number of images per class for train, validation, and test sets]**  
-**[Placeholder: Figure — Class distribution plot across splits]**
--->
+
+```{r, echo=FALSE, fig.cap="Number of images per class", fig.align='center', out.width='100%'}
+knitr::include_graphics("images_per_class.png")
+```
+
+```{r, echo=FALSE, fig.cap="Class distribution plot across splits", fig.align='center', out.width='100%'}
+knitr::include_graphics("class_distribution.png")
+```
 
 
-### 3.3.4 Data Partitioning
+### Data Partitioning
 
 Images were split into:
 
@@ -651,7 +659,11 @@ Before training, **EDA** was conducted on the processed dataset to assess its su
 2. **Sample inspection** — Random samples per class were displayed to verify label correctness and assess intra-class variability.
 3. **Image dimension profiling** — Recorded resolutions and aspect ratios from random subsets to guide resizing and padding strategies.
 
-<!-- @todo **[Placeholder: Figure — Example sample images per class]** -->
+
+
+```{r, echo=FALSE, fig.cap="Example sample images per class", fig.align='center', out.width='100%'}
+knitr::include_graphics("class_sample_images.png")
+```
 
 
 ### Preprocessing Pipeline
@@ -675,8 +687,6 @@ A reproducible preprocessing pipeline was implemented in Python, combining **off
 | Normalization | Match ImageNet statistics | mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225] |
 
 These augmentations improve generalization and reduce overfitting [@lecun2015deep; @mahbod2019skin].
-
-<!-- @todo **[Placeholder: Figure — Raw vs. preprocessed image examples]** -->
 
 
 ### Impact of Preprocessing and Augmentation
@@ -738,7 +748,9 @@ ResNet-18 was chosen because:
 2. Prior studies confirm ResNet’s effectiveness for skin lesion classification [@albahar2019skin; @harangi2018skin].
 3. Its moderate depth supports deployment on resource-constrained devices without heavy hardware requirements.
 
-<!-- @todo **[Placeholder: Diagram — Modified ResNet-18 highlighting unfrozen layers and custom classification head]**-->
+```{r, echo=FALSE, fig.cap="Modified ResNet-18 highlighting unfrozen layers", fig.align='center', out.width='100%'}
+knitr::include_graphics("unfrozen_layers.png")
+```
 
 
 ## Training Strategy
@@ -813,10 +825,17 @@ The model was trained for a maximum of **20 epochs**. Real-time metrics were log
 - Training and validation accuracy curves,
 - Learning rate schedules.
 
-<!-- @todo
-**[Placeholder: Figure — Training and validation loss curves]**  
-**[Placeholder: Figure — Training and validation accuracy curves]**
---->
+
+```{r, echo=FALSE, fig.cap="Training and validation loss curves", fig.align='center', out.width='100%'}
+knitr::include_graphics("loss_curve_v3.png")
+```
+
+
+
+```{r, echo=FALSE, fig.cap="Training and validation accuracy curves", fig.align='center', out.width='100%'}
+knitr::include_graphics("accuracy_curve_v3.png")
+```
+
 
 ## Evaluation Strategy
 
@@ -865,11 +884,6 @@ Visualizes per-class prediction performance and highlights common misclassificat
 - **ROC AUC (One-vs-Rest):**
 Measures separability between each class and all others, providing insight into decision threshold robustness.
 
-<!-- @todo
-**[Placeholder: Table — Overall accuracy, macro/micro precision, recall, and F1-score]**  
-**[Placeholder: Figure — Confusion matrix heatmap]**  
-**[Placeholder: Figure — ROC curves per class]**
--->
 
 ### Rationale for Metric Selection
 
@@ -943,29 +957,23 @@ The app will integrate the trained ResNet-18 model either **on-device** (for off
   A lightweight, quantized version of the model can be embedded for use in low-connectivity regions.
 
 <!--
+@todo
 **[Placeholder: Mobile UI mockup showing classification screen]**
 --->
 
 ### Hosting and API Infrastructure
 
-The hosting approach will depend on the final budget and resource allocation. Two main configurations are under consideration:
+The system will be deployed using a **serverless cloud architecture** on Amazon Web Services (AWS). This approach was selected to ensure scalability, cost efficiency, and simplified maintenance. Key components include:
 
-1. **Serverless Cloud Deployment** *(initial preference)*
+- **Amazon API Gateway** – Handles user requests and routes them securely to backend services.  
+- **AWS Lambda** – Executes serverless functions for classification inference, enrichment processing, and result handling, with automatic scaling based on demand.  
+- **Amazon S3 (on Outposts)** – Provides secure and reliable storage for the trained model and related assets.  
+- **Amazon SQS** – Manages asynchronous request queues to decouple processes and enhance reliability.  
+- **Amazon DynamoDB** – Serves as the primary database for storing predictions, enriched descriptions, and user-related data.  
+- **OpenAI LLM Integration** – Provides automated text enrichment for clinical explanations and user-friendly feedback.  
 
-   - Utilizes platforms like AWS Lambda or Google Cloud Functions.  
-   - Advantages: automatic scaling, pay-per-use billing, minimal server maintenance.  
-   - Disadvantage: AWS credit expiry may require migration.
+This configuration eliminates the need for dedicated server management, reduces operational overhead, and ensures the system can seamlessly scale to accommodate varying user loads. Furthermore, the **pay-per-use billing model** minimizes costs during periods of low activity, making the solution sustainable in both testing and production environments.
 
-2. **Dedicated Cloud Server / Containerized Deployment** *(alternative plan)* 
-
-   - Hosted on services like AWS EC2, DigitalOcean, or Azure VMs.  
-   - Docker containers for consistent deployment environments.  
-   - Potential GPU-enabled instances for faster inference.
-
-
-<!--
-**[Placeholder: System architecture diagram — mobile app, API gateway, model inference, database, user interface]**
---->
 
 ### Deployment Workflow
 
@@ -997,6 +1005,7 @@ Post-deployment, the system will include:
 ## Summary of Methodology
 
 This chapter presented the complete methodology adopted for the design, development, training, and deployment of the proposed **skin lesion detection and classification system**. The approach was guided by the **CRISP-DM** framework, ensuring that every stage, from problem definition to system deployment, followed a structured, iterative, and evidence-driven process.
+
 
 The **business understanding phase** established the project’s core objective: to develop a multi-condition dermatological diagnostic aid that can assist healthcare practitioners and researchers by classifying a wide range of skin lesions. Unlike many prior works such as those based on the HAM10000 dataset, which focus primarily on melanoma and a few related conditions, our system targets **33 unique dermatological conditions** spanning viral, bacterial, fungal, parasitic, autoimmune, inflammatory, and neoplastic categories. This broad coverage is intended to make the system more relevant in **primary care, rural healthcare, and teledermatology contexts**, where clinicians may encounter a diverse set of skin disorders.
 
