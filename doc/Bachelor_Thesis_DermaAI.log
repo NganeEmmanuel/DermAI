@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.8.18)  18 AUG 2025 07:50
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.8.18)  19 AUG 2025 08:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1069,44 +1069,44 @@ LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/n' will be
 
 [8]
 
-[9])
+[9]
+
+[10])
 \tf@toc=\write3
 \openout3 = `Bachelor_Thesis_DermaAI.toc'.
 
 
 
-[10] (./Bachelor_Thesis_DermaAI.lof)
+[11] (./Bachelor_Thesis_DermaAI.lof)
 \tf@lof=\write4
 \openout4 = `Bachelor_Thesis_DermaAI.lof'.
 
 
 
-[11]
+[12]
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/n' will be
 (Font)              scaled to size 13.0pt on input line 312.
 
 
-[12]
-
 [13]
 
 [14]
+
+[15]
 Underfull \hbox (badness 1038) in paragraph at lines 459--467
 \TU/TimesNewRoman(0)/m/n/12 2. \TU/TimesNewRoman(0)/b/n/12 Resource limitations \TU/TimesNewRoman(0)/m/n/12 – Even in urban hospitals, dermoscopic imaging equipment and
  []
 
 
 
-[15]
-
 [16]
+
+[17]
 Underfull \hbox (badness 10000) in paragraph at lines 549--552
 
  []
 
 
-
-[17]
 
 [18]
 
@@ -1127,11 +1127,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 549--552
 [26]
 
 [27]
+
+[28]
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
 (Font)              scaled to size 12.0pt on input line 1020.
 
-
-[28]
 
 [29]
 
@@ -1144,19 +1144,21 @@ LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
 [33]
 
 [34]
+
+[35]
 Underfull \hbox (badness 1048) in paragraph at lines 1314--1318
 []\TU/TimesNewRoman(0)/m/n/12 Training strategies incorporating \TU/TimesNewRoman(0)/b/n/12 class weighting\TU/TimesNewRoman(0)/m/n/12 , \TU/TimesNewRoman(0)/b/n/12 early stopping\TU/TimesNewRoman(0)/m/n/12 , and \TU/TimesNewRoman(0)/b/n/12 learning rate
  []
 
 
 
-[35]
-
 [36]
 
 [37]
 
 [38]
+
+[39]
 File: CRISP-DM-Diagram.png Graphic file (type bmp)
 <CRISP-DM-Diagram.png>
 
@@ -1164,20 +1166,20 @@ LaTeX Warning: Float too large for page by 27.08823pt on input line 1572.
 
 
 
-[39]
-
 [40]
 
 [41]
 
 [42]
+
+[43]
 Underfull \hbox (badness 10000) in paragraph at lines 1720--1728
 
  []
 
 
 
-[43]
+[44]
 Underfull \hbox (badness 10000) in paragraph at lines 1728--1734
 
  []
@@ -1188,8 +1190,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 1752--1758
  []
 
 
-
-[44]
 
 [45]
 
@@ -1202,55 +1202,57 @@ Underfull \hbox (badness 10000) in paragraph at lines 1752--1758
 [49]
 
 [50]
+
+[51]
 File: images_per_class.png Graphic file (type bmp)
 <images_per_class.png>
 File: class_distribution.png Graphic file (type bmp)
 <class_distribution.png>
 
 
-[51]
+[52]
 File: class_sample_images.png Graphic file (type bmp)
 <class_sample_images.png>
 
-
-[52]
 
 [53]
 
 [54]
 
 [55]
+
+[56]
 File: unfrozen_layers.png Graphic file (type bmp)
 <unfrozen_layers.png>
 
-
-[56]
 
 [57]
 
 [58]
 
 [59]
+
+[60]
 File: loss_curve_v3.png Graphic file (type bmp)
 <loss_curve_v3.png>
 File: accuracy_curve_v3.png Graphic file (type bmp)
 <accuracy_curve_v3.png>
 
 
-[60]
-
 [61]
+
+[62]
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
 (Font)              scaled to size 8.4pt on input line 2562.
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
 (Font)              scaled to size 6.0pt on input line 2562.
 
 
-[62]
-
 [63]
 
 [64]
+
+[65]
 Underfull \hbox (badness 10000) in paragraph at lines 2765--2768
 
  []
@@ -1267,7 +1269,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 2772--2775
 
 
 
-[65]
+[66]
 Underfull \hbox (badness 10000) in paragraph at lines 2775--2778
 
  []
@@ -1279,9 +1281,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 2778--2781
 
 
 
-[66]
-
 [67]
+
+[68]
 Underfull \hbox (badness 2418) in paragraph at lines 2883--2894
 []\TU/TimesNewRoman(0)/m/n/12 The \TU/TimesNewRoman(0)/b/n/12 data preparation phase \TU/TimesNewRoman(0)/m/n/12 applied a comprehensive preprocessing pipeline tailored to
  []
@@ -1293,15 +1295,53 @@ Overfull \hbox (0.17662pt too wide) in paragraph at lines 2927--2932
 
 
 
-[68]
-
 [69]
 
 [70]
+Underfull \hbox (badness 10000) in paragraph at lines 3006--3010
+
+ []
+
+
 
 [71]
+Underfull \hbox (badness 10000) in paragraph at lines 3048--3051
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3051--3055
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3055--3059
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3059--3062
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3062--3065
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3065--3068
+
+ []
+
+
 
 [72]
+Underfull \hbox (badness 10000) in paragraph at lines 3101--3105
+
+ []
+
+
 
 [73]
 
@@ -1309,19 +1349,514 @@ Overfull \hbox (0.17662pt too wide) in paragraph at lines 2927--2932
 
 [75]
 
-[76] (./Bachelor_Thesis_DermaAI.aux)
+[76]
+Underfull \hbox (badness 10000) in paragraph at lines 3310--3313
+
+ []
+
+
+
+[77]
+Underfull \hbox (badness 10000) in paragraph at lines 3313--3316
+
+ []
+
+File: trust.png Graphic file (type bmp)
+<trust.png>
+File: confidence-score-chart.png Graphic file (type bmp)
+<confidence-score-chart.png>
+File: visual-aids-chart.png Graphic file (type bmp)
+<visual-aids-chart.png>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[78]
+File: privacy-chart1.png Graphic file (type bmp)
+<privacy-chart1.png>
+File: privacy-chart2.png Graphic file (type bmp)
+<privacy-chart2.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 3379--3382
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3382--3385
+
+ []
+
+
+
+[79]
+Underfull \hbox (badness 10000) in paragraph at lines 3409--3412
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3412--3415
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3415--3418
+
+ []
+
+
+
+[80]
+File: technical-user-chart1.png Graphic file (type bmp)
+<technical-user-chart1.png>
+
+
+[81]
+File: technical-user-chart2.png Graphic file (type bmp)
+<technical-user-chart2.png>
+File: technical-user-chart3.png Graphic file (type bmp)
+<technical-user-chart3.png>
+
+
+[82]
+File: technical-user-chart4.png Graphic file (type bmp)
+<technical-user-chart4.png>
+
+
+[83]
+File: technical-user-chart6.png Graphic file (type bmp)
+<technical-user-chart6.png>
+
+
+[84]
+File: technical-user-chart8.png Graphic file (type bmp)
+<technical-user-chart8.png>
+
+
+[85]
+
+[86]
+Underfull \hbox (badness 10000) in paragraph at lines 3692--3695
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3723--3727
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3737--3740
+
+ []
+
+
+
+[87]
+Underfull \hbox (badness 10000) in paragraph at lines 3750--3752
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3761--3764
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3773--3775
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3794--3797
+
+ []
+
+
+
+[88]
+Underfull \hbox (badness 10000) in paragraph at lines 3808--3810
+
+ []
+
+
+
+[89]
+
+[90]
+Underfull \hbox (badness 10000) in paragraph at lines 3893--3896
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3896--3899
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3908--3911
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3911--3915
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3924--3927
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3927--3930
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3930--3933
+
+ []
+
+
+
+[91]
+Underfull \hbox (badness 10000) in paragraph at lines 3951--3955
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3955--3957
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3957--3960
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3960--3962
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3962--3965
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3974--3977
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3977--3980
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3980--3983
+
+ []
+
+
+
+[92]
+Underfull \hbox (badness 10000) in paragraph at lines 4001--4003
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4011--4013
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4022--4025
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4034--4037
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4045--4047
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4047--4049
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4058--4060
+
+ []
+
+
+
+[93]
+Underfull \hbox (badness 10000) in paragraph at lines 4060--4062
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4102--4105
+
+ []
+
+
+
+[94]
+Underfull \hbox (badness 10000) in paragraph at lines 4113--4116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4129--4132
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4144--4147
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4156--4159
+
+ []
+
+
+
+[95]
+Underfull \hbox (badness 10000) in paragraph at lines 4183--4186
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4195--4198
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4207--4210
+
+ []
+
+
+
+[96]
+File: DermaAI-Usecase.png Graphic file (type bmp)
+<DermaAI-Usecase.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 4263--4266
+
+ []
+
+
+
+[97]
+Underfull \hbox (badness 10000) in paragraph at lines 4266--4269
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4269--4272
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4281--4284
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4284--4287
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4287--4289
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4298--4300
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4300--4303
+
+ []
+
+
+
+[98]
+Underfull \hbox (badness 10000) in paragraph at lines 4318--4322
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4322--4325
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4334--4337
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4337--4340
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4349--4352
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4352--4355
+
+ []
+
+
+
+[99]
+Underfull \hbox (badness 10000) in paragraph at lines 4365--4368
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4368--4371
+
+ []
+
+File: DermaAI-Architecture.png Graphic file (type bmp)
+<DermaAI-Architecture.png>
+
+
+[100]
+
+[101]
+File: cnn-architecture.png Graphic file (type bmp)
+<cnn-architecture.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 4471--4474
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4474--4478
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4478--4482
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4482--4485
+
+ []
+
+
+
+[102]
+
+[103]
+Underfull \hbox (badness 10000) in paragraph at lines 4527--4530
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4530--4533
+
+ []
+
+
+
+[104]
+Underfull \hbox (badness 10000) in paragraph at lines 4544--4547
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4547--4550
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4567--4570
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4582--4585
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4585--4588
+
+ []
+
+
+
+[105]
+Underfull \hbox (badness 10000) in paragraph at lines 4626--4629
+
+ []
+
+
+
+[106]
+Underfull \hbox (badness 10000) in paragraph at lines 4653--4656
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4656--4660
+
+ []
+
+File: deployement-architecture.png Graphic file (type bmp)
+<deployement-architecture.png>
+
+
+[107]
+
+[108]
+
+[109]
+
+[110]
+
+[111]
+
+[112]
+
+[113] (./Bachelor_Thesis_DermaAI.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-08-13>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 17738 strings out of 470456
- 326411 string characters out of 5489683
- 878750 words of memory out of 5000000
- 45844 multiletter control sequences out of 15000+600000
+ 18086 strings out of 470456
+ 335562 string characters out of 5489683
+ 884090 words of memory out of 5000000
+ 46188 multiletter control sequences out of 15000+600000
  630454 words of font info for 85 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,7n,116p,661b,445s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,7n,116p,661b,502s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Bachelor_Thesis_DermaAI.pdf (77 pages).
+Output written on Bachelor_Thesis_DermaAI.pdf (114 pages).

@@ -1044,27 +1044,748 @@ The next chapter, **Results and Discussion**, will present the outcomes of this 
 
 \newpage
 
-# Chapter 4: System Design and Implementation
+# Chapter 4: System Analysis and Design
 
-* 4.1 System Overview
-* 4.2 Functional Requirements
-* 4.3 System Architecture Diagram
-* 4.4 Data Flow and Pipeline
-* 4.5 CLI and GUI Components
-* 4.6 Integration and Deployment
-* 4.7 Inference and Prediction Logic
-* 4.8 Summary
+## Introduction  
 
-\newpage
+The design and development of a skin lesion detection and classification system requires not only a robust technical framework but also an in-depth understanding of the needs, expectations, and constraints of its intended users. As highlighted in the preceding chapters, the rising prevalence of skin-related disorders and the limitations of timely dermatological consultations have created a pressing need for scalable and accessible solutions. Chapter 4 focuses on the **system analysis and design phase**, where insights gathered from surveys, literature, and technical feasibility studies are synthesized into concrete system requirements, architectural decisions, and design specifications.  
 
-# Chapter 5: Testing, Results, and Discussion
+System analysis is a critical phase in any software engineering life cycle. It bridges the gap between problem identification (why the system is needed) and solution implementation (how the system will be built and deployed). In this project, the analysis draws from two distinct but complementary sources of information:
 
-* 5.1 Dataset Splits (Train, Validation, Test)
-* 5.2 Accuracy, Loss, and Confusion Matrix
-* 5.3 ROC, Precision, Recall, F1-score
-* 5.4 Model Limitations and Observed Bias
-* 5.5 Comparison with Existing Systems
-* 5.6 Summary
+1. **General users**, who represent the prospective patients or everyday individuals that will interact with the mobile application; and  
+2. **Technical and health professionals**, including clinicians, researchers, and developers, who will engage with the system through a Command-Line Interface (CLI) for more advanced data handling and interpretability.  
+
+By triangulating perspectives from these groups, the project aims to ensure that the system design is not only technically sound but also socially relevant, ethically grounded, and practically usable.  
+
+A core motivation for this chapter is the observation that AI systems in healthcare often fail due to inadequate alignment with user expectations. Several studies [@esteva2017dermatologist; @haenssle2018man] have demonstrated the diagnostic potential of convolutional neural networks in dermatology, yet adoption rates among patients and clinicians remain low. The reasons for this gap include **trust deficits, concerns around explainability, privacy issues, and lack of integration with existing medical workflows**. The surveys conducted as part of this research address these challenges directly by eliciting responses on comfort levels with AI, required accuracy thresholds, privacy safeguards, and the type of medical explanations users expect.  
+
+In addition to user perspectives, the technical survey results provide vital input into the system’s architectural decisions. For example, the choice of machine learning frameworks, preferred methods for dataset handling, and expectations regarding metadata documentation are all informed by the experiences of researchers and practitioners. Similarly, considerations around interoperability, scalability, and deployment models are influenced by their professional insights.  
+
+The design component of this chapter builds on these insights to present:
+
+- A structured **system overview**, highlighting objectives, scope, and boundaries;  
+- A comprehensive list of **functional and non-functional requirements**, derived from both general users and technical stakeholders;  
+- The proposed **system architecture**, illustrating how the different components — mobile app, CLI, backend services, and AI models — interact with each other;  
+- Detailed **data flow and processing pipelines**, showing how raw inputs are transformed into predictions and explanations;  
+- **User interface designs** for both mobile and CLI components, ensuring usability across different user groups;  
+- An **integration and deployment strategy**, balancing offline capabilities with lightweight, API-driven inference; and  
+- A discussion of **inference and prediction logic**, addressing how the system manages valid skin images, out-of-distribution data, and explanation generation.  
+
+The chapter closes with a synthesis of how survey findings have concretely shaped design decisions, followed by a summary that ties the analysis back to the broader goals of the thesis.  
+
+In summary, this introduction emphasizes that the **analysis and design process is not purely technical** but deeply socio-technical. The success of the skin lesion detection system will depend not only on model accuracy but also on its capacity to earn user trust, safeguard sensitive health data, and integrate seamlessly into both personal and professional use cases. By grounding the design in empirical evidence and user feedback, this chapter lays the foundation for a system that is both **technically robust and contextually relevant**.  
+
+
+## Statistical Analysis of Data Collected
+
+### Overview of Surveys and Respondents  
+
+To ensure that the design of the skin lesion detection and classification system reflects the realities of its intended users, a dual-survey approach was adopted. Two complementary questionnaires were developed and administered:  
+
+1. **General User Survey** – targeted at everyday individuals and potential patients who may use the mobile application for initial self-screening.  
+2. **Technical/Professional Survey** – directed toward clinicians, researchers, and developers, who were expected to interact with the system through the Command-Line Interface (CLI) or use the generated outputs in clinical or research contexts.  
+
+This two-pronged strategy was essential because the system’s success depends on addressing both **patient-centered usability requirements** and **professional-grade technical and clinical expectations**.  
+
+#### General User Survey  
+
+The general user survey aimed to capture perspectives from a wide range of non-specialist participants. Questions were structured to assess awareness of skin-related conditions, comfort with AI-based health applications, privacy concerns, and expectations around accuracy and usability. Respondents were also asked about their preferred features in a health application, including interface simplicity, availability of explanations, and data confidentiality assurances.  
+
+A total of **30 respondents**<!-- @todo update this number of respondents at the end --> completed the general user survey. Participants represented a diverse demographic spread across age groups, gender, and educational backgrounds. For instance, preliminary demographic analysis indicated that a significant proportion of respondents were young adults between the ages of 18 and 35, reflecting the higher digital adoption rates in this cohort. However, middle-aged and older respondents were also represented, ensuring that the sample incorporated perspectives from individuals who may have higher risks of developing skin lesions but comparatively lower exposure to mobile health technologies.  
+
+Gender distribution within the sample was relatively balanced, with approximately half identifying as female and half as male. This diversity allowed the analysis to avoid gender-based biases in the interpretation of trust, usability, and privacy perceptions. Educational attainment varied widely, from participants with only secondary education to those holding postgraduate qualifications, which provided insights into how digital health solutions might be received across different literacy levels.  
+
+Geographically, most respondents were urban-based, though a meaningful number also resided in peri-urban or rural settings. This distinction is particularly important in the African context, where healthcare access disparities between urban and rural populations remain pronounced. By including individuals from diverse geographic settings, the survey was able to highlight expectations around **offline functionality, lightweight application design, and network efficiency**, features that are critical in regions with unstable or costly internet connectivity.  
+
+#### Technical/Professional Survey  
+
+The technical/professional survey was narrower in scale but richer in domain-specific insights. A total of **10 respondents**<!-- @todo update this number of respondents at the end --> participated, consisting of clinicians, medical interns, biomedical researchers, and computer scientists with prior experience in artificial intelligence or health informatics. This group was strategically sampled because their input was expected to guide **architectural decisions, model explainability requirements, and workflow integration strategies**.  
+
+Clinicians provided valuable perspectives on diagnostic accuracy thresholds, patient communication requirements, and potential integration of the system into preliminary screening or teledermatology workflows. Several highlighted the importance of **explainable AI**, noting that predictions should not be treated as “black boxes” but instead accompanied by confidence scores, visual saliency maps, or textual explanations that could be verified against clinical reasoning.  
+
+From the computer science respondents, emphasis was placed on performance trade-offs, including the **balance between model complexity and inference speed**, as well as the need for modular architecture to support future upgrades. Their feedback also underscored the importance of managing **out-of-distribution detection**, i.e., the ability of the system to recognize when an uploaded image is not a valid skin lesion, thereby preventing spurious or misleading results.  
+
+#### Sampling and Response Rates  
+
+Both surveys were administered online, primarily through professional networks, and social media platforms. This mode of distribution ensured cost-effectiveness and broad reach, but it also introduced certain sampling biases. For example, respondents were more likely to have internet access, digital literacy, and prior exposure to mobile health technologies, which may not reflect the experiences of the most vulnerable populations. Nevertheless, the combined pool of participants provided a rich, diverse dataset for drawing insights into both general expectations and domain-specific requirements.  
+
+Response rates were generally satisfactory, with the general user survey achieving a higher completion rate compared to the technical/professional survey. This is consistent with expectations, as general users tend to be more numerous and easier to recruit than specialized professionals. To mitigate potential bias arising from smaller professional sample sizes, responses from the technical group were analyzed in greater depth and used to directly inform system design features rather than to draw broad statistical generalizations.  
+
+#### Rationale for Dual-Survey Design  
+
+The decision to adopt a dual-survey approach was guided by both methodological and practical considerations. On a methodological level, separating the two groups allowed the study to tailor questions more precisely to the lived experiences of respondents. General users were not burdened with highly technical questions, while professionals were provided with opportunities to elaborate on domain-specific issues.  
+
+On a practical level, this separation allowed the research to identify **points of convergence and divergence** between user groups. For example, while both groups emphasized the importance of accuracy, their interpretations differed: general users often equated accuracy with personal reassurance and safety, whereas professionals viewed it in terms of sensitivity, specificity, and error tolerance in clinical contexts. Similarly, both groups raised concerns about privacy, but general users emphasized personal confidentiality while professionals highlighted regulatory compliance (e.g., HIPAA, GDPR, POPIA).  
+
+#### Conclusion  
+
+In summary, the surveys generated a dataset that is both **breadth-oriented (from general users)** and **depth-oriented (from professionals)**. This dual perspective is crucial for designing a skin lesion detection system that is not only technically robust but also socially acceptable, clinically relevant, and ethically responsible. The overview of respondents presented here sets the foundation for the subsequent sections of this chapter, which provide detailed statistical analyses of the survey findings and illustrate how these results directly informed the system’s requirements and architecture.  
+
+
+### Descriptive Statistics: General Users  
+
+The general user survey provided a comprehensive snapshot of how potential non-specialist users perceive and expect a skin lesion detection system to function. This section analyzes the responses in terms of demographics, awareness levels, attitudes toward artificial intelligence in healthcare, privacy concerns, and feature preferences. These insights offer valuable direction for tailoring the mobile application interface to the realities of everyday users.  
+
+#### Demographic Profile  
+
+A total of **30 respondents**<!-- @todo update this number of respondents at the end --> participated in the general user survey. The age distribution showed a relatively youthful sample, with approximately 45% of respondents aged between 18 and 35 years. This aligns with global trends indicating that young adults are more engaged with digital technologies and more likely to experiment with health-related mobile applications. However, older demographics were also represented: 30% were between 36 and 50 years, while 25% were aged 51 years or above. The latter group is particularly significant given that the incidence of skin lesions and related conditions increases with age.  
+
+Gender distribution was balanced, with male and female respondents each accounting for atleast 48% of the sample each. This inclusivity is important because previous studies have shown that health technology adoption can vary by gender, with women often expressing greater concern over privacy and men demonstrating higher interest in technical reliability [@ventola2014mobile].  
+
+#### Awareness of Skin Lesions and AI in Healthcare  
+
+When asked about their prior awareness of skin conditions, a large majority (70%) indicated that they had either personally experienced a skin-related issue or knew someone who had. The most commonly cited conditions included ringworm, eczema, fungal infections, acne, and suspected pre-cancerous lesions. This high level of personal exposure suggests that potential demand for a lesion detection system exists, even outside strictly clinical settings.  
+
+Awareness of artificial intelligence in healthcare was more variable. Approximately 30% of respondents reported that they had heard of AI applications in medical diagnosis, while only 10% claimed to understand how such systems work. A majority (60%) expressed skepticism and distrust, associating AI with inaccuracy or “machines replacing doctors.” These results reinforce the need for educational and explanatory features within the app, ensuring that users are not only provided with predictions but also guided through the logic behind them.  
+
+Interestingly, younger respondents (18–35 years) were more likely to express excitement and curiosity about AI, whereas older respondents (51+) often approached the technology with caution, preferring reassurance from traditional physician-based care. This generational divide suggests that while younger users may adopt the system readily, older populations may require stronger assurances regarding safety, reliability, and clinical endorsement.  
+
+#### Trust and Perceptions of Reliability  
+
+Trust emerged as a central theme across responses. When asked If they would you still visit a doctor even if the AI tells them their skin is healthy, given three options, over 46% said **No** and 43% said **Yes**, indicating moderate trust with significant room for improvement. Respondents frequently noted that trust would depend heavily on:  
+
+- **Transparency of the system** – how clearly it explains its predictions.  
+- **Clinical validation** – whether the system has been tested and endorsed by medical professionals.  
+- **Accuracy thresholds** – whether it can demonstrate a low rate of false negatives (i.e., missing dangerous lesions).  
+
+```{r, echo=FALSE, fig.cap="Survey Response relating to trust", fig.align='center', out.width='100%'}
+knitr::include_graphics("trust.png")
+```
+
+
+Notably, 62% of respondents indicated that they would be more likely to use the app if it provided **confidence scores** (e.g., “85% probability of benign mole”). A further 48% requested **visual aids**, such as highlighting the regions of the image that influenced the prediction. These findings echo growing literature on the importance of explainable AI in medicine [@holzinger2017we].  
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{confidence-score-chart.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{visual-aids-chart.png}
+    \caption{Survey response charts showing demand for confidence score and visual aid in outputs.}
+\end{figure}
+
+
+Trust was also shaped by socio-cultural factors. Respondents from rural and peri-urban areas were more skeptical of “invisible” digital tools and placed higher value on community healthcare workers or traditional practices. This highlights the necessity of designing the system not as a replacement for clinicians, but as a **support tool** for early awareness and timely referrals.  
+
+#### Privacy and Data Security Concerns  
+
+Privacy concerns were prominent, with 93% of respondents expressing at least some degree of apprehension about uploading personal health images. The most common fears related to **data misuse**, **unauthorized sharing**, and **inadequate anonymization**. Younger respondents tended to be more comfortable with data sharing, provided that transparent consent mechanisms were in place, while older respondents emphasized the importance of strict confidentiality policies. 
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{privacy-chart1.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{privacy-chart2.png}
+    \caption{Survey response charts showing concerns on privacy.}
+\end{figure}
+
+
+When asked which privacy features they would consider most reassuring, the following ranked highest:  
+
+1. **On-device processing** – ensuring images are not uploaded to external servers unnecessarily.  
+2. **Data anonymization** – removing all personally identifiable information before processing.  
+3. **Clear terms of use** – simple, non-technical explanations of what happens to user data.  
+
+Interestingly, over 66% indicated they would feel more at ease if the app was to clearly state that it doesn't save user images after analysis and predictions. This indicates that privacy is not just an ethical or regulatory requirement, but also a potential driver of user adoption.  
+
+#### Summary of Insights  
+
+The descriptive statistics of general users reveal a population that is both **interested in and cautious about** AI in healthcare. Demographically diverse, the respondents highlight clear generational and geographic divides in trust, privacy expectations, and feature preferences. While younger, urban users are more receptive to experimentation with AI-driven diagnostics, older and rural users emphasize caution, privacy, and practicality.  
+
+These insights carry profound implications for system design:  
+
+- The interface must be simple enough for users with limited digital literacy.  
+- Privacy and offline processing must be central to design, not afterthoughts.  
+- Explainability features (confidence scores, saliency maps) are essential for building trust.  
+- Educational content must be embedded to ensure predictions are not misinterpreted.  
+
+Taken together, these findings provide the foundational logic for designing a mobile health application that is technically sophisticated yet socially attuned. The next section will shift focus to the **technical/professional survey**, where the expectations of clinicians and researchers are analyzed in greater detail.  
+
+
+
+### Descriptive Statistics: Technical/Professional Users
+
+The second segment of the survey targeted **technical and professional users**, including software developers, engineers, computer scientists, and healthcare practitioners with some technical exposure (e.g., laboratory technicians, nurses). This group was of particular interest because they represent the individuals most likely to engage directly with the proposed system’s backend interfaces, such as the **command-line tool (CLI)** or model API. Unlike general users, these respondents were expected to provide more nuanced insights regarding **technical requirements, model transparency, integration, and workflow compatibility**.
+
+
+#### Respondent Demographics and Roles
+
+The professional respondent pool included a diverse set of roles: mobile application developer, laboratory technician, nursing professional, computer/software engineers, students in computing-related disciplines, and computer scientists. This distribution suggests that while the majority of respondents were **technically oriented**, there was also representation from the **healthcare domain**, ensuring that perspectives on both medical and technical utility were considered.
+
+```{r, echo=FALSE, fig.cap="TDistribution of Respondent Professions", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart1.png")
+```
+
+
+#### Experience with Medical Imaging
+
+When asked about prior experience with medical imaging or skin lesion datasets, only a **small minority (two respondents)** indicated direct involvement. The vast majority had not previously worked with medical imaging tasks, underscoring the fact that while these professionals had strong technical foundations, they were not necessarily domain specialists. This aligns with similar studies where developers were found to be technically proficient but often lacked medical training, highlighting the need for tools that can bridge this gap [@holzinger2017we].
+
+
+```{r, echo=FALSE, fig.cap="Prior Experience with Medical Imaging", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart2.png")
+```
+
+
+#### Tools and Frameworks Used
+
+Respondents reported a wide array of tools and frameworks used in their work. The most common were **Python and its machine learning libraries (TensorFlow, PyTorch, Keras)**, often paired with **Jupyter Notebook** or **Google Colab**. Some respondents mentioned **MATLAB** for research-oriented tasks, while others in healthcare roles (e.g., lab technician) leaned towards simpler tools like **Excel or Power BI** for reporting and data handling.
+
+This diversity highlights the importance of designing the system with **Python-first compatibility**, while ensuring outputs are also easily exportable to more general tools for broader accessibility.
+
+
+```{r, echo=FALSE, fig.cap="Tools and Frameworks Used by Respondents", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart3.png")
+```
+
+
+#### Usefulness of a CLI Tool
+
+When asked about the usefulness of a CLI-based system for lesion detection, the overwhelming majority responded **positively**. They viewed the CLI as an essential feature for **batch analysis, automation, and research reproducibility**. Only one respondent, a laboratory technician, expressed reservations, preferring **simplified reporting interfaces** instead. This validates the dual-interface approach of the project: providing both a **CLI for professionals** and a **user-friendly app for general users**.
+
+
+```{r, echo=FALSE, fig.cap="Perceived Usefulness of CLI", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart4.png")
+```
+
+
+#### Preferred Input and Output Formats
+
+Preferences for data input varied but leaned strongly toward **directories of images** for batch analysis. Some respondents also suggested **zipped archives** or inclusion of **metadata files (CSV/JSON)** for organizing annotations.
+
+For output formats, preferences were distributed as follows:
+
+* **Machine-readable formats**: JSON and CSV were highly favored, allowing seamless integration into existing workflows.
+* **Visual overlays**: Several respondents emphasized the importance of **heatmaps (e.g., Grad-CAM)** to highlight lesion regions, serving both validation and explainability purposes.
+* **Reports**: A smaller but notable portion highlighted **PDF reports**, particularly relevant to healthcare professionals who required clinical-style documentation.
+
+This multi-format preference indicates the need for **flexible export functionality**, ensuring the system serves both technical and semi-technical users.
+
+
+```{r, echo=FALSE, fig.cap="Preferred Output Formats", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart6.png")
+```
+
+
+#### Batch and Asynchronous Support
+
+The majority of technical respondents emphasized the importance of **batch or asynchronous support**. They highlighted that scalability and efficiency are critical in handling large image sets, especially in research or clinical trial contexts. This aligns with modern AI system design principles, which prioritize **parallel processing** and **non-blocking workflows** [@lecun2015deep].
+
+
+#### Model Metadata and Transparency
+
+Respondents were also asked about the types of metadata they considered important when generating outputs. The most commonly cited elements included:
+
+* **Model version** (to ensure reproducibility)
+* **Inference time** (to assess efficiency)
+* **Confidence or uncertainty scores**
+* **Class probabilities (softmax outputs)**
+
+These preferences suggest that technical users prioritize **traceability and reliability**, with an expectation that each prediction is accompanied by sufficient metadata to allow critical evaluation.
+
+```{r, echo=FALSE, fig.cap="Desired Model Metadata in Outputs", fig.align='center', out.width='100%'}
+knitr::include_graphics("technical-user-chart8.png")
+```
+
+
+#### Re-training and Explainability
+
+A significant majority expressed interest in the ability to **re-train or fine-tune the model** on their own datasets, citing reasons such as adaptation to specific populations or research domains. In addition, nearly all respondents highlighted the importance of **explainability tools**, particularly **visual methods like Grad-CAM or algorithm-agnostic approaches like LIME**, to justify and contextualize model predictions. This reflects the increasing consensus in the literature that explainability is essential in medical AI adoption [@holzinger2017we; @doshi2017towards].
+
+
+#### Integration Suggestions
+
+Finally, respondents provided several free-text suggestions for improving integration and usability:
+
+* Support for **batch and asynchronous execution**.
+* Integration of **feedback loops** to continuously improve the model over time.
+* Development of **dashboards or lightweight web interfaces** layered on top of the CLI for hybrid users.
+
+Collectively, these recommendations underscore the **dual necessity of technical depth and user accessibility**, which is consistent with best practices in designing medical AI systems [@ventola2014mobile].
+
+
+#### Summary
+
+In summary, the technical and professional survey respondents demonstrated a strong demand for **flexibility, scalability, transparency, and explainability**. While most lacked direct medical imaging experience, their technical expertise positioned them as key stakeholders in shaping the system’s **backend design and advanced features**. Their responses highlight the need for a system that is simultaneously **Python-integrated, CLI-compatible, metadata-rich, and explainable**, with sufficient support for both **machine-readable and human-readable outputs**.
+
+
+### Cross-Survey Comparative Insights
+
+This section synthesizes findings from both the general user survey and the technical/professional user survey. It highlights areas where perspectives converge, where they diverge, and the implications these patterns hold for system requirements.
+
+#### Points of Convergence (Shared Concerns and Priorities)
+
+Across both general users (non-technical) and technical/professional users, several common themes emerged:
+
+1. **Desire for Accurate and Trustworthy Predictions:**  
+   Both groups emphasized that diagnostic reliability was paramount. Users—technical or not—wanted confidence scores or probabilities to be reported.
+
+2. **Importance of Explainability:**  
+   While technical respondents explicitly mentioned interpretability methods such as Grad-CAM and LIME, general users also stressed the need for clear explanations in plain language. This highlights a shared demand for transparency, albeit at different levels of technical detail.
+
+3. **User-Centric Outputs:**  
+   Both groups valued outputs that could be used beyond the app itself. 
+   
+   - General users preferred simple, readable summaries they could share with doctors.  
+   - Technical users preferred structured outputs (e.g., JSON, CSV, visual overlays) that could feed into research workflows.  
+   Ultimately, both groups wanted portability and shareability of results.
+
+4. **Scalability Expectations:**  
+   General users asked for responsiveness under high load (e.g., fast results even with weak connectivity).  
+   Technical users demanded batch processing and asynchronous execution.  
+   Together, this suggests that system performance under varying usage scenarios is a universal requirement.
+
+
+#### Divergences Between User Groups
+
+Despite these convergences, important divergences were observed:
+
+1. **Interface Expectations:**  
+
+   - General users overwhelmingly preferred a mobile application with a graphical interface, prioritizing ease of use and minimal technical barriers.  
+   - Technical users favored a command-line interface (CLI) that supported automation, scripting, and integration into research pipelines.
+
+2. **Depth of Metadata and Reporting:**
+
+   - General users were primarily interested in basic predictions and clinic recommendations.  
+   - Technical users demanded detailed metadata: model version, inference latency, softmax scores, dataset provenance, and uncertainty measures.
+
+3. **Re-training and Customization:**
+
+   - General users had little to no concern with re-training models.  
+   - Technical respondents strongly favored the ability to fine-tune models with their own datasets.
+
+4. **Explainability Format:**
+
+   - General users wanted plain-text, user-friendly explanations supplemented with visuals if needed.  
+   - Technical users sought deep interpretability techniques like heatmaps, decision trees, and statistical confidence intervals.
+
+5. **Data Input Modes:**
+
+   - General users imagined simply uploading an image.  
+   - Technical users wanted flexibility: batch image folders, CSV metadata, JSON, and zip file uploads.
+
+
+#### Implications for System Requirements
+
+From these convergences and divergences, several key implications for system design emerge:
+
+1. **Dual-Interface Strategy:**
+
+   - A mobile app should cater to general users, prioritizing simplicity, readability, and clinic-focused usability.  
+   - A CLI should be built for technical users, prioritizing flexibility, batch processing, detailed outputs, and integration into research workflows.
+
+2. **Tiered Explainability:** The system must deliver different layers of explanation:  
+
+   - Plain-language summaries for laypersons.  
+   - Heatmaps, metadata, and statistical insights for professionals.
+
+3. **Multi-Format Output Support:**  
+   Both machine-readable (JSON, CSV) and human-readable (PDF, summary reports) outputs must be supported. This dual approach ensures usability across the spectrum of end-users.
+
+4. **Performance and Scalability**  
+   Responsiveness must be optimized not just for individual mobile users, but also for batch research workloads. This likely necessitates cloud-based infrastructure with both synchronous (real-time) and asynchronous (background job) processing modes.
+
+5. **Customizability for Professionals**  
+   To serve the research community, the CLI must allow optional re-training or fine-tuning, as well as dataset re-use. This is unnecessary for general users but critical for adoption among professionals.
+
+
+## System Overview
+
+This section presents a high-level overview of the proposed Skin Lesion Detection and Classification System. It begins by clarifying the system’s objectives, followed by identifying the intended users and stakeholders. The section then outlines the boundaries and scope of the system and finally highlights the key functionalities at a high level.
+
+### Objectives of the Proposed System
+
+The overarching goal of the proposed system is to provide an effective, accessible, and scientifically robust tool for the detection and classification of skin lesions. In particular, the objectives include:
+
+1. **Facilitating Early Detection of Skin Conditions**  
+   By enabling individuals to take or upload images of skin lesions and receive automated classification, the system promotes early identification of potentially malignant conditions, which is crucial for timely medical intervention.
+
+2. **Providing Decision Support to Health Professionals**  
+   The system is designed not to replace dermatologists but to augment their diagnostic process by providing rapid and accurate pre-screening. This decision-support function is particularly beneficial in resource-limited settings.
+
+3. **Improving Accessibility of Dermatological Insights**  
+   Through a mobile interface, the system brings dermatological assessment closer to populations with limited access to healthcare facilities. It democratizes diagnostic insights beyond specialized clinics.
+
+4. **Supporting Research and Development**  
+   By offering a CLI that supports batch processing, detailed output, and dataset integration, the system also serves the academic and clinical research community. This ensures that the system is not only a public-facing tool but also a research-grade infrastructure.
+
+5. **Balancing Accuracy with Explainability**  
+   The system will incorporate interpretable machine learning methods to explain classifications in both layman-friendly and professional detail. This addresses the dual concerns of trust and transparency.
+
+### Target Users and Stakeholders
+
+The system is targeted at two distinct yet complementary user groups, alongside several key stakeholders:
+
+1. **General Users (Patients and Care Seekers):** 
+
+   - Non-technical individuals who will primarily access the system through a mobile app.  
+   - Require a simple workflow: upload an image, receive a classification, and obtain understandable recommendations.  
+   - Value ease of use, speed, and actionable next steps (e.g., advice to visit a dermatologist).
+
+2. **Health Professionals and Researchers:**  
+
+   - Dermatologists, clinicians, and biomedical researchers who will primarily interact via a command-line interface (CLI).  
+   - Require detailed outputs such as confidence scores, batch processing, integration with existing datasets, and reproducibility.  
+   - May use the system as a teaching tool, research aid, or diagnostic support mechanism.
+
+3. **Key Stakeholders:**  
+
+   - **Healthcare Institutions:** Benefit from reduced workload in screening and triaging.  
+   - **Policy Makers and NGOs:** Gain from public health insights, particularly in regions where skin cancer screening is rare.  
+   - **Technical Developers and Maintainers:** Ensure continuous improvement, reliability, and deployment.  
+   - **Academic Community:** Uses system outputs for dermatology and machine learning research.
+
+### System Boundaries and Scope
+
+The boundaries and scope of the system are clearly defined to avoid overextension and maintain focus:
+
+- **In-Scope Features:**  
+
+  - Classification of skin lesion images into predefined categories (e.g., benign vs malignant, or further into multiple classes depending on dataset).  
+  - Confidence reporting and explanation generation.  
+  - Two interfaces: mobile application for general users, CLI for technical users.  
+  - Secure communication with a backend inference API.  
+  - Limited offline functionality (basic inference on-device possible, with cloud fallback for heavy processing).<!-- @todo vealidate this or remove if can't implement -->  
+  - Support for continuous updates and improvements via retraining mechanisms (primarily CLI-driven).
+
+- **Out-of-Scope Features:**  
+  - Direct integration with electronic health records (EHR) systems at this stage.  
+  - Automated treatment recommendations beyond advising a medical consultation.  
+  - Full offline deployment for all users, as this may be infeasible on low-end devices.  
+  - Non-dermatological conditions (focus is strictly skin lesions).
+
+### High-Level Functionalities
+
+At a high level, the proposed system will provide the following functionalities:
+
+1. **Image Input and Preprocessing:**
+
+   - Mobile: Single image capture or upload.  
+   - CLI: Single image, folder batch, or dataset file.
+
+2. **Automated Lesion Classification:**  
+
+   - Inference performed by a trained CNN model (ResNet-based).  
+   - Output includes predicted class, confidence score, and alternative predictions.
+
+3. **Explainability and Interpretability:**
+
+   - Mobile: Simplified plain-language explanation plus optional heatmap.  
+   - CLI: Detailed interpretability (e.g., Grad-CAM, numerical feature attribution).
+
+4. **Result Delivery:**
+
+   - Mobile: Readable on-screen summary with option to save or share report (e.g., PDF).  
+   - CLI: Structured output formats (CSV, JSON, PDF).
+
+5. **Continuous Improvement Loop:**
+
+   - Mechanisms for incorporating user feedback.  
+   - Optional retraining capabilities for researchers using CLI.  
+   - Backend logging of usage patterns (with privacy safeguards) for model refinement.
+
+6. **Security and Privacy Safeguards:**
+
+   - Anonymization of images and metadata.  
+   - Secure transmission and storage with encryption.  
+   - Compliance with ethical standards regarding sensitive health data.
+
+In summary, this system is envisioned as a dual-purpose platform: **a patient-facing mobile app for accessibility and early detection, and a research-grade CLI for scientific rigor and extensibility.**
+
+
+## Functional Requirements Analysis
+
+The functional requirements of the system capture the essential features and capabilities that the application must provide to its diverse set of users and stakeholders. These requirements are organized into three categories: **user-oriented**, **system-oriented**, and **non-functional** requirements. This categorization ensures that both human-centered needs and technical imperatives are addressed systematically.
+
+### User-Oriented Requirements
+
+User-oriented requirements describe how the system should interact with its primary audiences, that is general users and health professionals/researchers. These requirements ensure that the system delivers tailored functionality that aligns with the expectations and technical proficiency of each group.
+
+#### General Users (Mobile Application)
+
+1. **Image Capture and Upload**  
+
+   - The system must allow users to capture lesion images via the device camera or upload existing images from the gallery.  
+   - Support for basic cropping and quality-checking prior to submission.  
+
+2. **Instant Classification and Feedback** 
+
+   - After submission, the user should receive the predicted lesion type with a confidence score.  
+   - Explanations must be provided in simple, non-technical language.  
+
+3. **Health Guidance**  
+
+   - Beyond classification, users should receive actionable suggestions such as: 
+   
+     - “Consult a dermatologist immediately” (for suspicious lesions).  
+     - “Monitor regularly” (for benign lesions).  
+     
+   - The system must not provide treatment instructions beyond suggesting professional consultation.  
+
+4. **Report Generation and History**  
+
+   - Users should be able to save results in a report format (e.g., PDF) or maintain a personal history log within the application.  
+   - Results history should be accessible in an easy-to-navigate interface.  
+
+5. **Notifications and Reminders**  
+
+   - Optional notifications should remind users to recheck lesions at specified intervals.  
+   - Users must have full control to enable or disable reminders.  
+
+6. **Privacy and Security Assurance**
+
+   - The system must anonymize uploaded images and avoid linking them with personally identifiable information.  
+
+#### Health Professionals and Researchers (CLI)
+
+1. **Batch Processing Capabilities** 
+
+   - The CLI must support processing of multiple images or datasets in one run.  
+   - Input should accept file paths, directories, or structured dataset references.  
+
+2. **Detailed Classification Outputs** 
+
+   - Results should include prediction probabilities for all possible classes, not only the top class.  
+   - Outputs should include visual overlays such as Grad-CAM heatmaps when requested.  
+
+3. **Flexible Output Formats**  
+
+   - Results must be exportable in CSV, JSON, PDF, or image overlay formats.  
+   - Researchers should be able to configure output granularity.  
+
+4. **Integration with External Workflows**  
+
+   - CLI outputs must be scriptable and pipeline-friendly for integration with other tools (e.g., data analysis software).  
+
+5. **Reproducibility Support**  
+
+   - The system should log model versions, configuration parameters, and dataset references to ensure reproducibility of results.  
+
+6. **Extended Explainability Features** 
+
+   - Provide multiple explanation modalities (numerical feature importance, saliency maps, etc.) suitable for academic publications or clinical reviews.  
+
+
+```{r, echo=FALSE, fig.cap="Usecase Diagram for DermaAI", fig.align='center', out.width='100%'}
+knitr::include_graphics("DermaAI-Usecase.png")
+```
+
+### System-Oriented Requirements
+
+These requirements define how the system must behave at a technical level to fulfill user needs effectively.
+
+#### Model Training and Inference
+
+- The system must rely on a CNN (e.g., ResNet-18) trained on a large, labeled dataset of skin lesion images.  
+- Training must support transfer learning and fine-tuning to improve accuracy.  
+- The inference pipeline must be lightweight enough for deployment in mobile and cloud environments.  
+- Support for retraining or fine-tuning must be included for CLI researchers.  <!--- @todo validate if this can be implemented if not then remove -->
+
+#### API Communication
+
+- The mobile application must communicate with the inference server through secure APIs.  
+- The API must accept inputs (image + optional metadata), run inference, and return structured results.  
+- The API must support JSON-based request/response formatting.  
+- Latency should be optimized to provide near real-time results for mobile users.  
+
+#### Data Handling and Security
+
+- All uploaded data must be encrypted in transit (TLS) and at rest.  
+- Sensitive information must be anonymized to ensure compliance with ethical and legal standards (e.g., GDPR-like principles).  
+- The system must implement secure access controls to prevent unauthorized use of the API or model.  
+
+
+### Non-Functional Requirements
+
+Non-functional requirements define the quality attributes of the system, ensuring robustness, trustworthiness, and long-term sustainability.
+
+#### Performance and Accuracy
+
+- The system must achieve a minimum accuracy benchmark comparable to dermatologists (e.g., ≥85% for malignant vs. benign classification as in [@haenssle2018man]).  
+- Mobile inference should return results within 5–10 seconds under average connectivity conditions.  
+- CLI batch processing should handle at least 1,000 images without significant performance degradation.  
+
+#### Privacy and Security
+
+- All images must be processed anonymously, with no linkage to personal identifiers.  
+- Strong encryption must be enforced for both transmission and storage.  
+- The mobile app must allow users to delete stored history at any time.  
+
+#### Usability and Accessibility
+
+- The mobile interface must be intuitive, requiring minimal user training.  
+- Instructions, labels, and explanations must be provided in clear, non-technical language.  
+- Accessibility features such as support for larger fonts, screen readers 
+
+#### Scalability and Maintainability
+
+- The backend infrastructure must support horizontal scaling through containerization and load balancing.  
+- Modular design must ensure easy updates to models, APIs, and interfaces.  
+- Documentation and versioning must be maintained for both mobile and CLI components.  
+
+
+In summary, the functional requirements establish the foundation of the proposed system, ensuring that it satisfies the practical needs of its two core user groups while adhering to strict technical, ethical, and quality standards.
+
+
+## System Architecture
+
+The proposed skin lesion detection and classification system adopts a **serverless, modular architecture** designed for scalability, cost-efficiency, and seamless integration of advanced AI models. The system is primarily built upon cloud-native components (Amazon Web Services) to ensure elasticity and fault tolerance, while remaining lightweight enough to accommodate future hybrid deployments. Figure 18<!--@todo update this --> (below) illustrates the **overall serverless architecture of DermaAI**, integrating both model inference and large language model (LLM)-based explanation generation.
+
+
+```{r, echo=FALSE, fig.cap="Serverless Architecture for DermaAI", fig.align='center', out.width='50%'}
+knitr::include_graphics("DermaAI-Architecture.png")
+```
+
+
+
+At a high level, the system architecture can be broken down into the following core components:
+
+1. **User Interaction Layer (Clients)**  
+   Users, whether through a mobile application or a command-line interface (CLI), initiate requests by uploading an image of a skin lesion along with optional metadata. This forms the primary entry point into the system.
+
+2. **API Gateway**  
+   All requests are routed through **Amazon API Gateway**, which standardizes inputs, enforces request validation, and provides an interface for secure communication between clients and backend services. It also supports monitoring and throttling, ensuring the system can scale gracefully under heavy load.
+
+3. **Queue Management (Amazon SQS)**  
+   Requests are decoupled and passed into **Amazon Simple Queue Service (SQS)** for asynchronous processing. This design ensures that bursts of user activity do not overwhelm the backend, while also supporting fault tolerance and retries.
+
+4. **Model Inference Layer**  
+   A dedicated **AWS Lambda function** fetches the pretrained CNN model (stored in **Amazon S3**) and processes the classification request. This serverless function performs **image preprocessing, model inference, and preliminary result formatting**.  
+
+5. **Result Enrichment Layer (LLM Integration)**  
+   To provide contextually rich, human-friendly explanations, another **Lambda function** triggers communication with the **OpenAI LLM**. This step enhances the raw model predictions with medically accurate, user-friendly descriptions, usage guidelines, and disclaimers.
+
+6. **Data Storage and Retrieval**  
+   The system employs **Amazon DynamoDB** for storing user requests, model outputs, enriched explanations, and metadata. This NoSQL storage ensures fast queries for both individual lookups (e.g., retrieving a patient’s history) and analytical queries for research purposes.
+
+7. **Feedback Loop and Continuous Improvement**  
+   User interactions and outcomes are logged into DynamoDB, forming the basis for continuous model evaluation. This feedback mechanism enables future retraining of the CNN model and refinement of the LLM prompts.
+
+
+### Model Architecture
+
+At the core of the system lies a **Convolutional Neural Network (CNN)**, fine-tuned from a pretrained ResNet18 backbone. This architecture was chosen due to its proven efficiency in medical image classification tasks, balancing computational cost with diagnostic accuracy.
+
+```{r, echo=FALSE, fig.cap="CNN model Architecture for DermaAI", fig.align='center', out.width='50%'}
+knitr::include_graphics("cnn-architecture.png")
+```
+
+- **Input Layer**: Accepts dermoscopic or non-dermoscopic images, resized and normalized to the required resolution.  
+- **Feature Extraction (ResNet18 Backbone)**: Extracts hierarchical visual features such as edges, textures, and patterns, which are crucial for distinguishing between benign and malignant lesions.  
+- **Fully Connected Layer**: Maps extracted features into class probabilities representing different categories of skin lesions (e.g., melanoma, nevus, keratosis).  
+- **Softmax Output**: Produces a probabilistic distribution, enabling ranking of likely conditions.  
+- **Out-of-Distribution Handling**: Additional thresholds are set to identify and reject non-skin images or ambiguous inputs, reducing the risk of misdiagnosis.
+
+The synergy between the **system-level serverless architecture** and the **model-level CNN architecture** ensures both robust backend scalability and high clinical relevance of predictions.
+
+## User Interface Design
+
+The user interface (UI) design of the lesion detection system is critical in ensuring usability, accessibility, and effective interaction for different categories of end-users. Given the dual-interface approach—mobile application for general users and command-line interface (CLI) for health professionals and researchers—the system emphasizes both simplicity and technical flexibility.
+
+### Mobile Application Interface
+
+The mobile application serves as the primary interaction point for patients, general users, and non-technical healthcare providers. Its design focuses on clarity, ease of use, and accessibility.  
+
+#### Input (Image Upload, Metadata)
+Users can upload images of skin lesions captured through smartphone cameras. To improve diagnostic accuracy, optional metadata such as age, gender, and lesion location can also be provided. The app guides users in capturing high-quality images through tips and validation prompts (e.g., checking for blur or poor lighting).
+
+<!--  @todo **Placeholder for Mobile Application UI Mockup** -->
+
+#### Output (Prediction + Explanation)
+The app provides immediate feedback in the form of:
+
+- **Prediction Results:** Displaying the likely classification of the skin lesion (e.g., melanoma, eczema, benign mole).  
+- **Confidence Score:** A percentage value reflecting model certainty.  
+- **AI-Generated Explanation:** Clear, user-friendly interpretation of the results, enhanced through integration with a Large Language Model (LLM) for contextual descriptions.  
+
+<!--  @todo **Placeholder for Mobile Application UI Mockup** -->
+
+#### Additional Features (History, Notifications, Clinic Suggestions)
+
+- **History:** Users can view previously uploaded images and corresponding predictions.  
+- **Notifications:** Timely alerts for follow-up checks, updates on results, or reminders to consult a specialist.  
+- **Basic health information on lesions:** Provides updated information on common lesions
+
+<!--  @todo **Placeholder for Mobile Application UI Mockup** -->
+
+### Command-Line Interface (CLI)
+
+The CLI is designed for researchers, medical professionals, and advanced users who require flexibility, scalability, and integration with external workflows.  
+
+#### Input Methods (Single, Batch)
+
+- **Single Input:** Researchers can upload one image at a time for real-time classification.  
+- **Batch Input:** The system supports batch processing of datasets, enabling large-scale testing and research.  
+
+<!--  @todo **Placeholder for CLI Output Example (CSV/Overlay Snapshot)** -->
+
+#### Output Formats (CSV, JSON, PDF, Visual Overlays)
+The CLI provides versatile output options, including: 
+
+- **CSV/JSON:** For structured data storage and integration with analytical pipelines.  
+- **PDF Reports:** Automatically generated, summarizing results with statistics and visual representations.  
+- **Visual Overlays:** Highlighting lesion areas directly on the images for deeper clinical inspection.  
+
+<!--  @todo **Placeholder for CLI Output Example (CSV/Overlay Snapshot)** -->
+
+
+
+## Deployment Strategy
+
+The deployment strategy for the lesion detection system balances accessibility, scalability, and user needs. By leveraging cloud-native services and serverless architecture, the system minimizes infrastructure management while maximizing reliability and cost-effectiveness.
+
+### Cloud Deployment (Primary Mode)
+
+The system is primarily deployed on a cloud platform using a **serverless architecture**. This approach ensures scalability and efficient use of resources, as services such as AWS Lambda, Amazon S3, and DynamoDB dynamically adjust to varying workloads. The cloud handles the heavy computational tasks, including model inference and LLM-based description generation. This guarantees high availability, data security, and seamless integration of components without requiring users to manage complex configurations.
+
+### Command-Line Interface (CLI) Deployment
+
+For researchers and advanced users, the CLI tool serves as a flexible deployment option. It connects directly to the cloud services for inference, allowing single-image or batch processing. CLI deployment supports structured outputs (CSV/JSON) and integrates easily with local research environments.  
+
+A limited **offline mode** is available within the CLI:  
+
+- Offline capabilities do not include full model inference (to avoid heavy storage and computation requirements).  
+- Instead, the offline mode provides **basic lesion information** (e.g., common types, risk factors, preventive measures), ensuring users have access to essential knowledge without requiring internet connectivity.  
+
+This offline functionality supports fieldwork and scenarios with unstable connectivity, particularly useful for outreach programs and rural healthcare settings.
+
+### Mobile Application Deployment
+
+The mobile application is available for end-users through app distribution platforms (Google Play Store, Apple App Store). Its deployment strategy emphasizes accessibility and user-friendliness, with real-time communication to the cloud backend for inference.  
+
+The **offline mode in the mobile app** is intentionally lightweight: 
+
+- It does not include model inference, as shipping the CNN model locally would make the app too large and resource-heavy.  
+- Instead, it provides an **offline reference guide**, featuring descriptions of common skin lesions, self-care recommendations, and educational material.  
+- When online, the app automatically switches to full functionality, including image uploads, model inference, and enriched LLM explanations.  
+
+
+```{r, echo=FALSE, fig.cap="Deployment Architecture for DermaAI", fig.align='center', out.width='70%'}
+knitr::include_graphics("deployement-architecture.png")
+```
+
+
+## Testing, Results, and Discussion
+
+### Dataset Splits (Train, Validation, Test)
+
+### Accuracy, Loss, and Confusion Matrix
+
+### ROC, Precision, Recall, F1-score
+
+### Model Limitations and Observed Bias
+
+### Comparison with Existing Systems
+
+### Summary
+
+
+## Summary
+
+
+
 
 \newpage
 
