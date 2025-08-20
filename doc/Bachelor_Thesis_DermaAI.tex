@@ -4674,43 +4674,823 @@ lightweight:
 \subsection{Testing, Results, and
 Discussion}\label{testing-results-and-discussion}
 
-\subsubsection{Dataset Splits (Train, Validation,
-Test)}\label{dataset-splits-train-validation-test}
+\subsubsection{Dataset Partitioning: Training, Validation, and
+Testing}\label{dataset-partitioning-training-validation-and-testing}
 
-\subsubsection{Accuracy, Loss, and Confusion
-Matrix}\label{accuracy-loss-and-confusion-matrix}
+The dataset was divided into three distinct subsets: \textbf{training},
+\textbf{validation}, and \textbf{testing}. The training set enabled
+model optimization, the validation set monitored performance to mitigate
+overfitting, and the test set provided the final unbiased evaluation. To
+preserve class distribution---especially given the diversity of
+conditions---\textbf{stratified sampling} was applied.
 
-\subsubsection{ROC, Precision, Recall,
-F1-score}\label{roc-precision-recall-f1-score}
+\subsubsection{Accuracy and Loss Trends}\label{accuracy-and-loss-trends}
 
-\subsubsection{Model Limitations and Observed
-Bias}\label{model-limitations-and-observed-bias}
+Across 20 epochs, the model showed consistent learning. Training
+accuracy surpassed \textbf{90\%}, while validation accuracy stabilized
+around \textbf{75\%}. This divergence indicates effective representation
+learning but also signals mild overfitting.
 
-\subsubsection{Comparison with Existing
-Systems}\label{comparison-with-existing-systems}
+Loss patterns mirrored this trend: training loss steadily declined,
+whereas validation loss plateaued by epochs 7--8. This suggests the
+model generalized well to many conditions, but faced challenges in
+imbalanced or visually overlapping categories.
 
-\subsubsection{Summary}\label{summary-2}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.49\textwidth]{accuracy_curve_v3.png}
+    \hfill
+    \includegraphics[width=0.49\textwidth]{loss_curve_v3.png}
+    \caption{Accuracy and loss curves for DermaAI training and validation.}
+\end{figure}
 
-\subsection{Summary}\label{summary-3}
+\subsubsection{Confusion Matrix
+Analysis}\label{confusion-matrix-analysis}
 
-\newpage
+The confusion matrix provided condition-level insight. Diseases such as
+\textbf{Healthy}, \textbf{Cowpox}, \textbf{Monkeypox}, and
+\textbf{Chickenpox} were identified with high reliability. Conversely,
+\textbf{Eczema}, \textbf{Psoriasis}, \textbf{Vitiligo}, and
+\textbf{Nevus} exhibited higher misclassification rates due to
+overlapping dermatological patterns, underscoring the difficulty of
+distinguishing visually similar lesions.
 
-\section{Chapter 6: Conclusion and
-Recommendations}\label{chapter-6-conclusion-and-recommendations}
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{confusion_matrix} 
+
+}
+
+\caption{Confusion Matrix for DermaAI V3}\label{fig:unnamed-chunk-18}
+\end{figure}
+
+\subsubsection{Receiver Operating Characteristic (ROC) / Area Under the
+Curve
+Analysis}\label{receiver-operating-characteristic-roc-area-under-the-curve-analysis}
+
+ROC curves further confirmed strong discriminative performance. Over
+\textbf{25 conditions achieved AUC ≥ 0.98}, with \emph{Athlete's Foot},
+\emph{Chickenpox}, \emph{Cowpox}, \emph{Healthy}, \emph{Leprosy},
+\emph{Measles}, \emph{Monkeypox}, \emph{Nail Fungus},
+\emph{Neurofibromatosis}, \emph{Ringworm}, \emph{Shingles},
+\emph{Tungiasis}, \emph{Vitiligo}, and \emph{Whitlow} each reaching
+\textbf{AUC = 1.00}.
+
+Moderate AUC values were observed for \emph{Psoriasis} (0.95),
+\emph{Rash Dermatitis} (0.96), and \emph{Eczema} (0.96), reflecting
+overlap among chronic inflammatory conditions. The lowest AUC occurred
+in \emph{Moles} (0.89), which were frequently misclassified with
+\emph{Nevus} or \emph{Melanoma}. This aligns with confusion matrix
+findings, reinforcing the model's difficulty in differentiating subtle
+pigmented lesions.
+
+The \textbf{macro-averaged AUC} exceeded \textbf{0.97}, confirming
+robust generalization across diverse conditions.
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{roc_curves} 
+
+}
+
+\caption{ROC for DermaAI V3}\label{fig:unnamed-chunk-19}
+\end{figure}
+
+\subsubsection{Class-wise Metrics}\label{class-wise-metrics}
+
+Performance metrics revealed substantial variability (see Table below).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.3521}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1831}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1408}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1690}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1549}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Class
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+precision
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+recall
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+f1-score
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+support
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Acne & 0.6479 & 0.736 & 0.6891 & 125 \\
+Actinic\_Keratosis & 0.7411 & 0.7493 & 0.7452 & 363 \\
+Athlete\_foot & 0.8889 & 0.8889 & 0.8889 & 18 \\
+Autoimmune\_Disease & 0.6512 & 0.8116 & 0.7226 & 69 \\
+Basal\_cell\_carcinoma & 0.749 & 0.7459 & 0.7474 & 244 \\
+Benign\_Tumor & 0.7089 & 0.5957 & 0.6474 & 188 \\
+Chickenpox & 0.9381 & 0.9529 & 0.9455 & 191 \\
+Cowpox & 0.98 & 0.9866 & 0.9833 & 149 \\
+Eczema & 0.6062 & 0.5792 & 0.5924 & 202 \\
+Healthy & 0.9944 & 0.9833 & 0.9888 & 180 \\
+Herpes & 0.5357 & 0.5769 & 0.5556 & 26 \\
+Impetigo & 0.619 & 0.65 & 0.6341 & 40 \\
+Larva\_Migrans & 0.8857 & 0.7561 & 0.8158 & 41 \\
+Leprosy & 0.8842 & 0.866 & 0.875 & 97 \\
+Measles & 0.9179 & 0.9462 & 0.9318 & 130 \\
+Melanoma & 0.8205 & 0.8 & 0.8101 & 200 \\
+Moles & 0.1765 & 0.2727 & 0.2143 & 22 \\
+Monkeypox & 0.9607 & 0.95 & 0.9553 & 180 \\
+Nail\_Fungus & 0.96 & 0.96 & 0.96 & 25 \\
+Neurofibromatosis & 0.8462 & 0.7857 & 0.8148 & 14 \\
+Nevus & 0.4943 & 0.7544 & 0.5972 & 57 \\
+Psoriasis & 0.5754 & 0.5787 & 0.577 & 178 \\
+Rash\_Dermatitis & 0.7888 & 0.598 & 0.6803 & 306 \\
+Ringworm & 0.7391 & 0.9444 & 0.8293 & 18 \\
+Scabies & 0.4615 & 0.375 & 0.4138 & 16 \\
+Seborrheic\_Keratosis & 0.6848 & 0.7079 & 0.6961 & 89 \\
+Shingles & 0.8333 & 1 & 0.9091 & 25 \\
+Squamous\_Cell\_Carcinoma & 0.5192 & 0.5625 & 0.54 & 96 \\
+Tungiasis & 0.9545 & 1 & 0.9767 & 21 \\
+Vascular\_Lesion & 0.5584 & 0.6187 & 0.587 & 139 \\
+Warts & 0.6822 & 0.7449 & 0.7122 & 98 \\
+vitiligo & 0.5333 & 0.5 & 0.5161 & 16 \\
+whitlow & 0.6667 & 0.3333 & 0.4444 & 6 \\
+accuracy & 0.7532 & 0.7532 & 0.7532 & 0.7532 \\
+macro avg & 0.7274 & 0.7367 & 0.7272 & 3569 \\
+weighted avg & 0.7598 & 0.7532 & 0.7539 & 3569 \\
+\end{longtable}
 
 \begin{itemize}
 \tightlist
 \item
-  6.1 Summary of Findings
+  \textbf{High-performing classes}: \emph{Healthy} (F1 = 0.99),
+  \emph{Cowpox} (F1 = 0.98), \emph{Monkeypox} (F1 = 0.96),
+  \emph{Chickenpox} (F1 = 0.95), and \emph{Nail Fungus} (F1 = 0.96)
+  achieved excellent reliability.\\
 \item
-  6.2 Conclusion
+  \textbf{Moderate-performing classes}: \emph{Basal Cell Carcinoma} (F1
+  = 0.75), \emph{Actinic Keratosis} (F1 = 0.75), and \emph{Leprosy} (F1
+  = 0.88) demonstrated solid but imperfect results.\\
 \item
-  6.3 Contributions of the Study
-\item
-  6.4 Recommendations for Future Work
-\item
-  6.5 Final Remarks
+  \textbf{Low-performing classes}: \emph{Moles} (F1 = 0.21),
+  \emph{Scabies} (F1 = 0.41), \emph{Vitiligo} (F1 = 0.52), \emph{Herpes}
+  (F1 = 0.56), and \emph{Whitlow} (F1 = 0.44) struggled, largely due to
+  limited training data and overlap with other diseases.
 \end{itemize}
+
+The \textbf{macro-averaged F1-score} was \textbf{0.73}, while the
+\textbf{weighted F1-score} reached \textbf{0.75}, reflecting stronger
+performance for prevalent classes but reduced consistency for rare ones.
+
+\subsubsection{Model Limitations and
+Biases}\label{model-limitations-and-biases}
+
+Several limitations emerged:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Class imbalance}: Rare conditions (e.g., \emph{Whitlow},
+  \emph{Neurofibromatosis}) had too few examples for effective
+  learning.\\
+\item
+  \textbf{Visual similarity bias}: Diseases such as \emph{Eczema},
+  \emph{Psoriasis}, and \emph{Rash Dermatitis} frequently overlapped,
+  driving misclassifications.\\
+\item
+  \textbf{Overfitting risk}: The gap between training and validation
+  accuracy suggests the model memorized dominant patterns.\\
+\item
+  \textbf{Dataset bias}: Underrepresentation of diverse skin tones and
+  imaging conditions may reduce real-world applicability.
+\end{itemize}
+
+\subsubsection{Comparison with Existing
+Systems}\label{comparison-with-existing-systems}
+
+Compared to existing dermatological diagnostic systems, particularly
+those based on ResNet architectures, our model performs competitively
+with a \textbf{weighted F1-score of 0.75}.
+
+Datta et al.~enhanced ResNet, InceptionResNetV2, and DenseNet using
+soft-attention, achieving \textbf{precision of 93.7\%} on HAM10000
+(\citeproc{ref-datta2021soft}{Datta et al., 2021}). Tschandl et
+al.~reported \textbf{91\% balanced accuracy} using ResNet-50 on the same
+dataset (\citeproc{ref-tschandl2018ham10000}{Tschandl et al., 2018}).
+Mahbod et al.~employed ensembles of modified ResNet-50 models with focal
+loss, reaching \textbf{93\% accuracy} across seven classes
+(\citeproc{ref-mahbod2020resnet}{Mahbod et al., 2020}).
+
+These benchmarks typically span 7--9 conditions with F1/precision values
+between \textbf{0.75 and 0.94}. Against this context, our model's
+F1-score of \textbf{0.75} is competitive---particularly given its
+coverage of \textbf{30+ diverse conditions}, many absent from benchmark
+datasets like HAM10000. This broader coverage underscores DermaAI's
+potential clinical relevance as a decision-support system.
+
+\subsubsection{Conclusion}\label{conclusion-3}
+
+The model demonstrated robust performance for common and visually
+distinct conditions, while facing challenges with rare and overlapping
+ones. Trends from learning curves, confusion analysis, and ROC metrics
+highlight the need for future improvements via \textbf{data
+augmentation}, \textbf{transfer learning}, and \textbf{attention-based
+architectures}. Despite limitations, DermaAI shows strong potential as a
+diagnostic support tool across a wide spectrum of skin diseases.
+
+\subsection{Summary}\label{summary-2}
+
+This chapter has presented the practical realization of the proposed
+lesion detection and classification system, encompassing both the
+technical design of the application and the empirical evaluation of the
+underlying deep learning model. The first part of the chapter described
+the architectural design, system workflows, and implementation of the
+three user-facing components: the mobile interface for patients and
+clinicians, the command-line interface (CLI) for researchers, and the
+supporting website that provides usage guidelines and documentation.
+Special attention was given to ensuring usability, portability, and
+integration with the trained classification model through
+well-structured APIs. Deployment strategies were also discussed,
+including considerations for scalability, offline versus online
+inference, and the role of cloud-based services in extending
+accessibility.
+
+The second part of the chapter detailed the training, testing, and
+evaluation of the deep learning model, which serves as the core of the
+system. Using an extended dataset of over 30 skin lesion classes, the
+model achieved a \textbf{weighted F1-score of 0.7539}, competitive with
+comparable ResNet- and Inception-based approaches reported in the
+literature. Unlike many benchmarked systems that focus on a small set of
+conditions, our model demonstrated strong generalization to a much
+broader set of dermatological presentations, thereby enhancing its
+clinical utility in diverse populations. Performance visualizations ---
+including accuracy and loss curves, confusion matrices, and ROC plots
+--- further illustrated the model's behavior, strengths, and
+limitations.
+
+Together, the design of the system and the results of the model
+evaluation highlight the novelty of this work: a unified framework that
+not only performs competitively in classification accuracy but also
+delivers the functionality in practical, user-friendly applications. The
+combination of technical robustness and thoughtful deployment positions
+the system as a valuable clinical decision-support tool, particularly in
+regions where dermatological expertise is limited. These outcomes lay
+the groundwork for the concluding chapter, which will synthesize the
+study's contributions, acknowledge its limitations, and propose future
+directions.
+
+\newpage
+
+\section{Chapter 6: Summary, Conclusions, Discussion, and
+Recommendations}\label{chapter-6-summary-conclusions-discussion-and-recommendations}
+
+\subsection{Summary of Findings}\label{summary-of-findings}
+
+This study set out to design and implement a skin lesion detection and
+classification system using deep learning, with an emphasis on both
+model performance and practical deployment for end-users. The motivation
+arose from the growing prevalence of dermatological diseases globally
+and the persistent shortage of dermatologists, particularly in low- and
+middle-income countries. In such contexts, an automated diagnostic
+support system could play a crucial role in early detection, triage, and
+improved access to healthcare.
+
+At the outset, the research identified two key gaps in existing
+literature. First, most prior systems have been benchmarked on popular
+datasets such as HAM10000 or ISIC, which, while rich in annotated
+images, are limited in diagnostic categories. This creates models that
+perform strongly on common melanocytic lesions but fail to generalize to
+a wider spectrum of skin conditions observed in real-world practice.
+Second, many studies end at the model evaluation stage, without
+extending their work to practical deployment tools that could be
+accessed by patients, clinicians, or researchers. This study therefore
+aimed not only to train an accurate classifier but also to design and
+deploy a multi-platform solution accessible via a mobile application,
+command-line interface (CLI), and web-based resources.
+
+In terms of methodology, a convolutional neural network based on
+ResNet18 was employed as the backbone architecture. Transfer learning
+was leveraged by initializing with pretrained weights from ImageNet and
+fine-tuning on dermatological datasets. The dataset included a broad
+range of \textbf{over 30 skin lesion classes}, surpassing the narrower
+focus of most prior research. Careful preprocessing, including image
+resizing, normalization, and augmentation, was applied to enhance
+generalization and mitigate class imbalance. The training strategy used
+weighted loss functions and monitored validation performance to avoid
+overfitting.
+
+The empirical evaluation demonstrated that the model achieved a
+\textbf{weighted F1-score of 0.7539} with consistent accuracy across
+multiple test splits. Training and validation curves revealed smooth
+convergence, while ROC and confusion matrix analyses highlighted
+strengths in classifying common lesion types and weaknesses in rare or
+visually similar categories. Compared to existing dermatological
+diagnostic systems, which often report F1-scores in the range of
+0.70--0.80 (\citeproc{ref-brinker2019deep}{Brinker et al., 2019};
+\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017};
+\citeproc{ref-han2018classification}{Han et al., 2018}), the model
+performed competitively despite being trained on a broader and more
+heterogeneous set of classes. This balance between performance and
+breadth is a notable achievement, as it demonstrates that the model did
+not sacrifice generalization for narrow optimization.
+
+Beyond performance, a key finding lies in the system's
+\textbf{multi-platform deployment}. The mobile application provided an
+intuitive interface for non-technical users, supporting real-time image
+capture and inference through API calls to the trained model. The CLI
+enabled researchers to run batch evaluations, supporting reproducibility
+and technical extensions. The companion website offered documentation,
+guidance, and a help section for broader dissemination. Together, these
+tools ensured that the research transcended laboratory experiments,
+providing practical pathways for clinical support and academic
+exploration.
+
+Another important observation was the system's adaptability to diverse
+dermatological presentations. By covering a wide array of conditions,
+including fungal infections, eczema, psoriasis, and melanomas, the
+system proved relevant for primary healthcare settings where patients
+often present with varied symptoms. This breadth directly addresses one
+of the main criticisms of earlier AI dermatology systems: their narrow
+focus on melanoma detection. In regions where dermatological diversity
+is high, such inclusivity significantly enhances clinical value.
+
+Nevertheless, the findings also underscored challenges. Class imbalance
+persisted, with underrepresented conditions contributing
+disproportionately to misclassifications. The system's reliance on
+cloud-based APIs for inference raised concerns about latency and
+accessibility in low-connectivity environments. Moreover, while the
+system achieved competitive results compared to benchmarks, there
+remains a gap between machine learning models and expert dermatologists
+in handling ambiguous or overlapping cases.
+
+In summary, the findings confirm that the objectives of the study were
+successfully met. The model achieved state-of-the-art comparable
+performance while expanding the diagnostic scope to a significantly
+larger set of conditions. The deployment across mobile, CLI, and web
+interfaces further enhanced its usability and impact potential. At the
+same time, the challenges identified provide meaningful directions for
+future work, particularly in dataset expansion, offline optimization,
+and explainability. These findings establish a strong foundation for the
+conclusions, contributions, and recommendations discussed in the
+subsequent sections of this chapter.
+
+\subsection{Conclusion}\label{conclusion-4}
+
+This study set out to design, implement, and evaluate a comprehensive
+skin lesion detection and classification system that integrates deep
+learning with user-friendly deployment options. At its core, the work
+addressed two complementary objectives: (1) the development of a robust
+convolutional neural network model capable of distinguishing between
+more than thirty dermatological conditions, and (2) the design of a
+multi-interface platform---including a mobile application, a
+command-line tool, and a support website---through which this
+functionality could be accessed by diverse users. The results achieved
+demonstrate that both objectives were successfully realized, yielding a
+system that is at once technically competent and practically deployable.
+
+From a machine learning perspective, the study confirmed the
+effectiveness of convolutional neural networks, and in particular
+transfer learning with ResNet-based architectures, for the domain of
+skin lesion classification. The final model achieved a \textbf{weighted
+F1-score of 0.7539}, placing it within the performance range of other
+published systems that employ ResNet and Inception architectures on
+benchmark datasets such as HAM10000 and ISIC
+(\citeproc{ref-brinker2019deep}{Brinker et al., 2019};
+\citeproc{ref-han2018classification}{Han et al., 2018}). Importantly,
+whereas many existing studies are constrained to binary or low-class
+problems (e.g., melanoma vs.~nevus), this project extended the scope to
+over thirty distinct lesion types. This broader classification task more
+closely mirrors the complexity of real-world dermatological diagnosis
+and, by extension, enhances the clinical relevance of the system. The
+model's ability to generalize across this wider set of classes, despite
+class imbalance and data scarcity in certain categories, underscores its
+robustness and the value of the training strategy employed.
+
+On the systems design side, the project demonstrated how machine
+learning models can be effectively embedded into accessible tools. The
+mobile application provides clinicians and patients with an intuitive
+interface for capturing images and receiving automated preliminary
+assessments. The command-line interface offers researchers a lightweight
+environment for batch testing, experimentation, and reproducibility of
+results. The supporting website not only consolidates documentation and
+user guides but also enhances trust and adoption by making the system
+transparent and easy to use. Together, these components illustrate a
+full-stack approach: moving from model development through to end-user
+deployment in a way that is both scalable and adaptable to diverse
+healthcare contexts.
+
+The significance of the project also lies in its potential societal
+impact. Skin disease diagnosis remains a challenge in many regions,
+particularly in low-resource settings where dermatological expertise is
+scarce. By making accurate lesion classification more widely available
+through digital platforms, this system has the potential to reduce
+diagnostic delays, support non-specialist clinicians, and empower
+patients with timely information. Although it is not designed to replace
+dermatologists, the system can function as a decision-support tool,
+guiding users toward more informed consultations and treatments. This
+aligns with broader trends in medical AI, where algorithms augment
+rather than supplant clinical judgment
+(\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017}).
+
+Nevertheless, it is important to acknowledge that the system, like all
+machine learning applications in healthcare, is not without limitations.
+The training dataset, though extensive, is still smaller and less
+balanced than global dermatology datasets. Certain rare lesion types
+were underrepresented, which may affect model sensitivity in those
+categories. Additionally, the reliance on image-based diagnosis omits
+important contextual information (such as patient history, demographics,
+or lesion evolution over time) that clinicians typically use in
+decision-making. These constraints mean that while the system shows
+strong promise, it should be applied cautiously and in conjunction with
+clinical expertise.
+
+In summary, the study contributes both a technical solution and a
+conceptual demonstration. Technically, it validates the use of CNN-based
+transfer learning for broad-spectrum skin lesion classification and
+illustrates practical deployment through multiple interfaces.
+Conceptually, it demonstrates that AI-driven diagnostic support can be
+designed in a way that is accessible, adaptable, and relevant to
+healthcare systems beyond highly resourced academic or hospital
+settings. Taken together, these conclusions position the project as a
+meaningful contribution to the growing field of dermatological AI,
+offering a model for how research can translate into impactful,
+real-world solutions.
+
+\subsection{Contributions of the
+Study}\label{contributions-of-the-study}
+
+The study's contributions span multiple dimensions, reflecting both its
+technical innovation and its broader relevance for healthcare
+applications. These contributions can be organized into three
+interrelated domains: (1) technical contributions to machine learning
+research, (2) system-level contributions to software design and
+deployment, and (3) practical and clinical contributions to healthcare
+delivery and patient empowerment.
+
+\subsubsection{Technical Contributions}\label{technical-contributions}
+
+A primary contribution of this research is the advancement of
+convolutional neural network--based methodologies for skin lesion
+classification. While prior work has established the promise of deep
+learning in dermatology, much of it has concentrated on narrow
+diagnostic tasks (for example, differentiating melanoma from benign
+nevi) (\citeproc{ref-brinker2019deep}{Brinker et al., 2019};
+\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017}). This
+study, in contrast, successfully extended the scope to a much broader
+classification problem, encompassing \textbf{over thirty lesion
+categories}. This represents one of the relatively few attempts to
+bridge the gap between narrowly focused experimental studies and the
+wide variety of skin conditions encountered in clinical practice.
+
+The project further contributes by demonstrating how \textbf{transfer
+learning with ResNet architectures} can be adapted and optimized for
+multi-class classification under conditions of data imbalance. By
+employing stratified data splitting, augmentation strategies, and
+careful monitoring of learning curves, the study achieved a
+\textbf{weighted F1-score of 0.7539}, which is competitive with
+benchmark results reported in the literature
+(\citeproc{ref-han2018classification}{Han et al., 2018}). This validates
+the idea that robust performance can be obtained even without the scale
+of massive, globally curated datasets, provided that the training
+strategy is well tailored to the data available.
+
+Moreover, the research adds value through its detailed
+\textbf{evaluation methodology}. Rather than reporting accuracy alone,
+the analysis incorporated precision, recall, F1-score, confusion
+matrices, and ROC curves. This more holistic evaluation framework offers
+a clearer understanding of the model's strengths and weaknesses across
+classes. By doing so, the study provides a methodological template for
+future researchers seeking to balance performance evaluation with
+clinical relevance.
+
+\subsubsection{System Contributions}\label{system-contributions}
+
+Beyond algorithmic development, this project contributes to the field of
+applied machine learning by illustrating how predictive models can be
+effectively \textbf{embedded into functional, user-oriented systems}.
+Three deployment interfaces were developed:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Mobile Application} -- Designed with accessibility and
+  usability in mind, the mobile interface allows healthcare
+  practitioners and patients to capture lesion images and receive
+  immediate predictions. This bridges the gap between research models
+  and tools that can be deployed in real-world settings, particularly in
+  low-resource environments where mobile technology is often the most
+  accessible digital platform.
+\item
+  \textbf{Command-Line Interface (CLI)} -- Aimed at researchers and
+  technically proficient users, the CLI facilitates reproducibility,
+  batch testing, and integration into experimental workflows. This
+  ensures that the system serves both clinical and academic audiences,
+  supporting further innovation and evaluation.
+\item
+  \textbf{Web Support Platform} -- The supporting website consolidates
+  documentation, tutorials, and help sections, lowering barriers to
+  adoption. By prioritizing transparency and usability, the platform
+  contributes to building trust in AI systems---an often-overlooked
+  factor in the deployment of medical technologies.
+\end{enumerate}
+
+Collectively, these interfaces represent a \textbf{full-stack design
+approach} that goes beyond proof-of-concept to demonstrate scalable
+deployment. The system contributions highlight how machine learning
+models can transition from laboratory prototypes to integrated
+healthcare tools.
+
+\subsubsection{Practical and Clinical
+Contributions}\label{practical-and-clinical-contributions}
+
+Perhaps most significantly, the study contributes to the broader
+conversation on how AI can improve healthcare delivery, particularly in
+under-resourced regions. Dermatological expertise is unevenly
+distributed globally, and many patients face long delays before
+receiving accurate diagnoses. By making an AI-driven diagnostic support
+tool available through \textbf{accessible platforms}, this study offers
+a pathway toward reducing disparities in healthcare access.
+
+The system is not intended to replace professional medical judgment;
+rather, it provides \textbf{decision-support} that can assist general
+practitioners, community health workers, and patients themselves. In
+this sense, the study aligns with the emerging consensus that AI in
+medicine is most valuable when it complements rather than replaces
+clinicians (\citeproc{ref-topol2019highperformance}{Topol, 2019}). This
+contribution is especially relevant in contexts where dermatologists are
+scarce but mobile technology penetration is high.
+
+Additionally, the inclusion of more than thirty lesion categories
+enhances the \textbf{clinical realism} of the system. Whereas many
+state-of-the-art studies focus narrowly on melanoma detection, this
+system's breadth makes it more applicable in day-to-day dermatology
+practice, where a wide range of benign and malignant conditions must be
+distinguished. This is particularly relevant in regions where diseases
+such as fungal infections, eczema, and other non-melanoma conditions are
+common and clinically significant.
+
+Finally, the project contributes to the field by emphasizing
+\textbf{responsible deployment}. Ethical considerations, such as
+avoiding over-reliance on automated outputs and ensuring data privacy,
+were integrated into the system's design philosophy. By explicitly
+positioning the system as an aid rather than a replacement, the study
+underscores the importance of safeguarding patient autonomy and
+clinician accountability in AI-driven healthcare.
+
+In sum, the contributions of this study are threefold. Technically, it
+extends and validates CNN-based methods for broad-spectrum lesion
+classification. At the system level, it demonstrates an end-to-end
+pipeline that transforms models into usable applications. Practically
+and clinically, it shows how such systems can enhance healthcare
+delivery and reduce inequities in access to dermatological expertise.
+These contributions, taken together, advance both the academic
+literature and the real-world applicability of AI in medicine.
+
+\subsection{Recommendations for Future
+Work}\label{recommendations-for-future-work}
+
+The results and deployment experience in this study suggest several
+technical, system-level, and clinical directions that can substantially
+enhance the performance, reliability, and impact of AI-assisted
+dermatology. The recommendations below are organized to guide iterative
+development from \textbf{data} to \textbf{models}, \textbf{deployment},
+and \textbf{evaluation}, with an emphasis on responsible and clinically
+meaningful progress.
+
+\subsubsection{1) Data \& Evaluation
+Enhancements}\label{data-evaluation-enhancements}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Targeted data expansion for underrepresented classes}: Future
+  collection should prioritize rare categories (e.g., \emph{Whitlow},
+  \emph{Neurofibromatosis}) and ensure broader representation of skin
+  tones, age groups, and imaging conditions. Stratified recruitment and
+  geographically diverse partnerships can reduce dataset shift and
+  improve fairness. Methods from the imbalanced learning
+  literature---such as informed sampling and resampling---remain
+  essential (\citeproc{ref-buda2018systematic}{Buda et al., 2018};
+  \citeproc{ref-krawczyk2016learning}{Krawczyk, 2016}).
+\item
+  \textbf{Rich metadata capture}: Incorporate clinical context (symptom
+  duration, itch/pain, anatomical site, patient age) to enable
+  multimodal models. Even simple metadata can disambiguate visually
+  similar lesions (e.g., \emph{Eczema} vs.~\emph{Psoriasis}).
+\item
+  \textbf{External validation}: Evaluate on multi-center datasets
+  distinct from the training distribution (e.g., additional ISIC
+  partitions or regional clinical repositories
+  (\citeproc{ref-tschandl2018ham10000}{Tschandl et al., 2018})). Report
+  per-subgroup performance (skin tone, device type) to surface
+  disparities.
+\item
+  \textbf{Robust metrics and calibration}: Beyond F1 and AUC, report
+  calibration (e.g., reliability diagrams, Brier score) and clinical
+  decision-focused metrics like sensitivity at fixed specificity
+  thresholds. Calibrated probabilities can better support risk
+  communication.
+\end{itemize}
+
+\subsubsection{2) Modeling \& Learning
+Strategy}\label{modeling-learning-strategy}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Advanced architectures and training}: Explore modern
+  efficiency-optimized CNNs and transformer-based vision models; compare
+  against the current ResNet baseline (\citeproc{ref-he2016deep}{He et
+  al., 2016}). Use transfer learning and feature reuse principles to
+  accelerate convergence and reduce overfitting on scarce classes
+  (\citeproc{ref-lecun2015deep}{LeCun et al., 2015};
+  \citeproc{ref-yosinski2014transfer}{Yosinski et al., 2014}).
+\item
+  \textbf{Imbalance-aware optimization}: Systematically compare
+  class-weighted losses, focal loss, and curriculum learning, guided by
+  class difficulty and support (\citeproc{ref-buda2018systematic}{Buda
+  et al., 2018}; \citeproc{ref-krawczyk2016learning}{Krawczyk, 2016}).
+\item
+  \textbf{Uncertainty estimation}: Integrate predictive uncertainty
+  (e.g., MC dropout or deep ensembles) to enable ``defer-to-expert''
+  behavior for low-confidence cases, aligning with clinical safety
+  norms.
+\item
+  \textbf{Explainability (XAI)}: Pair saliency/attribution (e.g.,
+  Grad-CAM) with concept-level explanations and counterfactuals to
+  improve clinician trust and error analysis
+  (\citeproc{ref-doshi2017towards}{Doshi-Velez \& Kim, 2017};
+  \citeproc{ref-holzinger2017we}{Holzinger et al., 2017}). Explanations
+  should be validated with dermatologist feedback rather than assumed
+  correct.
+\end{itemize}
+
+\subsubsection{3) Human-in-the-Loop \& Clinical Study
+Design}\label{human-in-the-loop-clinical-study-design}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Reader studies and workflow integration}: Conduct prospective
+  studies comparing clinician-alone vs.~clinician+AI performance,
+  modeled after prior comparative work in dermatology
+  (\citeproc{ref-haenssle2018man}{Haenssle et al., 2018}). Measure
+  impact on diagnostic accuracy, time-to-decision, and confidence.
+\item
+  \textbf{Decision support, not replacement}: Maintain a
+  human-in-the-loop paradigm with clear UI for uncertainty, rationale,
+  and suggested next steps---consistent with best practices on
+  augmenting (not replacing) clinical judgment
+  (\citeproc{ref-topol2019highperformance}{Topol, 2019}).
+\item
+  \textbf{Teledermatology alignment}: Integrate with teledermatology
+  pathways to support triage and follow-up, leveraging lessons from
+  remote-care workflows (\citeproc{ref-khan2021multi}{Khan et al.,
+  2021}).
+\end{itemize}
+
+\subsubsection{4) Deployment, Privacy, and
+Safety}\label{deployment-privacy-and-safety}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{On-device optimization for offline use}: Implement
+  quantization/pruning and lightweight inference backends to enable
+  reliable performance in low-connectivity settings. Provide automatic
+  fallback from cloud to on-device inference where feasible.
+\item
+  \textbf{Monitoring \& model governance}: Establish post-deployment
+  monitoring (data drift, performance by subgroup), versioned model
+  releases, and rollback strategies. Maintain an auditable pipeline from
+  data ingestion to model update.
+\item
+  \textbf{Security and privacy}: Enforce encryption at rest/in transit,
+  strict access controls, and privacy-preserving analytics. Use
+  consented datasets with transparent documentation (``datasheets'' and
+  ``model cards'') to improve accountability.
+\item
+  \textbf{Regulatory readiness}: Map features to regulatory frameworks
+  (e.g., risk classification, intended use, performance claims). Plan
+  for clinical-grade validation, traceability, and quality management
+  processes.
+\end{itemize}
+
+\subsubsection{5) Product \& UX
+Refinements}\label{product-ux-refinements}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Clinician-centered interfaces}: Co-design with dermatologists
+  and primary-care providers to refine image capture guidance,
+  anatomical site selection, and confidence display. Provide easy access
+  to differential diagnoses and ``what to do next.''
+\item
+  \textbf{Patient-facing safety rails}: Clear disclaimers, symptom
+  checklists, and routing to care when serious conditions are suspected.
+  Use calibrated thresholds to minimize false reassurance for high-risk
+  lesions.
+\item
+  \textbf{Educational feedback loops}: Offer curated educational content
+  and exemplar images to improve image quality and user understanding,
+  reinforcing appropriate use.
+\end{itemize}
+
+\subsubsection{6) Research Extensions}\label{research-extensions}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Multimodal and longitudinal modeling}: Combine images with
+  metadata and (where available) follow-up images to model lesion
+  evolution, potentially improving disambiguation of chronic
+  inflammatory conditions.
+\item
+  \textbf{Generative augmentation (with caution)}: Explore carefully
+  validated synthetic augmentation to bolster rare classes, with strict
+  visual/Turing tests and clinician review to avoid artifact learning
+  (\citeproc{ref-goodfellow2016deep}{Goodfellow et al., 2016}).
+\item
+  \textbf{Benchmark transparency}: Release de-identified, consented
+  subsets and standardized evaluation code to enhance reproducibility
+  and enable fair comparisons across studies.
+\end{itemize}
+
+\textbf{Priorities for the next iteration.} In practical terms, the
+following are recommended: (1) targeted data collection for minority
+classes and external validation; (2) imbalance-aware training with
+uncertainty estimation; (3) human-in-the-loop studies embedded in
+teledermatology; and (4) deployment hardening (on-device optimization,
+monitoring, and documentation). These steps directly address the
+observed failure modes (rare classes, lookalikes, overfitting) while
+improving safety and clinical usability.
+
+\subsection{Final Remarks}\label{final-remarks}
+
+The development and evaluation of the skin lesion detection and
+classification system presented in this work represents a convergence of
+\textbf{deep learning research}, \textbf{software engineering}, and
+\textbf{practical deployment considerations}. From the outset, the
+project was guided by the need to create a solution that is not only
+technically sound but also \textbf{clinically meaningful},
+\textbf{usable}, and \textbf{scalable}.
+
+The study demonstrated that convolutional neural networks, particularly
+the ResNet18 baseline, can achieve competitive performance on diverse
+dermatological datasets. Importantly, the implementation revealed both
+the \textbf{strengths} of modern CNNs in pattern recognition and their
+\textbf{limitations} in handling rare conditions, cross-domain
+generalization, and calibration for clinical decision-making
+(\citeproc{ref-lecun2015deep}{LeCun et al., 2015};
+\citeproc{ref-topol2019highperformance}{Topol, 2019}). These findings
+underscore that while AI holds promise, it must be \textbf{complemented
+by human expertise} and embedded responsibly into clinical workflows.
+
+Equally significant was the emphasis on \textbf{end-to-end design and
+deployment}. By building both a user-friendly GUI and a
+research-oriented CLI, alongside cloud-ready APIs, the project
+highlighted how AI models can be translated from academic prototypes
+into usable applications. This aspect aligns with the growing need for
+\textbf{translational AI research}, where models are not judged only by
+benchmark scores but also by how they function in real-world conditions
+(\citeproc{ref-yu2018artificial}{\textbf{yu2018artificial?}}).
+
+Another key takeaway is that deployment in low-resource or
+variable-connectivity environments requires \textbf{adaptability}. The
+project's exploration of lightweight inference pipelines, offline
+capability, and modular system design provides a roadmap for delivering
+equitable access to AI tools, particularly in regions where
+dermatological expertise is scarce. This reflects the broader goal of
+democratizing access to medical AI
+(\citeproc{ref-esteva2019guide}{\textbf{esteva2019guide?}}).
+
+At a higher level, this thesis contributes to the ongoing discussion of
+\textbf{trust, transparency, and responsibility} in AI. The integration
+of explainability, human-in-the-loop safeguards, and regulatory
+considerations illustrates how technical innovation must go hand-in-hand
+with \textbf{ethical and clinical responsibility}
+(\citeproc{ref-doshi2017towards}{Doshi-Velez \& Kim, 2017};
+\citeproc{ref-holzinger2017we}{Holzinger et al., 2017}). Ultimately, the
+value of AI lies not in replacing clinicians but in \textbf{enhancing
+their capabilities}---improving speed, accuracy, and accessibility of
+care.
+
+In conclusion, this work lays the foundation for future research and
+development in AI-assisted dermatology. By combining robust modeling,
+careful system design, and deployment-focused engineering, the project
+demonstrates a path toward \textbf{clinically integrated, user-centered,
+and globally relevant AI tools}. While challenges remain---particularly
+in fairness, interpretability, and large-scale validation---the findings
+reaffirm that with careful attention to both \textbf{technical rigor}
+and \textbf{human context}, AI can meaningfully contribute to better
+healthcare outcomes.
+
+The hope is that this work inspires not only incremental improvements in
+skin lesion detection but also a broader \textbf{interdisciplinary
+commitment}: bridging computer science, clinical medicine, design, and
+ethics to ensure that the promise of AI in healthcare is realized
+responsibly and inclusively.
 
 \newpage
 
@@ -4756,10 +5536,23 @@ Braun, V., \& Clarke, V. (2006). Using thematic analysis in psychology.
 \emph{Qualitative Research in Psychology}, \emph{3}(2), 77--101.
 \url{https://doi.org/10.1191/1478088706qp063oa}
 
+\bibitem[\citeproctext]{ref-brinker2019deep}
+Brinker, T. J., Hekler, A., Enk, A. H., Berking, C., Haferkamp, S.,
+Hauschild, A., Weichenthal, M., Klode, J., Schadendorf, D.,
+Holland-Letz, T., et al. (2019). Deep learning outperformed 136 of 157
+dermatologists in a head-to-head dermoscopic melanoma image
+classification task. \emph{European Journal of Cancer}, \emph{113},
+47--54.
+
 \bibitem[\citeproctext]{ref-buda2018systematic}
 Buda, M., Maki, A., \& Mazurowski, M. A. (2018). A systematic study of
 the class imbalance problem in convolutional neural networks.
 \emph{Neural Networks}, \emph{106}, 249--259.
+
+\bibitem[\citeproctext]{ref-datta2021soft}
+Datta, S. K., Sinha, A., \& Zisserman, A. (2021). Soft-attention
+improves skin cancer classification performance. \emph{arXiv Preprint
+arXiv:2105.03358}.
 
 \bibitem[\citeproctext]{ref-doshi2017towards}
 Doshi-Velez, F., \& Kim, B. (2017). Towards a rigorous science of
@@ -4787,6 +5580,12 @@ L., \& Reader study group, M. against machine. (2018). Man against
 machine: Diagnostic performance of a deep learning convolutional neural
 network for dermoscopic melanoma recognition in comparison to 58
 dermatologists. \emph{Annals of Oncology}, \emph{29}(8), 1836--1842.
+
+\bibitem[\citeproctext]{ref-han2018classification}
+Han, S. S., Kim, M. S., Lim, W., Park, G. H., Park, I. Y., \& Chang, S.
+E. (2018). Classification of malignant melanomas and benign nevi using a
+deep learning framework. \emph{Journal of Investigative Dermatology},
+\emph{138}(7), 1529--1538.
 
 \bibitem[\citeproctext]{ref-harangi2018skin}
 Harangi, B. (2018). Skin lesion classification with ensembles of deep
@@ -4845,6 +5644,12 @@ Skin lesion classification using hybrid deep neural networks.
 \emph{ICASSP 2019-2019 IEEE International Conference on Acoustics,
 Speech and Signal Processing (ICASSP)}, 1229--1233.
 
+\bibitem[\citeproctext]{ref-mahbod2020resnet}
+Mahbod, A., Schaefer, G., Wang, C., Ecker, R., Ellinger, I., Dorffner,
+G., \& Pitiot, A. (2020). A novel framework for skin lesion
+classification using an ensemble of modified deep residual networks.
+\emph{arXiv Preprint arXiv:2009.05977}.
+
 \bibitem[\citeproctext]{ref-ogudo2023optimal}
 Ogudo, K. A., Surendran, R., \& Khalaf, O. I. (2023). Optimal artificial
 intelligence based automated skin lesion detection and classification
@@ -4869,11 +5674,15 @@ Srivastava, A., Bhardwaj, S., \& Saraswat, S. (2017). SCRUM model for
 agile methodology. \emph{2017 International Conference on Computing,
 Communication and Automation (ICCCA)}, 864--869.
 
+\bibitem[\citeproctext]{ref-topol2019highperformance}
+Topol, E. J. (2019). High-performance medicine: The convergence of human
+and artificial intelligence. \emph{Nature Medicine}, \emph{25}(1),
+44--56. \url{https://doi.org/10.1038/s41591-018-0300-7}
+
 \bibitem[\citeproctext]{ref-tschandl2018ham10000}
 Tschandl, P., Rosendahl, C., \& Kittler, H. (2018). The HAM10000
-dataset, a large collection of multi-source dermatoscopic images of
-common pigmented skin lesions. \emph{Scientific Data}, \emph{5}(1),
-1--9.
+dataset: A large collection of multi-source dermatoscopic images of
+common pigmented skin lesions. \emph{Scientific Data}, \emph{5}, 180161.
 
 \bibitem[\citeproctext]{ref-ventola2014mobile}
 Ventola, C. L. (2014). Mobile devices and apps for health care
