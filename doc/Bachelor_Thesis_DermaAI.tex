@@ -696,17 +696,18 @@ systematically addressing a core component of the research.
   procedures, and performance evaluation metrics. It also outlines the
   mobile application and CLI implementation details.
 \item
-  \textbf{Chapter 4 -- Results and Discussion}: Reports and analyzes
-  experimental results, including classification performance, error
-  analysis, and comparative evaluation against existing methods. The
-  discussion interprets these findings in the context of the study
-  objectives and broader literature.
+  \textbf{Chapter 4 -- System analysis, Design, Results and Discussion}:
+  Describes the design of the system, reports and analyzes experimental
+  results, including classification performance, error analysis, and
+  comparative evaluation against existing methods. The discussion
+  interprets these findings in the context of the study objectives and
+  broader literature.
 \item
-  \textbf{Chapter 5 -- Conclusion and Future Work}: Summarizes key
-  findings, reiterates the contributions of the study, and outlines
-  limitations alongside recommended directions for future research,
-  including potential clinical integration and large-scale deployment
-  strategies.
+  \textbf{Chapter 5 -- Summary, Conclusions, Discussion, and
+  Recommendations}: Summarizes key findings, reiterates the
+  contributions of the study, and outlines limitations alongside
+  recommended directions for future research, including potential
+  clinical integration and large-scale deployment strategies.
 \end{itemize}
 
 This structured organization ensures a logical progression from problem
@@ -1876,6 +1877,18 @@ Quantitative results revealed several key trends:
   decision support, while non-technical users were more tolerant of
   slightly lower accuracy levels if accompanied by clear explanations
   (\citeproc{ref-esteva2017dermatologist}{Esteva et al., 2017}).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{accuracy1.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{accuracy2.png}
+    \caption{Survey response to accuracy of the model.}
+\end{figure}
+
+\begin{itemize}
+\tightlist
 \item
   \textbf{Feature Prioritization}: Across both groups, the most highly
   rated features were real-time analysis, mobile accessibility, and
@@ -2343,7 +2356,7 @@ ResNet-18 was chosen because:
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{unfrozen_layers} 
+{\centering \includegraphics[width=0.9\linewidth]{unfrozen_layers} 
 
 }
 
@@ -2442,7 +2455,7 @@ Balancing}\label{loss-function-and-class-balancing-1}
 A major challenge identified during exploratory data analysis (EDA) was
 \textbf{class imbalance}, with conditions like \emph{Eczema} and
 \emph{Acne} having significantly more samples than rare diseases such as
-\emph{Tungiasis} or \emph{Cowpox}. Without correction, the model would
+\emph{Tungiasis} or \emph{Herpes}. Without correction, the model would
 bias predictions toward majority classes. To address this:
 
 \begin{itemize}
@@ -2519,7 +2532,7 @@ metrics were logged to TensorBoard, capturing:
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{loss_curve_v3} 
+{\centering \includegraphics[width=0.9\linewidth]{loss_curve_v3} 
 
 }
 
@@ -2528,7 +2541,7 @@ metrics were logged to TensorBoard, capturing:
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{accuracy_curve_v3} 
+{\centering \includegraphics[width=0.9\linewidth]{accuracy_curve_v3} 
 
 }
 
@@ -2720,6 +2733,17 @@ performance analytics.
   the path via a command-line argument.
 \end{itemize}
 
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{cli-prediction} 
+
+}
+
+\caption{Screenshot of CLI prediction output}\label{fig:unnamed-chunk-7}
+\end{figure}
+
+\newpage
+
 \subsubsection{Mobile Application for
 End-Users}\label{mobile-application-for-end-users}
 
@@ -2750,6 +2774,16 @@ inference APIs} (for lighter device workloads).
   A lightweight, quantized version of the model can be embedded for use
   in low-connectivity regions.
 \end{itemize}
+
+\newpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{mobile_classification.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{mobile_class2.png}
+    \caption{Mobile UI mockup showing classification screen.}
+\end{figure}
 
 \subsubsection{Hosting and API
 Infrastructure}\label{hosting-and-api-infrastructure}
@@ -2969,15 +3003,10 @@ mindful of user needs and infrastructure realities, the system is
 positioned to deliver both \textbf{research-grade accuracy} and
 \textbf{field-ready accessibility}.
 
-The next chapter, \textbf{Results and Discussion}, will present the
-outcomes of this methodology, including quantitative performance
-metrics, visualizations of training dynamics, and an analysis of
-strengths and limitations relative to existing solutions.
-
 \newpage
 
-\section{Chapter 4: System Analysis and
-Design}\label{chapter-4-system-analysis-and-design}
+\section{Chapter 4: System Analysis, Design Result, and
+Discussion}\label{chapter-4-system-analysis-design-result-and-discussion}
 
 \subsection{Introduction}\label{introduction-3}
 
@@ -3123,7 +3152,7 @@ usability. Respondents were also asked about their preferred features in
 a health application, including interface simplicity, availability of
 explanations, and data confidentiality assurances.
 
-A total of \textbf{30 respondents} completed the general user survey.
+Over \textbf{30 respondents} completed the general user survey.
 Participants represented a diverse demographic spread across age groups,
 gender, and educational backgrounds. For instance, preliminary
 demographic analysis indicated that a significant proportion of
@@ -3156,13 +3185,12 @@ are critical in regions with unstable or costly internet connectivity.
 Survey}\label{technicalprofessional-survey}
 
 The technical/professional survey was narrower in scale but richer in
-domain-specific insights. A total of \textbf{10 respondents}
-participated, consisting of clinicians, medical interns, biomedical
-researchers, and computer scientists with prior experience in artificial
-intelligence or health informatics. This group was strategically sampled
-because their input was expected to guide \textbf{architectural
-decisions, model explainability requirements, and workflow integration
-strategies}.
+domain-specific insights. Over \textbf{15 respondents} participated,
+consisting of clinicians, medical interns, biomedical researchers, and
+computer scientists with prior experience in artificial intelligence or
+health informatics. This group was strategically sampled because their
+input was expected to guide \textbf{architectural decisions, model
+explainability requirements, and workflow integration strategies}.
 
 Clinicians provided valuable perspectives on diagnostic accuracy
 thresholds, patient communication requirements, and potential
@@ -3250,14 +3278,14 @@ application interface to the realities of everyday users.
 
 A total of \textbf{30 respondents} participated in the general user
 survey. The age distribution showed a relatively youthful sample, with
-approximately 45\% of respondents aged between 18 and 35 years. This
+approximately 87\% of respondents aged between 18 and 35 years. This
 aligns with global trends indicating that young adults are more engaged
 with digital technologies and more likely to experiment with
 health-related mobile applications. However, older demographics were
-also represented: 30\% were between 36 and 50 years, while 25\% were
-aged 51 years or above. The latter group is particularly significant
-given that the incidence of skin lesions and related conditions
-increases with age.
+also represented: 9\% were between 36 and 50 years, while 4\% were aged
+51 years or above. The latter group is particularly significant given
+that the incidence of skin lesions and related conditions increases with
+age.
 
 Gender distribution was balanced, with male and female respondents each
 accounting for atleast 48\% of the sample each. This inclusivity is
@@ -3294,6 +3322,8 @@ divide suggests that while younger users may adopt the system readily,
 older populations may require stronger assurances regarding safety,
 reliability, and clinical endorsement.
 
+\newpage
+
 \paragraph{Trust and Perceptions of
 Reliability}\label{trust-and-perceptions-of-reliability}
 
@@ -3323,7 +3353,7 @@ heavily on:
 
 }
 
-\caption{Survey Response relating to trust}\label{fig:unnamed-chunk-7}
+\caption{Survey Response relating to trust}\label{fig:unnamed-chunk-8}
 \end{figure}
 
 Notably, 62\% of respondents indicated that they would be more likely to
@@ -3452,11 +3482,11 @@ perspectives on both medical and technical utility were considered.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\linewidth]{technical-user-chart1} 
+{\centering \includegraphics[width=0.8\linewidth]{technical-user-chart1} 
 
 }
 
-\caption{TDistribution of Respondent Professions}\label{fig:unnamed-chunk-8}
+\caption{TDistribution of Respondent Professions}\label{fig:unnamed-chunk-9}
 \end{figure}
 
 \paragraph{Experience with Medical
@@ -3478,7 +3508,7 @@ gap (\citeproc{ref-holzinger2017we}{Holzinger et al., 2017}).
 
 }
 
-\caption{Prior Experience with Medical Imaging}\label{fig:unnamed-chunk-9}
+\caption{Prior Experience with Medical Imaging}\label{fig:unnamed-chunk-10}
 \end{figure}
 
 \paragraph{Tools and Frameworks Used}\label{tools-and-frameworks-used}
@@ -3495,13 +3525,15 @@ This diversity highlights the importance of designing the system with
 \textbf{Python-first compatibility}, while ensuring outputs are also
 easily exportable to more general tools for broader accessibility.
 
+\newpage
+
 \begin{figure}
 
 {\centering \includegraphics[width=1\linewidth]{technical-user-chart3} 
 
 }
 
-\caption{Tools and Frameworks Used by Respondents}\label{fig:unnamed-chunk-10}
+\caption{Tools and Frameworks Used by Respondents}\label{fig:unnamed-chunk-11}
 \end{figure}
 
 \paragraph{Usefulness of a CLI Tool}\label{usefulness-of-a-cli-tool}
@@ -3521,7 +3553,7 @@ professionals} and a \textbf{user-friendly app for general users}.
 
 }
 
-\caption{Perceived Usefulness of CLI}\label{fig:unnamed-chunk-11}
+\caption{Perceived Usefulness of CLI}\label{fig:unnamed-chunk-12}
 \end{figure}
 
 \paragraph{Preferred Input and Output
@@ -3544,9 +3576,9 @@ For output formats, preferences were distributed as follows:
   importance of \textbf{heatmaps (e.g., Grad-CAM)} to highlight lesion
   regions, serving both validation and explainability purposes.
 \item
-  \textbf{Reports}: A smaller but notable portion highlighted
-  \textbf{PDF reports}, particularly relevant to healthcare
-  professionals who required clinical-style documentation.
+  \textbf{Reports}: Another notable portion highlighted \textbf{PDF
+  reports}, particularly relevant to healthcare professionals who
+  required clinical-style documentation.
 \end{itemize}
 
 This multi-format preference indicates the need for \textbf{flexible
@@ -3559,7 +3591,7 @@ semi-technical users.
 
 }
 
-\caption{Preferred Output Formats}\label{fig:unnamed-chunk-12}
+\caption{Preferred Output Formats}\label{fig:unnamed-chunk-13}
 \end{figure}
 
 \paragraph{Batch and Asynchronous
@@ -3603,7 +3635,7 @@ evaluation.
 
 }
 
-\caption{Desired Model Metadata in Outputs}\label{fig:unnamed-chunk-13}
+\caption{Desired Model Metadata in Outputs}\label{fig:unnamed-chunk-14}
 \end{figure}
 
 \paragraph{Re-training and
@@ -3673,8 +3705,8 @@ users, several common themes emerged:
 \item
   \textbf{Desire for Accurate and Trustworthy Predictions:}\\
   Both groups emphasized that diagnostic reliability was paramount.
-  Users---technical or not---wanted confidence scores or probabilities
-  to be reported.
+  Users, technical or not, wanted confidence scores or probabilities to
+  be reported.
 \item
   \textbf{Importance of Explainability:}\\
   While technical respondents explicitly mentioned interpretability
@@ -4239,13 +4271,15 @@ Application)}\label{general-users-mobile-application}
   \end{itemize}
 \end{enumerate}
 
+\newpage
+
 \begin{figure}
 
 {\centering \includegraphics[width=1\linewidth]{DermaAI-Usecase} 
 
 }
 
-\caption{Usecase Diagram for DermaAI}\label{fig:unnamed-chunk-14}
+\caption{Usecase Diagram for DermaAI}\label{fig:unnamed-chunk-15}
 \end{figure}
 
 \subsubsection{System-Oriented
@@ -4384,18 +4418,18 @@ The proposed skin lesion detection and classification system adopts a
 cost-efficiency, and seamless integration of advanced AI models. The
 system is primarily built upon cloud-native components (Amazon Web
 Services) to ensure elasticity and fault tolerance, while remaining
-lightweight enough to accommodate future hybrid deployments. Figure 18
+lightweight enough to accommodate future hybrid deployments. Figure 21
 (below) illustrates the \textbf{overall serverless architecture of
 DermaAI}, integrating both model inference and large language model
 (LLM)-based explanation generation.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.5\linewidth]{DermaAI-Architecture} 
+{\centering \includegraphics[width=0.75\linewidth]{DermaAI-Architecture} 
 
 }
 
-\caption{Serverless Architecture for DermaAI}\label{fig:unnamed-chunk-15}
+\caption{Serverless Architecture for DermaAI}\label{fig:unnamed-chunk-16}
 \end{figure}
 
 At a high level, the system architecture can be broken down into the
@@ -4462,7 +4496,7 @@ accuracy.
 
 }
 
-\caption{CNN model Architecture for DermaAI}\label{fig:unnamed-chunk-16}
+\caption{CNN model Architecture for DermaAI}\label{fig:unnamed-chunk-17}
 \end{figure}
 
 \begin{itemize}
@@ -4496,8 +4530,8 @@ backend scalability and high clinical relevance of predictions.
 The user interface (UI) design of the lesion detection system is
 critical in ensuring usability, accessibility, and effective interaction
 for different categories of end-users. Given the dual-interface
-approach---mobile application for general users and command-line
-interface (CLI) for health professionals and researchers---the system
+approach, that is mobile application for general users and command-line
+interface (CLI) for health professionals and researchers, the system
 emphasizes both simplicity and technical flexibility.
 
 \subsubsection{Mobile Application
@@ -4668,8 +4702,10 @@ lightweight:
 
 }
 
-\caption{Deployment Architecture for DermaAI}\label{fig:unnamed-chunk-17}
+\caption{Deployment Architecture for DermaAI}\label{fig:unnamed-chunk-18}
 \end{figure}
+
+\newpage
 
 \subsection{Testing, Results, and
 Discussion}\label{testing-results-and-discussion}
@@ -4681,8 +4717,8 @@ The dataset was divided into three distinct subsets: \textbf{training},
 \textbf{validation}, and \textbf{testing}. The training set enabled
 model optimization, the validation set monitored performance to mitigate
 overfitting, and the test set provided the final unbiased evaluation. To
-preserve class distribution---especially given the diversity of
-conditions---\textbf{stratified sampling} was applied.
+preserve class distribution specially given the diversity of
+conditions,\textbf{stratified sampling} was applied.
 
 \subsubsection{Accuracy and Loss Trends}\label{accuracy-and-loss-trends}
 
@@ -4721,7 +4757,7 @@ distinguishing visually similar lesions.
 
 }
 
-\caption{Confusion Matrix for DermaAI V3}\label{fig:unnamed-chunk-18}
+\caption{Confusion Matrix for DermaAI V3}\label{fig:unnamed-chunk-19}
 \end{figure}
 
 \subsubsection{Receiver Operating Characteristic (ROC) / Area Under the
@@ -4753,7 +4789,7 @@ robust generalization across diverse conditions.
 
 }
 
-\caption{ROC for DermaAI V3}\label{fig:unnamed-chunk-19}
+\caption{ROC for DermaAI V3}\label{fig:unnamed-chunk-20}
 \end{figure}
 
 \subsubsection{Class-wise Metrics}\label{class-wise-metrics}
@@ -4842,6 +4878,8 @@ The \textbf{macro-averaged F1-score} was \textbf{0.73}, while the
 \textbf{weighted F1-score} reached \textbf{0.75}, reflecting stronger
 performance for prevalent classes but reduced consistency for rare ones.
 
+\newpage
+
 \subsubsection{Model Limitations and
 Biases}\label{model-limitations-and-biases}
 
@@ -4883,7 +4921,7 @@ loss, reaching \textbf{93\% accuracy} across seven classes
 
 These benchmarks typically span 7--9 conditions with F1/precision values
 between \textbf{0.75 and 0.94}. Against this context, our model's
-F1-score of \textbf{0.75} is competitive---particularly given its
+F1-score of \textbf{0.75} is competitive, particularly given its
 coverage of \textbf{30+ diverse conditions}, many absent from benchmark
 datasets like HAM10000. This broader coverage underscores DermaAI's
 potential clinical relevance as a decision-support system.
@@ -4923,10 +4961,9 @@ comparable ResNet- and Inception-based approaches reported in the
 literature. Unlike many benchmarked systems that focus on a small set of
 conditions, our model demonstrated strong generalization to a much
 broader set of dermatological presentations, thereby enhancing its
-clinical utility in diverse populations. Performance visualizations ---
-including accuracy and loss curves, confusion matrices, and ROC plots
---- further illustrated the model's behavior, strengths, and
-limitations.
+clinical utility in diverse populations. Performance visualizations,
+including accuracy and loss curves, confusion matrices, and ROC plots,
+further illustrated the model's behavior, strengths, and limitations.
 
 Together, the design of the system and the results of the model
 evaluation highlight the novelty of this work: a unified framework that
@@ -4941,8 +4978,8 @@ directions.
 
 \newpage
 
-\section{Chapter 6: Summary, Conclusions, Discussion, and
-Recommendations}\label{chapter-6-summary-conclusions-discussion-and-recommendations}
+\section{Chapter 5: Summary, Conclusions, Discussion, and
+Recommendations}\label{chapter-5-summary-conclusions-discussion-and-recommendations}
 
 \subsection{Summary of Findings}\label{summary-of-findings}
 
@@ -5042,11 +5079,11 @@ learning with user-friendly deployment options. At its core, the work
 addressed two complementary objectives: (1) the development of a robust
 convolutional neural network model capable of distinguishing between
 more than thirty dermatological conditions, and (2) the design of a
-multi-interface platform---including a mobile application, a
-command-line tool, and a support website---through which this
-functionality could be accessed by diverse users. The results achieved
-demonstrate that both objectives were successfully realized, yielding a
-system that is at once technically competent and practically deployable.
+multi-interface platformi, ncluding a mobile application, a command-line
+tool, and a support website, through which this functionality could be
+accessed by diverse users. The results achieved demonstrate that both
+objectives were successfully realized, yielding a system that is at once
+technically competent and practically deployable.
 
 From a machine learning perspective, the study confirmed the
 effectiveness of convolutional neural networks, and in particular
@@ -5257,7 +5294,7 @@ development from \textbf{data} to \textbf{models}, \textbf{deployment},
 and \textbf{evaluation}, with an emphasis on responsible and clinically
 meaningful progress.
 
-\subsubsection{1) Data \& Evaluation
+\subsubsection{Data \& Evaluation
 Enhancements}\label{data-evaluation-enhancements}
 
 \begin{itemize}
@@ -5268,9 +5305,9 @@ Enhancements}\label{data-evaluation-enhancements}
   \emph{Neurofibromatosis}) and ensure broader representation of skin
   tones, age groups, and imaging conditions. Stratified recruitment and
   geographically diverse partnerships can reduce dataset shift and
-  improve fairness. Methods from the imbalanced learning
-  literature---such as informed sampling and resampling---remain
-  essential (\citeproc{ref-buda2018systematic}{Buda et al., 2018};
+  improve fairness. Methods from the imbalanced learning literature such
+  as informed sampling and resampling, remain essential
+  (\citeproc{ref-buda2018systematic}{Buda et al., 2018};
   \citeproc{ref-krawczyk2016learning}{Krawczyk, 2016}).
 \item
   \textbf{Rich metadata capture}: Incorporate clinical context (symptom
@@ -5292,7 +5329,7 @@ Enhancements}\label{data-evaluation-enhancements}
   communication.
 \end{itemize}
 
-\subsubsection{2) Modeling \& Learning
+\subsubsection{Modeling \& Learning
 Strategy}\label{modeling-learning-strategy}
 
 \begin{itemize}
@@ -5325,7 +5362,7 @@ Strategy}\label{modeling-learning-strategy}
   correct.
 \end{itemize}
 
-\subsubsection{3) Human-in-the-Loop \& Clinical Study
+\subsubsection{Human-in-the-Loop \& Clinical Study
 Design}\label{human-in-the-loop-clinical-study-design}
 
 \begin{itemize}
@@ -5339,8 +5376,8 @@ Design}\label{human-in-the-loop-clinical-study-design}
 \item
   \textbf{Decision support, not replacement}: Maintain a
   human-in-the-loop paradigm with clear UI for uncertainty, rationale,
-  and suggested next steps---consistent with best practices on
-  augmenting (not replacing) clinical judgment
+  and suggested next steps consistent with best practices on augmenting
+  (not replacing) clinical judgment
   (\citeproc{ref-topol2019highperformance}{Topol, 2019}).
 \item
   \textbf{Teledermatology alignment}: Integrate with teledermatology
@@ -5349,7 +5386,7 @@ Design}\label{human-in-the-loop-clinical-study-design}
   2021}).
 \end{itemize}
 
-\subsubsection{4) Deployment, Privacy, and
+\subsubsection{Deployment, Privacy, and
 Safety}\label{deployment-privacy-and-safety}
 
 \begin{itemize}
@@ -5376,8 +5413,7 @@ Safety}\label{deployment-privacy-and-safety}
   processes.
 \end{itemize}
 
-\subsubsection{5) Product \& UX
-Refinements}\label{product-ux-refinements}
+\subsubsection{Product \& UX Refinements}\label{product-ux-refinements}
 
 \begin{itemize}
 \tightlist
@@ -5397,7 +5433,7 @@ Refinements}\label{product-ux-refinements}
   reinforcing appropriate use.
 \end{itemize}
 
-\subsubsection{6) Research Extensions}\label{research-extensions}
+\subsubsection{Research Extensions}\label{research-extensions}
 
 \begin{itemize}
 \tightlist
@@ -5454,7 +5490,7 @@ highlighted how AI models can be translated from academic prototypes
 into usable applications. This aspect aligns with the growing need for
 \textbf{translational AI research}, where models are not judged only by
 benchmark scores but also by how they function in real-world conditions
-(\citeproc{ref-yu2018artificial}{\textbf{yu2018artificial?}}).
+(\citeproc{ref-yu2018artificial}{Yu et al., 2018}).
 
 Another key takeaway is that deployment in low-resource or
 variable-connectivity environments requires \textbf{adaptability}. The
@@ -5463,7 +5499,7 @@ capability, and modular system design provides a roadmap for delivering
 equitable access to AI tools, particularly in regions where
 dermatological expertise is scarce. This reflects the broader goal of
 democratizing access to medical AI
-(\citeproc{ref-esteva2019guide}{\textbf{esteva2019guide?}}).
+(\citeproc{ref-esteva2019guide}{Esteva et al., 2019}).
 
 At a higher level, this thesis contributes to the ongoing discussion of
 \textbf{trust, transparency, and responsibility} in AI. The integration
@@ -5473,15 +5509,15 @@ with \textbf{ethical and clinical responsibility}
 (\citeproc{ref-doshi2017towards}{Doshi-Velez \& Kim, 2017};
 \citeproc{ref-holzinger2017we}{Holzinger et al., 2017}). Ultimately, the
 value of AI lies not in replacing clinicians but in \textbf{enhancing
-their capabilities}---improving speed, accuracy, and accessibility of
+their capabilities}, improving speed, accuracy, and accessibility of
 care.
 
 In conclusion, this work lays the foundation for future research and
 development in AI-assisted dermatology. By combining robust modeling,
 careful system design, and deployment-focused engineering, the project
 demonstrates a path toward \textbf{clinically integrated, user-centered,
-and globally relevant AI tools}. While challenges remain---particularly
-in fairness, interpretability, and large-scale validation---the findings
+and globally relevant AI tools}. While challenges remain particularly in
+fairness, interpretability, and large-scale validation, the findings
 reaffirm that with careful attention to both \textbf{technical rigor}
 and \textbf{human context}, AI can meaningfully contribute to better
 healthcare outcomes.
@@ -5491,24 +5527,6 @@ skin lesion detection but also a broader \textbf{interdisciplinary
 commitment}: bridging computer science, clinical medicine, design, and
 ethics to ensure that the promise of AI in healthcare is realized
 responsibly and inclusively.
-
-\newpage
-
-\section{Appendices}\label{appendices}
-
-\begin{itemize}
-\tightlist
-\item
-  Appendix A: Source Code Snippets
-\item
-  Appendix B: Model Configurations
-\item
-  Appendix C: Training Graphs
-\item
-  Appendix D: Screenshots of GUI
-\item
-  Appendix E: User Manual
-\end{itemize}
 
 \newpage
 
@@ -5563,6 +5581,12 @@ Esteva, A., Kuprel, B., Novoa, R. A., Ko, J., Swetter, S. M., Blau, H.
 M., \& Thrun, S. (2017). Dermatologist-level classification of skin
 cancer with deep neural networks. \emph{Nature}, \emph{542}(7639),
 115--118.
+
+\bibitem[\citeproctext]{ref-esteva2019guide}
+Esteva, A., Robicquet, A., Ramsundar, B., Kuleshov, V., DePristo, M.,
+Chou, K., Cui, C., Corrado, G., Thrun, S., \& Dean, J. (2019). A guide
+to deep learning in healthcare. \emph{Nature Medicine}, \emph{25}(1),
+24--29.
 
 \bibitem[\citeproctext]{ref-goodfellow2016deep}
 Goodfellow, I., Bengio, Y., \& Courville, A. (2016). \emph{Deep
@@ -5698,6 +5722,11 @@ classification using deep learning. \emph{Experimental Dermatology},
 Yosinski, J., Clune, J., Bengio, Y., \& Lipson, H. (2014). How
 transferable are features in deep neural networks? \emph{Advances in
 Neural Information Processing Systems}, \emph{27}.
+
+\bibitem[\citeproctext]{ref-yu2018artificial}
+Yu, K.-H., Beam, A. L., \& Kohane, I. S. (2018). Artificial intelligence
+in healthcare. \emph{Nature Biomedical Engineering}, \emph{2}(10),
+719--731.
 
 \bibitem[\citeproctext]{ref-zafar2023skin}
 Zafar, M., Sharif, M. I., Sharif, M. I., Kadry, S., Bukhari, S. A. C.,

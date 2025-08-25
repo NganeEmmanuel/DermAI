@@ -10,8 +10,8 @@ dynamodb = boto3.resource("dynamodb")
 sqs = boto3.client("sqs")
 
 # Environment variables from Terraform
-REQUESTS_TABLE = os.environ.get("RESULTS_TABLE", "dermaai-results") # todo asl gpt about this
-CLASSIFICATION_QUEUE_URL = os.environ.get("OUTPUT_QUEUE") # todo asl gpt about this
+REQUESTS_TABLE = os.environ.get("RESULTS_TABLE", "dermaai-requests-table") # todo asl gpt about this
+CLASSIFICATION_QUEUE_URL = os.environ.get("CLASSIFICATION_QUEUE_URL") # todo asl gpt about this
 
 # DynamoDB table reference
 table = dynamodb.Table(REQUESTS_TABLE)

@@ -161,8 +161,8 @@ The remainder of this thesis is organized into five chapters, each systematicall
 - **Chapter 1 – Introduction**: Provides an overview of the research problem, contextual background, study objectives, scope, significance, and limitations, setting the stage for the investigation.
 - **Chapter 2 – Literature Review**: Presents a comprehensive examination of existing studies on skin lesion detection and classification, machine learning and deep learning techniques applied to medical imaging, and relevant mobile health (mHealth) application frameworks. This chapter critically evaluates the strengths and weaknesses of prior approaches, identifying gaps that this study seeks to address.
 - **Chapter 3 – Methodology**: Describes the research design, dataset collection and curation process, preprocessing and augmentation strategies, CNN architecture selection, training procedures, and performance evaluation metrics. It also outlines the mobile application and CLI implementation details.
-- **Chapter 4 – Results and Discussion**: Reports and analyzes experimental results, including classification performance, error analysis, and comparative evaluation against existing methods. The discussion interprets these findings in the context of the study objectives and broader literature.
-- **Chapter 5 – Conclusion and Future Work**: Summarizes key findings, reiterates the contributions of the study, and outlines limitations alongside recommended directions for future research, including potential clinical integration and large-scale deployment strategies.
+- **Chapter 4 – System analysis, Design, Results and Discussion**: Describes the design of the system, reports and analyzes experimental results, including classification performance, error analysis, and comparative evaluation against existing methods. The discussion interprets these findings in the context of the study objectives and broader literature.
+- **Chapter 5 – Summary, Conclusions, Discussion, and Recommendations**: Summarizes key findings, reiterates the contributions of the study, and outlines limitations alongside recommended directions for future research, including potential clinical integration and large-scale deployment strategies.
 
 This structured organization ensures a logical progression from problem identification through methodological implementation to empirical validation and future considerations, facilitating clarity and coherence for both technical and non-technical readers.
 
@@ -543,10 +543,23 @@ Visualizations were produced using spreadsheet software and statistical tools, e
 Quantitative results revealed several key trends:
 
 - **Accuracy Thresholds**: Health professionals consistently identified a minimum acceptable accuracy rate above 90% for clinical decision support, while non-technical users were more tolerant of slightly lower accuracy levels if accompanied by clear explanations [@esteva2017dermatologist].
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{accuracy1.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{accuracy2.png}
+    \caption{Survey response to accuracy of the model.}
+\end{figure}
+
+
 - **Feature Prioritization**: Across both groups, the most highly rated features were real-time analysis, mobile accessibility, and privacy safeguards.
 - **Adoption Willingness**: Willingness to adopt was highest among younger respondents and those with prior telemedicine experience, suggesting that digital familiarity positively influences acceptance.
 
 These findings highlight the importance of tailoring the system’s feature set and communication style to different user categories.
+
+
 
 ### Conclusion
 The quantitative analysis provided objective, measurable insights into user requirements and priorities. By quantifying trends and preferences, the results served as a foundation for setting design specifications, performance benchmarks, and usability targets. This ensured that subsequent system development steps were guided by evidence-based requirements rather than assumptions.
@@ -724,12 +737,10 @@ This selective fine-tuning strategy combines pretrained low- and mid-level featu
 
 
 ### Loss Function and Class Balancing
-
 A **weighted cross-entropy loss** was employed, where each class weight was inversely proportional to its frequency in the training set. This approach ensured that minority classes contributed more to gradient updates, improving detection rates for rare conditions.
 
 
 ### Optimization and Regularization
-
 Training configuration:
 
 - **Optimizer:** Adam (`lr=0.001`, `weight_decay=1e-4`).
@@ -741,14 +752,13 @@ Regularization via L2 weight decay and early stopping reduced overfitting, while
 
 
 ### Rationale for ResNet-18 Selection
-
 ResNet-18 was chosen because:
 
 1. It delivers high accuracy with relatively low inference time.
 2. Prior studies confirm ResNet’s effectiveness for skin lesion classification [@albahar2019skin; @harangi2018skin].
 3. Its moderate depth supports deployment on resource-constrained devices without heavy hardware requirements.
 
-```{r, echo=FALSE, fig.cap="Modified ResNet-18 highlighting unfrozen layers", fig.align='center', out.width='100%'}
+```{r, echo=FALSE, fig.cap="Modified ResNet-18 highlighting unfrozen layers", fig.align='center', out.width='90%'}
 knitr::include_graphics("unfrozen_layers.png")
 ```
 
@@ -788,7 +798,7 @@ Selective unfreezing reduced the risk of overfitting while allowing enough flexi
 
 ### Loss Function and Class Balancing
 
-A major challenge identified during exploratory data analysis (EDA) was **class imbalance**, with conditions like *Eczema* and *Acne* having significantly more samples than rare diseases such as *Tungiasis* or *Cowpox*. Without correction, the model would bias predictions toward majority classes. To address this:
+A major challenge identified during exploratory data analysis (EDA) was **class imbalance**, with conditions like *Eczema* and *Acne* having significantly more samples than rare diseases such as *Tungiasis* or *Herpes*. Without correction, the model would bias predictions toward majority classes. To address this:
 
 - **Weighted Cross-Entropy Loss** was used, with per-class weights computed using:
 
@@ -826,13 +836,13 @@ The model was trained for a maximum of **20 epochs**. Real-time metrics were log
 - Learning rate schedules.
 
 
-```{r, echo=FALSE, fig.cap="Training and validation loss curves", fig.align='center', out.width='100%'}
+```{r, echo=FALSE, fig.cap="Training and validation loss curves", fig.align='center', out.width='90%'}
 knitr::include_graphics("loss_curve_v3.png")
 ```
 
 
 
-```{r, echo=FALSE, fig.cap="Training and validation accuracy curves", fig.align='center', out.width='100%'}
+```{r, echo=FALSE, fig.cap="Training and validation accuracy curves", fig.align='center', out.width='90%'}
 knitr::include_graphics("accuracy_curve_v3.png")
 ```
 
@@ -936,9 +946,13 @@ The CLI is designed to serve dermatology researchers and data scientists who req
 - **Custom model loading**  
   Allows researchers to test alternative trained models by specifying the path via a command-line argument.
 
-<!-- @todo 
-**[Placeholder: Screenshot of CLI prediction output]**
---->
+
+```{r, echo=FALSE, fig.cap="Screenshot of CLI prediction output", fig.align='center', out.width='100%'}
+knitr::include_graphics("cli-prediction.png")
+```
+
+
+\newpage
 
 ### Mobile Application for End-Users
 
@@ -956,10 +970,16 @@ The app will integrate the trained ResNet-18 model either **on-device** (for off
 - **Offline Mode (Planned)**  
   A lightweight, quantized version of the model can be embedded for use in low-connectivity regions.
 
-<!--
-@todo
-**[Placeholder: Mobile UI mockup showing classification screen]**
---->
+
+\newpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{mobile_classification.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{mobile_class2.png}
+    \caption{Mobile UI mockup showing classification screen.}
+\end{figure}
 
 ### Hosting and API Infrastructure
 
@@ -1038,13 +1058,9 @@ Hosting considerations focused on **cloud-based API deployment**, with the initi
 
 Throughout this methodology, careful attention was paid to both **technical performance** and **practical usability**. The CRISP-DM framework provided the flexibility to refine earlier stages based on insights from later phases, for example, adjusting augmentation strategies in response to observed overfitting during model training. By combining robust deep learning techniques with a deployment design mindful of user needs and infrastructure realities, the system is positioned to deliver both **research-grade accuracy** and **field-ready accessibility**.
 
-The next chapter, **Results and Discussion**, will present the outcomes of this methodology, including quantitative performance metrics, visualizations of training dynamics, and an analysis of strengths and limitations relative to existing solutions.
-
-
-
 \newpage
 
-# Chapter 4: System Analysis and Design
+# Chapter 4: System Analysis, Design Result, and Discussion
 
 ## Introduction  
 
@@ -1091,7 +1107,7 @@ This two-pronged strategy was essential because the system’s success depends o
 
 The general user survey aimed to capture perspectives from a wide range of non-specialist participants. Questions were structured to assess awareness of skin-related conditions, comfort with AI-based health applications, privacy concerns, and expectations around accuracy and usability. Respondents were also asked about their preferred features in a health application, including interface simplicity, availability of explanations, and data confidentiality assurances.  
 
-A total of **30 respondents**<!-- @todo update this number of respondents at the end --> completed the general user survey. Participants represented a diverse demographic spread across age groups, gender, and educational backgrounds. For instance, preliminary demographic analysis indicated that a significant proportion of respondents were young adults between the ages of 18 and 35, reflecting the higher digital adoption rates in this cohort. However, middle-aged and older respondents were also represented, ensuring that the sample incorporated perspectives from individuals who may have higher risks of developing skin lesions but comparatively lower exposure to mobile health technologies.  
+Over **30 respondents**<!-- @todo update this number of respondents at the end --> completed the general user survey. Participants represented a diverse demographic spread across age groups, gender, and educational backgrounds. For instance, preliminary demographic analysis indicated that a significant proportion of respondents were young adults between the ages of 18 and 35, reflecting the higher digital adoption rates in this cohort. However, middle-aged and older respondents were also represented, ensuring that the sample incorporated perspectives from individuals who may have higher risks of developing skin lesions but comparatively lower exposure to mobile health technologies.  
 
 Gender distribution within the sample was relatively balanced, with approximately half identifying as female and half as male. This diversity allowed the analysis to avoid gender-based biases in the interpretation of trust, usability, and privacy perceptions. Educational attainment varied widely, from participants with only secondary education to those holding postgraduate qualifications, which provided insights into how digital health solutions might be received across different literacy levels.  
 
@@ -1099,7 +1115,7 @@ Geographically, most respondents were urban-based, though a meaningful number al
 
 #### Technical/Professional Survey  
 
-The technical/professional survey was narrower in scale but richer in domain-specific insights. A total of **10 respondents**<!-- @todo update this number of respondents at the end --> participated, consisting of clinicians, medical interns, biomedical researchers, and computer scientists with prior experience in artificial intelligence or health informatics. This group was strategically sampled because their input was expected to guide **architectural decisions, model explainability requirements, and workflow integration strategies**.  
+The technical/professional survey was narrower in scale but richer in domain-specific insights. Over **15 respondents**<!-- @todo update this number of respondents at the end --> participated, consisting of clinicians, medical interns, biomedical researchers, and computer scientists with prior experience in artificial intelligence or health informatics. This group was strategically sampled because their input was expected to guide **architectural decisions, model explainability requirements, and workflow integration strategies**.  
 
 Clinicians provided valuable perspectives on diagnostic accuracy thresholds, patient communication requirements, and potential integration of the system into preliminary screening or teledermatology workflows. Several highlighted the importance of **explainable AI**, noting that predictions should not be treated as “black boxes” but instead accompanied by confidence scores, visual saliency maps, or textual explanations that could be verified against clinical reasoning.  
 
@@ -1128,7 +1144,7 @@ The general user survey provided a comprehensive snapshot of how potential non-s
 
 #### Demographic Profile  
 
-A total of **30 respondents**<!-- @todo update this number of respondents at the end --> participated in the general user survey. The age distribution showed a relatively youthful sample, with approximately 45% of respondents aged between 18 and 35 years. This aligns with global trends indicating that young adults are more engaged with digital technologies and more likely to experiment with health-related mobile applications. However, older demographics were also represented: 30% were between 36 and 50 years, while 25% were aged 51 years or above. The latter group is particularly significant given that the incidence of skin lesions and related conditions increases with age.  
+A total of **30 respondents**<!-- @todo update this number of respondents at the end --> participated in the general user survey. The age distribution showed a relatively youthful sample, with approximately 87% of respondents aged between 18 and 35 years. This aligns with global trends indicating that young adults are more engaged with digital technologies and more likely to experiment with health-related mobile applications. However, older demographics were also represented: 9% were between 36 and 50 years, while 4% were aged 51 years or above. The latter group is particularly significant given that the incidence of skin lesions and related conditions increases with age.  
 
 Gender distribution was balanced, with male and female respondents each accounting for atleast 48% of the sample each. This inclusivity is important because previous studies have shown that health technology adoption can vary by gender, with women often expressing greater concern over privacy and men demonstrating higher interest in technical reliability [@ventola2014mobile].  
 
@@ -1139,6 +1155,8 @@ When asked about their prior awareness of skin conditions, a large majority (70%
 Awareness of artificial intelligence in healthcare was more variable. Approximately 30% of respondents reported that they had heard of AI applications in medical diagnosis, while only 10% claimed to understand how such systems work. A majority (60%) expressed skepticism and distrust, associating AI with inaccuracy or “machines replacing doctors.” These results reinforce the need for educational and explanatory features within the app, ensuring that users are not only provided with predictions but also guided through the logic behind them.  
 
 Interestingly, younger respondents (18–35 years) were more likely to express excitement and curiosity about AI, whereas older respondents (51+) often approached the technology with caution, preferring reassurance from traditional physician-based care. This generational divide suggests that while younger users may adopt the system readily, older populations may require stronger assurances regarding safety, reliability, and clinical endorsement.  
+
+\newpage
 
 #### Trust and Perceptions of Reliability  
 
@@ -1213,7 +1231,7 @@ The second segment of the survey targeted **technical and professional users**, 
 
 The professional respondent pool included a diverse set of roles: mobile application developer, laboratory technician, nursing professional, computer/software engineers, students in computing-related disciplines, and computer scientists. This distribution suggests that while the majority of respondents were **technically oriented**, there was also representation from the **healthcare domain**, ensuring that perspectives on both medical and technical utility were considered.
 
-```{r, echo=FALSE, fig.cap="TDistribution of Respondent Professions", fig.align='center', out.width='100%'}
+```{r, echo=FALSE, fig.cap="TDistribution of Respondent Professions", fig.align='center', out.width='80%'}
 knitr::include_graphics("technical-user-chart1.png")
 ```
 
@@ -1234,6 +1252,7 @@ Respondents reported a wide array of tools and frameworks used in their work. Th
 
 This diversity highlights the importance of designing the system with **Python-first compatibility**, while ensuring outputs are also easily exportable to more general tools for broader accessibility.
 
+\newpage
 
 ```{r, echo=FALSE, fig.cap="Tools and Frameworks Used by Respondents", fig.align='center', out.width='100%'}
 knitr::include_graphics("technical-user-chart3.png")
@@ -1258,7 +1277,7 @@ For output formats, preferences were distributed as follows:
 
 * **Machine-readable formats**: JSON and CSV were highly favored, allowing seamless integration into existing workflows.
 * **Visual overlays**: Several respondents emphasized the importance of **heatmaps (e.g., Grad-CAM)** to highlight lesion regions, serving both validation and explainability purposes.
-* **Reports**: A smaller but notable portion highlighted **PDF reports**, particularly relevant to healthcare professionals who required clinical-style documentation.
+* **Reports**: Another notable portion highlighted **PDF reports**, particularly relevant to healthcare professionals who required clinical-style documentation.
 
 This multi-format preference indicates the need for **flexible export functionality**, ensuring the system serves both technical and semi-technical users.
 
@@ -1319,7 +1338,7 @@ This section synthesizes findings from both the general user survey and the tech
 Across both general users (non-technical) and technical/professional users, several common themes emerged:
 
 1. **Desire for Accurate and Trustworthy Predictions:**  
-   Both groups emphasized that diagnostic reliability was paramount. Users—technical or not—wanted confidence scores or probabilities to be reported.
+   Both groups emphasized that diagnostic reliability was paramount. Users, technical or not, wanted confidence scores or probabilities to be reported.
 
 2. **Importance of Explainability:**  
    While technical respondents explicitly mentioned interpretability methods such as Grad-CAM and LIME, general users also stressed the need for clear explanations in plain language. This highlights a shared demand for transparency, albeit at different levels of technical detail.
@@ -1568,6 +1587,8 @@ User-oriented requirements describe how the system should interact with its prim
    - Provide multiple explanation modalities (numerical feature importance, saliency maps, etc.) suitable for academic publications or clinical reviews.  
 
 
+\newpage
+
 ```{r, echo=FALSE, fig.cap="Usecase Diagram for DermaAI", fig.align='center', out.width='100%'}
 knitr::include_graphics("DermaAI-Usecase.png")
 ```
@@ -1631,10 +1652,10 @@ In summary, the functional requirements establish the foundation of the proposed
 
 ## System Architecture
 
-The proposed skin lesion detection and classification system adopts a **serverless, modular architecture** designed for scalability, cost-efficiency, and seamless integration of advanced AI models. The system is primarily built upon cloud-native components (Amazon Web Services) to ensure elasticity and fault tolerance, while remaining lightweight enough to accommodate future hybrid deployments. Figure 18<!--@todo update this --> (below) illustrates the **overall serverless architecture of DermaAI**, integrating both model inference and large language model (LLM)-based explanation generation.
+The proposed skin lesion detection and classification system adopts a **serverless, modular architecture** designed for scalability, cost-efficiency, and seamless integration of advanced AI models. The system is primarily built upon cloud-native components (Amazon Web Services) to ensure elasticity and fault tolerance, while remaining lightweight enough to accommodate future hybrid deployments. Figure 21<!--@todo update this --> (below) illustrates the **overall serverless architecture of DermaAI**, integrating both model inference and large language model (LLM)-based explanation generation.
 
 
-```{r, echo=FALSE, fig.cap="Serverless Architecture for DermaAI", fig.align='center', out.width='50%'}
+```{r, echo=FALSE, fig.cap="Serverless Architecture for DermaAI", fig.align='center', out.width='75%'}
 knitr::include_graphics("DermaAI-Architecture.png")
 ```
 
@@ -1682,7 +1703,7 @@ The synergy between the **system-level serverless architecture** and the **model
 
 ## User Interface Design
 
-The user interface (UI) design of the lesion detection system is critical in ensuring usability, accessibility, and effective interaction for different categories of end-users. Given the dual-interface approach—mobile application for general users and command-line interface (CLI) for health professionals and researchers—the system emphasizes both simplicity and technical flexibility.
+The user interface (UI) design of the lesion detection system is critical in ensuring usability, accessibility, and effective interaction for different categories of end-users. Given the dual-interface approach, that is mobile application for general users and command-line interface (CLI) for health professionals and researchers, the system emphasizes both simplicity and technical flexibility.
 
 ### Mobile Application Interface
 
@@ -1766,12 +1787,12 @@ The **offline mode in the mobile app** is intentionally lightweight:
 knitr::include_graphics("deployement-architecture.png")
 ```
 
-
+\newpage
 
 ## Testing, Results, and Discussion
 
 ### Dataset Partitioning: Training, Validation, and Testing
-The dataset was divided into three distinct subsets: **training**, **validation**, and **testing**. The training set enabled model optimization, the validation set monitored performance to mitigate overfitting, and the test set provided the final unbiased evaluation. To preserve class distribution—especially given the diversity of conditions—**stratified sampling** was applied.
+The dataset was divided into three distinct subsets: **training**, **validation**, and **testing**. The training set enabled model optimization, the validation set monitored performance to mitigate overfitting, and the test set provided the final unbiased evaluation. To preserve class distribution specially given the diversity of conditions,**stratified sampling** was applied.
 
 ### Accuracy and Loss Trends
 Across 20 epochs, the model showed consistent learning. Training accuracy surpassed **90%**, while validation accuracy stabilized around **75%**. This divergence indicates effective representation learning but also signals mild overfitting.
@@ -1853,6 +1874,8 @@ Performance metrics revealed substantial variability (see Table below).
 
 The **macro-averaged F1-score** was **0.73**, while the **weighted F1-score** reached **0.75**, reflecting stronger performance for prevalent classes but reduced consistency for rare ones.
 
+\newpage 
+
 ### Model Limitations and Biases
 Several limitations emerged:
 
@@ -1866,7 +1889,7 @@ Compared to existing dermatological diagnostic systems, particularly those based
 
 Datta et al. enhanced ResNet, InceptionResNetV2, and DenseNet using soft-attention, achieving **precision of 93.7%** on HAM10000 [@datta2021soft]. Tschandl et al. reported **91% balanced accuracy** using ResNet-50 on the same dataset [@tschandl2018ham10000]. Mahbod et al. employed ensembles of modified ResNet-50 models with focal loss, reaching **93% accuracy** across seven classes [@mahbod2020resnet].  
 
-These benchmarks typically span 7–9 conditions with F1/precision values between **0.75 and 0.94**. Against this context, our model’s F1-score of **0.75** is competitive—particularly given its coverage of **30+ diverse conditions**, many absent from benchmark datasets like HAM10000. This broader coverage underscores DermaAI’s potential clinical relevance as a decision-support system.
+These benchmarks typically span 7–9 conditions with F1/precision values between **0.75 and 0.94**. Against this context, our model’s F1-score of **0.75** is competitive, particularly given its coverage of **30+ diverse conditions**, many absent from benchmark datasets like HAM10000. This broader coverage underscores DermaAI’s potential clinical relevance as a decision-support system.
 
 ### Conclusion
 The model demonstrated robust performance for common and visually distinct conditions, while facing challenges with rare and overlapping ones. Trends from learning curves, confusion analysis, and ROC metrics highlight the need for future improvements via **data augmentation**, **transfer learning**, and **attention-based architectures**. Despite limitations, DermaAI shows strong potential as a diagnostic support tool across a wide spectrum of skin diseases.
@@ -1876,14 +1899,14 @@ The model demonstrated robust performance for common and visually distinct condi
 
 This chapter has presented the practical realization of the proposed lesion detection and classification system, encompassing both the technical design of the application and the empirical evaluation of the underlying deep learning model. The first part of the chapter described the architectural design, system workflows, and implementation of the three user-facing components: the mobile interface for patients and clinicians, the command-line interface (CLI) for researchers, and the supporting website that provides usage guidelines and documentation. Special attention was given to ensuring usability, portability, and integration with the trained classification model through well-structured APIs. Deployment strategies were also discussed, including considerations for scalability, offline versus online inference, and the role of cloud-based services in extending accessibility.
 
-The second part of the chapter detailed the training, testing, and evaluation of the deep learning model, which serves as the core of the system. Using an extended dataset of over 30 skin lesion classes, the model achieved a **weighted F1-score of 0.7539**, competitive with comparable ResNet- and Inception-based approaches reported in the literature. Unlike many benchmarked systems that focus on a small set of conditions, our model demonstrated strong generalization to a much broader set of dermatological presentations, thereby enhancing its clinical utility in diverse populations. Performance visualizations — including accuracy and loss curves, confusion matrices, and ROC plots — further illustrated the model’s behavior, strengths, and limitations.
+The second part of the chapter detailed the training, testing, and evaluation of the deep learning model, which serves as the core of the system. Using an extended dataset of over 30 skin lesion classes, the model achieved a **weighted F1-score of 0.7539**, competitive with comparable ResNet- and Inception-based approaches reported in the literature. Unlike many benchmarked systems that focus on a small set of conditions, our model demonstrated strong generalization to a much broader set of dermatological presentations, thereby enhancing its clinical utility in diverse populations. Performance visualizations, including accuracy and loss curves, confusion matrices, and ROC plots, further illustrated the model’s behavior, strengths, and limitations.
 
 Together, the design of the system and the results of the model evaluation highlight the novelty of this work: a unified framework that not only performs competitively in classification accuracy but also delivers the functionality in practical, user-friendly applications. The combination of technical robustness and thoughtful deployment positions the system as a valuable clinical decision-support tool, particularly in regions where dermatological expertise is limited. These outcomes lay the groundwork for the concluding chapter, which will synthesize the study’s contributions, acknowledge its limitations, and propose future directions.
 
 
 \newpage
 
-# Chapter 6:  Summary, Conclusions, Discussion, and Recommendations
+# Chapter 5:  Summary, Conclusions, Discussion, and Recommendations
 
 ## Summary of Findings
 
@@ -1905,7 +1928,7 @@ In summary, the findings confirm that the objectives of the study were successfu
 
 ## Conclusion
 
-This study set out to design, implement, and evaluate a comprehensive skin lesion detection and classification system that integrates deep learning with user-friendly deployment options. At its core, the work addressed two complementary objectives: (1) the development of a robust convolutional neural network model capable of distinguishing between more than thirty dermatological conditions, and (2) the design of a multi-interface platform—including a mobile application, a command-line tool, and a support website—through which this functionality could be accessed by diverse users. The results achieved demonstrate that both objectives were successfully realized, yielding a system that is at once technically competent and practically deployable.
+This study set out to design, implement, and evaluate a comprehensive skin lesion detection and classification system that integrates deep learning with user-friendly deployment options. At its core, the work addressed two complementary objectives: (1) the development of a robust convolutional neural network model capable of distinguishing between more than thirty dermatological conditions, and (2) the design of a multi-interface platformi, ncluding a mobile application, a command-line tool, and a support website, through which this functionality could be accessed by diverse users. The results achieved demonstrate that both objectives were successfully realized, yielding a system that is at once technically competent and practically deployable.
 
 From a machine learning perspective, the study confirmed the effectiveness of convolutional neural networks, and in particular transfer learning with ResNet-based architectures, for the domain of skin lesion classification. The final model achieved a **weighted F1-score of 0.7539**, placing it within the performance range of other published systems that employ ResNet and Inception architectures on benchmark datasets such as HAM10000 and ISIC [@han2018classification; @brinker2019deep]. Importantly, whereas many existing studies are constrained to binary or low-class problems (e.g., melanoma vs. nevus), this project extended the scope to over thirty distinct lesion types. This broader classification task more closely mirrors the complexity of real-world dermatological diagnosis and, by extension, enhances the clinical relevance of the system. The model’s ability to generalize across this wider set of classes, despite class imbalance and data scarcity in certain categories, underscores its robustness and the value of the training strategy employed.
 
@@ -1960,35 +1983,35 @@ In sum, the contributions of this study are threefold. Technically, it extends a
 
 The results and deployment experience in this study suggest several technical, system-level, and clinical directions that can substantially enhance the performance, reliability, and impact of AI-assisted dermatology. The recommendations below are organized to guide iterative development from **data** to **models**, **deployment**, and **evaluation**, with an emphasis on responsible and clinically meaningful progress.
 
-### 1) Data & Evaluation Enhancements
-- **Targeted data expansion for underrepresented classes**: Future collection should prioritize rare categories (e.g., *Whitlow*, *Neurofibromatosis*) and ensure broader representation of skin tones, age groups, and imaging conditions. Stratified recruitment and geographically diverse partnerships can reduce dataset shift and improve fairness. Methods from the imbalanced learning literature—such as informed sampling and resampling—remain essential [@krawczyk2016learning; @buda2018systematic].
+### Data & Evaluation Enhancements
+- **Targeted data expansion for underrepresented classes**: Future collection should prioritize rare categories (e.g., *Whitlow*, *Neurofibromatosis*) and ensure broader representation of skin tones, age groups, and imaging conditions. Stratified recruitment and geographically diverse partnerships can reduce dataset shift and improve fairness. Methods from the imbalanced learning literature such as informed sampling and resampling, remain essential [@krawczyk2016learning; @buda2018systematic].
 - **Rich metadata capture**: Incorporate clinical context (symptom duration, itch/pain, anatomical site, patient age) to enable multimodal models. Even simple metadata can disambiguate visually similar lesions (e.g., *Eczema* vs. *Psoriasis*).
 - **External validation**: Evaluate on multi-center datasets distinct from the training distribution (e.g., additional ISIC partitions or regional clinical repositories [@tschandl2018ham10000]). Report per-subgroup performance (skin tone, device type) to surface disparities.
 - **Robust metrics and calibration**: Beyond F1 and AUC, report calibration (e.g., reliability diagrams, Brier score) and clinical decision-focused metrics like sensitivity at fixed specificity thresholds. Calibrated probabilities can better support risk communication.
 
-### 2) Modeling & Learning Strategy
+### Modeling & Learning Strategy
 - **Advanced architectures and training**: Explore modern efficiency-optimized CNNs and transformer-based vision models; compare against the current ResNet baseline [@he2016deep]. Use transfer learning and feature reuse principles to accelerate convergence and reduce overfitting on scarce classes [@yosinski2014transfer; @lecun2015deep].
 - **Imbalance-aware optimization**: Systematically compare class-weighted losses, focal loss, and curriculum learning, guided by class difficulty and support [@krawczyk2016learning; @buda2018systematic].
 - **Uncertainty estimation**: Integrate predictive uncertainty (e.g., MC dropout or deep ensembles) to enable “defer-to-expert” behavior for low-confidence cases, aligning with clinical safety norms.
 - **Explainability (XAI)**: Pair saliency/attribution (e.g., Grad-CAM) with concept-level explanations and counterfactuals to improve clinician trust and error analysis [@holzinger2017we; @doshi2017towards]. Explanations should be validated with dermatologist feedback rather than assumed correct.
 
-### 3) Human-in-the-Loop & Clinical Study Design
+### Human-in-the-Loop & Clinical Study Design
 - **Reader studies and workflow integration**: Conduct prospective studies comparing clinician-alone vs. clinician+AI performance, modeled after prior comparative work in dermatology [@haenssle2018man]. Measure impact on diagnostic accuracy, time-to-decision, and confidence.
-- **Decision support, not replacement**: Maintain a human-in-the-loop paradigm with clear UI for uncertainty, rationale, and suggested next steps—consistent with best practices on augmenting (not replacing) clinical judgment [@topol2019highperformance].
+- **Decision support, not replacement**: Maintain a human-in-the-loop paradigm with clear UI for uncertainty, rationale, and suggested next steps consistent with best practices on augmenting (not replacing) clinical judgment [@topol2019highperformance].
 - **Teledermatology alignment**: Integrate with teledermatology pathways to support triage and follow-up, leveraging lessons from remote-care workflows [@khan2021multi].
 
-### 4) Deployment, Privacy, and Safety
+### Deployment, Privacy, and Safety
 - **On-device optimization for offline use**: Implement quantization/pruning and lightweight inference backends to enable reliable performance in low-connectivity settings. Provide automatic fallback from cloud to on-device inference where feasible.
 - **Monitoring & model governance**: Establish post-deployment monitoring (data drift, performance by subgroup), versioned model releases, and rollback strategies. Maintain an auditable pipeline from data ingestion to model update.
 - **Security and privacy**: Enforce encryption at rest/in transit, strict access controls, and privacy-preserving analytics. Use consented datasets with transparent documentation (“datasheets” and “model cards”) to improve accountability.
 - **Regulatory readiness**: Map features to regulatory frameworks (e.g., risk classification, intended use, performance claims). Plan for clinical-grade validation, traceability, and quality management processes.
 
-### 5) Product & UX Refinements
+### Product & UX Refinements
 - **Clinician-centered interfaces**: Co-design with dermatologists and primary-care providers to refine image capture guidance, anatomical site selection, and confidence display. Provide easy access to differential diagnoses and “what to do next.”
 - **Patient-facing safety rails**: Clear disclaimers, symptom checklists, and routing to care when serious conditions are suspected. Use calibrated thresholds to minimize false reassurance for high-risk lesions.
 - **Educational feedback loops**: Offer curated educational content and exemplar images to improve image quality and user understanding, reinforcing appropriate use.
 
-### 6) Research Extensions
+### Research Extensions
 - **Multimodal and longitudinal modeling**: Combine images with metadata and (where available) follow-up images to model lesion evolution, potentially improving disambiguation of chronic inflammatory conditions.
 - **Generative augmentation (with caution)**: Explore carefully validated synthetic augmentation to bolster rare classes, with strict visual/Turing tests and clinician review to avoid artifact learning [@goodfellow2016deep].
 - **Benchmark transparency**: Release de-identified, consented subsets and standardized evaluation code to enhance reproducibility and enable fair comparisons across studies.
@@ -2007,23 +2030,14 @@ Equally significant was the emphasis on **end-to-end design and deployment**. By
 
 Another key takeaway is that deployment in low-resource or variable-connectivity environments requires **adaptability**. The project’s exploration of lightweight inference pipelines, offline capability, and modular system design provides a roadmap for delivering equitable access to AI tools, particularly in regions where dermatological expertise is scarce. This reflects the broader goal of democratizing access to medical AI [@esteva2019guide].  
 
-At a higher level, this thesis contributes to the ongoing discussion of **trust, transparency, and responsibility** in AI. The integration of explainability, human-in-the-loop safeguards, and regulatory considerations illustrates how technical innovation must go hand-in-hand with **ethical and clinical responsibility** [@holzinger2017we; @doshi2017towards]. Ultimately, the value of AI lies not in replacing clinicians but in **enhancing their capabilities**—improving speed, accuracy, and accessibility of care.  
+At a higher level, this thesis contributes to the ongoing discussion of **trust, transparency, and responsibility** in AI. The integration of explainability, human-in-the-loop safeguards, and regulatory considerations illustrates how technical innovation must go hand-in-hand with **ethical and clinical responsibility** [@holzinger2017we; @doshi2017towards]. Ultimately, the value of AI lies not in replacing clinicians but in **enhancing their capabilities**, improving speed, accuracy, and accessibility of care.  
 
-In conclusion, this work lays the foundation for future research and development in AI-assisted dermatology. By combining robust modeling, careful system design, and deployment-focused engineering, the project demonstrates a path toward **clinically integrated, user-centered, and globally relevant AI tools**. While challenges remain—particularly in fairness, interpretability, and large-scale validation—the findings reaffirm that with careful attention to both **technical rigor** and **human context**, AI can meaningfully contribute to better healthcare outcomes.  
+In conclusion, this work lays the foundation for future research and development in AI-assisted dermatology. By combining robust modeling, careful system design, and deployment-focused engineering, the project demonstrates a path toward **clinically integrated, user-centered, and globally relevant AI tools**. While challenges remain particularly in fairness, interpretability, and large-scale validation, the findings reaffirm that with careful attention to both **technical rigor** and **human context**, AI can meaningfully contribute to better healthcare outcomes.  
 
 The hope is that this work inspires not only incremental improvements in skin lesion detection but also a broader **interdisciplinary commitment**: bridging computer science, clinical medicine, design, and ethics to ensure that the promise of AI in healthcare is realized responsibly and inclusively.  
 
 \newpage
 
-# Appendices
-
-* Appendix A: Source Code Snippets
-* Appendix B: Model Configurations
-* Appendix C: Training Graphs
-* Appendix D: Screenshots of GUI
-* Appendix E: User Manual
-
-\newpage
 
 # References
 
