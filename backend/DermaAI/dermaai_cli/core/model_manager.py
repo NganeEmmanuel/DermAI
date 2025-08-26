@@ -1,8 +1,10 @@
 # dermaai_cli/core/model_manager.py
 import json
+import requests
 from pathlib import Path
 import shutil
 import datetime
+from tqdm import tqdm
 
 # Where models are stored locally for all machines
 MODELS_DIR = Path.home() / ".dermai" / "models"
@@ -10,7 +12,7 @@ INDEX_FILE = MODELS_DIR / "model_index.json"
 
 # Where local dev models live for testing
 LOCAL_DEV_MODELS_DIR = Path(__file__).parents[2] / "model"
-
+S3_BASE_URL = "https://dermaai-model-classes-bucket.s3.amazonaws.com"
 
 print(LOCAL_DEV_MODELS_DIR)
 
@@ -55,32 +57,50 @@ def add_model(version: int, path: str, metadata: dict):
 # Model management
 # -------------------------------
 def download_model(version: int):
-    """
-    Download model and labels from remote repository.
-    Placeholder: implement GitHub/S3 download later.
-    """
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     model_path = MODELS_DIR / f"dermai_model_v{version}.pth"
     labels_path = MODELS_DIR / f"classes_v{version}.txt"
 
+    # Public URLs
+    model_url = f"{S3_BASE_URL}/dermai_model_v{version}.pth"
+    print(f"Downloading model v{version} from S3...")
 
-    # Simulate download: empty model + sample labels
-    model_path.touch()
-    labels_path.write_text("Melanoma\nNevus\nBenign Keratosis\n")  # placeholder
+    # Download model with progress
+    try:
+        with requests.get(model_url, stream=True) as r:
+            r.raise_for_status()
+            total_size = int(r.headers.get('content-length', 0))
+            chunk_size = 8192
+            with open(model_path, "wb") as f, tqdm(
+                total=total_size, unit='B', unit_scale=True, desc="Model"
+            ) as progress:
+                for chunk in r.iter_content(chunk_size=chunk_size):
+                    f.write(chunk)
+                    progress.update(len(chunk))
 
-    # Auto-generate metadata
+        # Download classes file (usually small, so no progress needed)
+        r = requests.get(f"{S3_BASE_URL}/classes_v{version}.txt")
+        r.raise_for_status()
+        labels_path.write_text(r.text)
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to download model from S3 URL: {e}")
+
+    # Generate metadata
+    classes = [line.strip() for line in labels_path.read_text().splitlines() if line.strip()]
     metadata = {
         "version": version,
-        "num_classes": len(labels_path.read_text().splitlines()),
+        "num_classes": len(classes),
         "classes_file": str(labels_path),
-        "train_date": datetime.date(2025, 8, 25).isoformat(),
+        "train_date": "2025-08-25",
         "accuracy": 0.75
     }
+
     add_model(version, model_path, metadata)
     return model_path, labels_path
 
 
-def ensure_model_exists(version: int, local_dev=True):
+def ensure_model_exists(version: int, local_dev=False):
     model_filename = f"dermai_model_v{version}.pth"
     classes_filename = f"classes_v{version}.txt"
 
