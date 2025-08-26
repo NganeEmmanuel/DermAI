@@ -12,3 +12,5 @@ scikit-learn~=1.7.1
 boto3~=1.40.14
 typer~=0.16.1
 pypandoc~=1.15
+setuptools~=80.9.0
+reportlab~=4.4.3

@@ -15,7 +15,8 @@ setup(
         "torch~=2.7.1",
         "torchvision~=0.22.1",
         "typer[all]~=0.16.1",
-        "pypandoc~=1.15"
+        "pypandoc~=1.15",
+        "reportlab~=4.4.3"
     ],
 
     entry_points={

@@ -1,0 +1,23 @@
+{
+  "images": [
+    "cli/raw_sample_images/acne1.jpg",
+    "cli/raw_sample_images/acne2.jpg",
+    "cli/raw_sample_images/acne3.jpg",
+    "cli/raw_sample_images/eczema1.jpg",
+    "cli/raw_sample_images/eczema2.jpg",
+    "cli/raw_sample_images/eczema3.jpg",
+    "cli/raw_sample_images/athlete_foot1.jpg",
+    "cli/raw_sample_images/athlete_foot2.jpg",
+    "cli/raw_sample_images/athlete_foot3.jpg",
+    "cli/raw_sample_images/psoriasis1.jpg",
+    "cli/raw_sample_images/psoriasis2.jpg",
+    "cli/raw_sample_images/psoriasis3.jpg",
+    "cli/raw_sample_images/psoriasis4.jpg",
+    "cli/raw_sample_images/ringworm1.jpg",
+    "cli/raw_sample_images/ringworm2.jpeg",
+    "cli/raw_sample_images/measles2.jpg",
+    "cli/raw_sample_images/measles3.jpg",
+    "cli/raw_sample_images/measles5.jpg"
+
+  ]
+}

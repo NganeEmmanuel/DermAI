@@ -87,17 +87,17 @@ def ensure_model_exists(version: int, local_dev=True):
     model_path = MODELS_DIR / model_filename
     classes_path = MODELS_DIR / classes_filename
 
-    print(f"[DEBUG] MODELS_DIR = {MODELS_DIR}")
-    print(f"[DEBUG] LOCAL_DEV_MODELS_DIR = {LOCAL_DEV_MODELS_DIR}")
-    print(f"[DEBUG] Checking for local dev files...")
+    # print(f"[DEBUG] MODELS_DIR = {MODELS_DIR}")
+    # print(f"[DEBUG] LOCAL_DEV_MODELS_DIR = {LOCAL_DEV_MODELS_DIR}")
+    # print(f"[DEBUG] Checking for local dev files...")
 
     if local_dev:
         source_model = LOCAL_DEV_MODELS_DIR / model_filename
         source_classes = LOCAL_DEV_MODELS_DIR / classes_filename
-        print(f"[DEBUG] Looking for model at: {source_model}")
-        print(f"[DEBUG] Looking for classes at: {source_classes}")
+        # print(f"[DEBUG] Looking for model at: {source_model}")
+        # print(f"[DEBUG] Looking for classes at: {source_classes}")
         if source_model.exists() and source_classes.exists():
-            print("[DEBUG] Found local dev files. Copying to MODELS_DIR...")
+            # print("[DEBUG] Found local dev files. Copying to MODELS_DIR...")
             shutil.copy(source_model, model_path)
             shutil.copy(source_classes, classes_path)
             metadata = {
@@ -108,7 +108,7 @@ def ensure_model_exists(version: int, local_dev=True):
                 "accuracy": 0.75
             }
             add_model(version, model_path, metadata)
-            print(f"[DEBUG] Model v{version} installed successfully from local dev files.")
+            # print(f"[DEBUG] Model v{version} installed successfully from local dev files.")
             return model_path, classes_path
         else:
             print("[DEBUG] Local dev files NOT found.")
@@ -131,10 +131,37 @@ def ensure_model_exists(version: int, local_dev=True):
     return model_path, classes_path
 
 
-
 def get_model_info(version: int):
+    """
+    Returns full metadata for a model, reading the classes file for an accurate num_classes.
+    """
     models = list_models()
     for m in models:
-        if m["version"] == version:
-            return m
+        if m["version"] != version:
+            continue
+
+        model_path = Path(m["path"])
+        metadata = m.get("metadata", {})
+
+        # Classes file path from metadata or default
+        classes_file = Path(metadata.get("classes_file", model_path.parent / f"classes_v{version}.txt"))
+
+        # Read actual classes from file
+        try:
+            classes = [line.strip() for line in classes_file.read_text().splitlines() if line.strip()]
+            metadata["num_classes"] = len(classes)
+        except Exception:
+            classes = []
+            metadata["num_classes"] = "?"
+
+        # Always include full path info
+        info = {
+            "version": version,
+            "path": str(model_path),
+            "metadata": metadata,
+            "classes": classes,  # full list if needed
+        }
+        return info
+
     raise ValueError(f"Model v{version} not found")
+
