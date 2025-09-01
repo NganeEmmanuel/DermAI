@@ -1,50 +1,44 @@
-# Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+dermaai/
+│── app/                      # Expo Router (App Router) main dir
+│   ├── (tabs)/               # Bottom tab navigation (group)
+│   │   ├── home.tsx          # Home screen
+│   │   ├── diagnose.tsx      # Diagnose screen
+│   │   ├── info.tsx          # Info screen
+│   │
+│   ├── diagnosis/            # Stack routes for Diagnosis Info
+│   │   └── [id].tsx          # Diagnosis detail (opened from Home)
+│   │
+│   ├── settings.tsx          # Settings screen (optional, from Info)
+│   ├── onboarding.tsx        # First-time onboarding flow
+│   ├── layout.tsx            # Main navigation layout
+│   └── index.tsx             # Default entry (can redirect to onboarding/home)
+│
+├── components/               # Reusable UI pieces
+│   ├── DiagnosisCard.tsx     # Card for history items
+│   ├── InfoCard.tsx          # Card for lesion info
+│   ├── ImagePickerModal.tsx  # Capture/Upload modal
+│   ├── TabsHeader.tsx        # Shared header
+│   └── Button.tsx            # Custom button (primary/secondary)
+│
+├── hooks/                    # Custom React hooks
+│   ├── useDiagnosis.ts       # Hook for running inference
+│   ├── useStorage.ts         # Local storage (AsyncStorage/SQLite)
+│   └── useNetwork.ts         # Detect online/offline
+│
+├── lib/                      # Core utilities & configs
+│   ├── inference.ts          # ML inference logic (ResNet/TF Lite)
+│   ├── api.ts                # Online fetch for LLM lesion info
+│   └── theme.ts              # Colors, spacing, typography
+│
+├── assets/                   # Images, fonts, icons
+│   ├── icons/
+│   ├── fonts/
+│   └── images/
+│
+├── types/                    # Global TypeScript types
+│   ├── diagnosis.d.ts        # Diagnosis-related types
+│   └── index.d.ts
+│
+└── package.json
+```
