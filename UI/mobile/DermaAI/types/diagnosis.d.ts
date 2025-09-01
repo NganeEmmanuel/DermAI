@@ -4,5 +4,5 @@ export type Diagnosis = {
   confidence: number;
   date: string;       // ISO date string
   image: string;      // local uri or asset
-  source: "online" | "offline";
+  description: String;
 };
