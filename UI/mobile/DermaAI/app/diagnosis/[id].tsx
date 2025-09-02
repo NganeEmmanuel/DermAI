@@ -1,22 +1,33 @@
+import { Description } from "@/types/description";
 import { Feather } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import * as Print from "expo-print";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import * as Sharing from "expo-sharing";
 import { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   Share,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import Markdown from "react-native-markdown-display";
+import description from "../../data/dummy-descriptions";
 import diagnoses from "../../data/dummy-diagnoses.json";
 import { Diagnosis } from "../../types/diagnosis";
 
 export default function DiagnosisDetail() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const { id } = useLocalSearchParams();
   const item = (diagnoses as Diagnosis[]).find((d) => d.id === id);
+  const item_description = (description as Description[]).find((i) => i?.lessionType === item?.lesionType);
+  const [activeDescription, setActiveDescription] = useState(item_description?.overview)
   const [activeTab, setActiveTab] = useState<"overview" | "details" | "advice">(
     "overview"
   );
@@ -24,21 +35,91 @@ export default function DiagnosisDetail() {
   if (!item) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Diagnosis not found</Text>
+        <Text>Diagnosis not found</Text>
       </View>
     );
   }
 
+  const handleDelete = async () => {
+    setLoading(true);
+    setTimeout(() => {  // mock API delay
+      // delete logic here (remove from state / storage / db)
+      setLoading(false);
+      router.back(); // navigate back home
+    }, 1500);
+  };
+
   const handleShare = () => {
     Share.share({
       message: `Diagnosis: ${item.lesionType}\nConfidence: ${
-        (item.confidence * 100).toFixed(1) + "%"
+        (item.confidence).toFixed(1) + "%"
       }`,
     });
   };
 
+  const handleActiveTab = (tab: any) => {
+    setActiveTab(tab)
+    if(tab === "advice"){
+      setActiveDescription(item_description?.advice)
+    }else if(tab === "details"){
+      setActiveDescription(item_description?.details)
+    }else{
+      setActiveDescription(item_description?.overview)
+    }
+    
+
+  }
+
+  const handleSavePdf = async () => {
+    try {
+      const fileName = `DermaAI_${item.lesionType}_diagnosis_report.pdf`;
+
+      const html = `
+        <html>
+          <body style="font-family: Arial; padding: 20px;">
+            <h2>⚠️ Disclaimer</h2>
+            <p>This report is for informational purposes only and does not replace professional medical advice. Please consult a healthcare provider.</p>
+            <hr/>
+            <h1>${item.lesionType} Diagnosis Report</h1>
+            <p><b>Confidence:</b> ${(item.confidence).toFixed(1)}%</p>
+            <p><b>Date:</b> ${new Date(item.date).toLocaleDateString()}</p>
+            <h2>Overview</h2>
+            <p>${item_description?.overview}</p>
+            <h2>Details</h2>
+            <p>${item_description?.details}</p>
+            <h2>Advice</h2>
+            <p>${item_description?.advice}</p>
+          </body>
+        </html>
+      `;
+
+      // Generate PDF
+      const { uri } = await Print.printToFileAsync({ html });
+
+      // Open system “Save / Share” dialog
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: "application/pdf",
+          dialogTitle: "Save Diagnosis Report",
+        });
+      } else {
+        Alert.alert("Error", "Sharing not available on this device");
+      }
+    } catch (err) {
+      Alert.alert("Error", "Could not save PDF");
+      console.error(err);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {/* overlay */}
+      {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#00897B" />
+          <Text style={{ marginTop: 10, color: "white" }}>Deleting...</Text>
+        </View>
+      )}
 
       {/* Image placeholder */}
       <View style={styles.imageBox}>
@@ -78,7 +159,7 @@ export default function DiagnosisDetail() {
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
-            onPress={() => setActiveTab(tab as any)}
+            onPress={() => handleActiveTab(tab)}
           >
             <Text
               style={[
@@ -94,7 +175,7 @@ export default function DiagnosisDetail() {
 
       {/* Content */}
       <ScrollView style={styles.content}>
-        <Markdown>{item.description}</Markdown>
+        <Markdown>{activeDescription}</Markdown>
       </ScrollView>
 
       {/* Footer actions */}
@@ -104,13 +185,13 @@ export default function DiagnosisDetail() {
           <Text>Share</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.action}>
+        <TouchableOpacity style={styles.action} onPress={handleSavePdf}>
           <Feather name="file-text" size={20} color="black" />
           <Text>Save as PDF</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.action}>
-          <Feather name="trash-2" size={20} color="black" />
+          <Feather name="trash-2" size={20} color="black" onPress={handleDelete} />
           <Text>Delete</Text>
         </TouchableOpacity>
       </View>
@@ -152,13 +233,17 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 12,
     paddingTop: 8,
     borderTopWidth: 1,
     borderColor: "#eee",
   },
-  action: { alignItems: "center" },
-  title: {
-    
-  }
+  action: { alignItems: "center" , marginBottom: 35},
+  overlay: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
 });
