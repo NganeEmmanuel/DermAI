@@ -11,12 +11,15 @@
     "ios": {
       "supportsTablet": true
     },
+    "onnxruntimeExtensionsEnabled": "true",
+    "jsEngine": "hermes",
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.emmanuelngane.DermaAI"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +40,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a9d5644f-e27f-4261-99dd-95cd97eabfa6"
+      }
+    },
+    "owner": "emmanuelngane"
   }
 }

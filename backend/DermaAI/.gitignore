@@ -1,5 +1,6 @@
 .venv
 .env
+.venv311
 
 
 data
@@ -8,6 +9,9 @@ cli/sample_images
 cli/processed_sample_images
 .idea
 
+node_modules
+package-lock.json
+package.json
 
 IAC/.terraform
 IAC/.terraform.lock.hcl

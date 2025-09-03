@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { runInference } from "../../lib/inference";
 
 export default function DiagnoseScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ label: string; confidence: number } | null>(null);
 
   // Pick image from gallery
   const pickImage = async () => {
@@ -20,53 +22,50 @@ export default function DiagnoseScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+    if (!result.canceled) setImage(result.assets[0].uri);
   };
 
-  // Capture from camera
+  // Capture image from camera
   const takePhoto = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     if (status !== "granted") {
       alert("Camera permission needed");
       return;
     }
-
-    const result = await ImagePicker.launchCameraAsync({
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+    const result = await ImagePicker.launchCameraAsync({ quality: 1 });
+    if (!result.canceled) setImage(result.assets[0].uri);
   };
 
-  // Confirm → run AI inference (mock for now)
+  // Confirm and run inference
   const confirmDiagnosis = async () => {
+    if (!image) return;
     setLoading(true);
-    // TODO: send image to AI model here
-    setTimeout(() => {
+    try {
+      const inferenceResult = await runInference(image);
+      setResult(inferenceResult);
+    } catch (err) {
+      console.error(err);
+      alert("Inference failed: " + err);
+    } finally {
       setLoading(false);
-      alert("Inference done! (replace with navigation to results page)");
-    }, 2000);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Diagnose</Text>
 
+      {/* Buttons for capture / upload */}
       <View style={styles.row}>
         <TouchableOpacity style={styles.button} onPress={takePhoto}>
           <Text style={styles.btnText}>📷 Capture Image</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.button} onPress={pickImage}>
           <Text style={styles.btnText}>🖼️ Upload Image</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Preview box */}
       <View style={styles.previewBox}>
         {image ? (
           <Image source={{ uri: image }} style={styles.previewImage} />
@@ -75,15 +74,18 @@ export default function DiagnoseScreen() {
         )}
       </View>
 
+      {/* Retake + Confirm buttons */}
       {image && (
         <View style={styles.row}>
           <TouchableOpacity
             style={[styles.smallButton, { backgroundColor: "#eee" }]}
-            onPress={() => setImage(null)}
+            onPress={() => {
+              setImage(null);
+              setResult(null);
+            }}
           >
             <Text style={{ color: "#333" }}>Retake</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.smallButton, { backgroundColor: "#1e9c7c" }]}
             onPress={confirmDiagnosis}
@@ -93,10 +95,23 @@ export default function DiagnoseScreen() {
         </View>
       )}
 
+      {/* Loading indicator */}
       {loading && (
         <View style={{ marginTop: 20, alignItems: "center" }}>
           <ActivityIndicator size="large" color="#1e9c7c" />
           <Text style={{ marginTop: 8 }}>Analyzing...</Text>
+        </View>
+      )}
+
+      {/* Result */}
+      {result && !loading && (
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <Text style={{ fontSize: 18, fontWeight: "600" }}>
+            {result.label}
+          </Text>
+          <Text style={{ marginTop: 5, color: "#555" }}>
+            Confidence: {(result.confidence * 100).toFixed(2)}%
+          </Text>
         </View>
       )}
     </View>
@@ -104,23 +119,9 @@ export default function DiagnoseScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 20,
-    color: "#1e9c7c",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 10,
-  },
+  container: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "white" },
+  title: { fontSize: 22, fontWeight: "600", marginBottom: 20, color: "#1e9c7c" },
+  row: { flexDirection: "row", justifyContent: "center", marginVertical: 10 },
   button: {
     flex: 1,
     marginHorizontal: 5,
@@ -139,12 +140,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginVertical: 20,
   },
-  previewImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 12,
-    resizeMode: "cover",
-  },
+  previewImage: { width: "100%", height: "100%", borderRadius: 12, resizeMode: "cover" },
   smallButton: {
     flex: 1,
     marginHorizontal: 5,
