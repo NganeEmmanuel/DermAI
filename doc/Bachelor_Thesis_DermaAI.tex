@@ -2779,10 +2779,10 @@ inference APIs} (for lighter device workloads).
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.45\textwidth]{mobile_classification.png}
+    \includegraphics[width=0.45\textwidth]{diagnosi-result-page.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{mobile_class2.png}
-    \caption{Mobile UI mockup showing classification screen.}
+    \includegraphics[width=0.45\textwidth]{diagnosis-page.png}
+    \caption{Mobile UI mockup showing classification result screen.}
 \end{figure}
 
 \subsubsection{Hosting and API
@@ -4525,6 +4525,90 @@ The synergy between the \textbf{system-level serverless architecture}
 and the \textbf{model-level CNN architecture} ensures both robust
 backend scalability and high clinical relevance of predictions.
 
+\subsubsection{Model Training Procedure}\label{model-training-procedure}
+
+To complement the architecture described above, this subsection outlines
+the step-by-step procedure adopted to train the DermaAI model. The
+process was carefully designed to ensure reproducibility, efficiency,
+and robustness while working within the computational limits of a
+CPU-based environment.
+
+\paragraph{Training Environment}\label{training-environment}
+
+Model development and training were carried out on a CPU-only
+workstation using the PyTorch deep learning framework. Supporting Python
+libraries such as Torchvision, Scikit-learn, and Matplotlib were
+employed for data handling, metric calculation, and visualization.
+Although training on a CPU increased computation time compared to GPU
+acceleration, careful optimization of data loading and batch processing
+ensured steady progress.
+
+\paragraph{Data Handling and
+Preparation}\label{data-handling-and-preparation}
+
+The dataset was accessed through PyTorch \texttt{DataLoader} utilities,
+with shuffling enabled to prevent order bias during training. A batch
+size of 32 was selected as a balance between memory efficiency and
+gradient stability. Images were preprocessed (resizing, normalization)
+and augmented (flips, rotations, color jittering) to enhance
+generalization across diverse lesion presentations.
+
+\paragraph{Transfer Learning Setup}\label{transfer-learning-setup}
+
+The ResNet-18 backbone was initialized with ImageNet weights to leverage
+pre-learned low-level features. Early layers responsible for generic
+edge and texture detection were kept frozen, while later layers and the
+final fully connected layer were fine-tuned. The classification head was
+modified to output probabilities for the 33 lesion classes in the
+dataset.
+
+\paragraph{Loss Function and Class
+Balancing}\label{loss-function-and-class-balancing-2}
+
+Given the imbalance across classes, a weighted cross-entropy loss
+function was adopted. This approach ensured that underrepresented
+classes, such as rare malignant lesions, contributed proportionally
+during optimization and were not overshadowed by majority classes.
+
+\paragraph{Optimization and
+Regularization}\label{optimization-and-regularization-1}
+
+The Adam optimizer was used with an initial learning rate of 0.001 and
+weight decay of 1e-4 for regularization. A learning rate scheduler
+dynamically reduced the learning rate when validation accuracy
+plateaued. Early stopping was also employed: training was halted if no
+improvement was observed after several consecutive epochs, preventing
+overfitting and wasted computation.
+
+\paragraph{Monitoring and Logging}\label{monitoring-and-logging}
+
+Training and validation accuracy and loss values were logged at the end
+of each epoch. These metrics were visualized through Matplotlib to track
+convergence trends and identify potential issues such as overfitting or
+vanishing gradients.
+
+\paragraph{Outcome}\label{outcome}
+
+Through this structured training process, the model achieved consistent
+convergence on the validation set. Despite hardware constraints, the use
+of transfer learning, balanced loss, and careful regularization enabled
+DermaAI to reach reliable classification performance across both
+malignant and non-malignant lesions.
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{training-process-diagram} 
+
+}
+
+\caption{Overview of DermaAI Model Training Process}\label{fig:unnamed-chunk-18}
+\end{figure}
+
+The diagram above provides a high-level overview of the training
+pipeline, illustrating the sequence from dataset preparation, data
+loading, and augmentation through model initialization, optimization,
+and evaluation.
+
 \subsection{User Interface Design}\label{user-interface-design}
 
 The user interface (UI) design of the lesion detection system is
@@ -4568,6 +4652,34 @@ The app provides immediate feedback in the form of:
   of the results, enhanced through integration with a Large Language
   Model (LLM) for contextual descriptions.
 \end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-home.png}
+  \caption{Mobile Home Screen}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-result.png}
+  \caption{Mobile diagnosis result screen}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-diagnose.png}
+  \caption{Mobile Predict/Diagnose Screen}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mobile-info.png}
+  \caption{Mobile info screen}
+\end{minipage}
+\end{figure}
 
 \paragraph{Additional Features (History, Notifications, Clinic
 Suggestions)}\label{additional-features-history-notifications-clinic-suggestions}
@@ -4617,11 +4729,17 @@ The CLI provides versatile output options, including:
   analytical pipelines.\\
 \item
   \textbf{PDF Reports:} Automatically generated, summarizing results
-  with statistics and visual representations.\\
-\item
-  \textbf{Visual Overlays:} Highlighting lesion areas directly on the
-  images for deeper clinical inspection.
+  with statistics and visual representations.
 \end{itemize}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{cli-interface} 
+
+}
+
+\caption{CLI Interface for DermaAI}\label{fig:unnamed-chunk-21}
+\end{figure}
 
 \subsection{Deployment Strategy}\label{deployment-strategy}
 
@@ -4702,7 +4820,7 @@ lightweight:
 
 }
 
-\caption{Deployment Architecture for DermaAI}\label{fig:unnamed-chunk-18}
+\caption{Deployment Architecture for DermaAI}\label{fig:unnamed-chunk-22}
 \end{figure}
 
 \newpage
@@ -4757,7 +4875,7 @@ distinguishing visually similar lesions.
 
 }
 
-\caption{Confusion Matrix for DermaAI V3}\label{fig:unnamed-chunk-19}
+\caption{Confusion Matrix for DermaAI V3}\label{fig:unnamed-chunk-23}
 \end{figure}
 
 \subsubsection{Receiver Operating Characteristic (ROC) / Area Under the
@@ -4789,7 +4907,7 @@ robust generalization across diverse conditions.
 
 }
 
-\caption{ROC for DermaAI V3}\label{fig:unnamed-chunk-20}
+\caption{ROC for DermaAI V3}\label{fig:unnamed-chunk-24}
 \end{figure}
 
 \subsubsection{Class-wise Metrics}\label{class-wise-metrics}

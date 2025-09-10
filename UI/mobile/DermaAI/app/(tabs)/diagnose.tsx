@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { runInference } from "../../lib/inference";
+import { saveDiagnosis } from "../../lib/storage";
 
 export default function DiagnoseScreen() {
   const [image, setImage] = useState<string | null>(null);
@@ -37,19 +38,43 @@ export default function DiagnoseScreen() {
   };
 
   // Confirm and run inference
-  const confirmDiagnosis = async () => {
-    if (!image) return;
-    setLoading(true);
-    try {
-      const inferenceResult = await runInference(image);
-      setResult(inferenceResult);
-    } catch (err) {
-      console.error(err);
-      alert("Inference failed: " + err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const confirmDiagnosis = async () => {
+  //   if (!image) return;
+  //   setLoading(true);
+  //   try {
+  //     const inferenceResult = await runInference(image);
+  //     setResult(inferenceResult);
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Inference failed: " + err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+const confirmDiagnosis = async () => {
+  if (!image) return;
+  setLoading(true);
+  try {
+    const inferenceResult = await runInference(image);
+
+    // Save to storage
+    await saveDiagnosis({
+      lesionType: inferenceResult.label,
+      confidence: inferenceResult.confidence,
+      image,
+    });
+
+    setResult(inferenceResult);
+  } catch (err) {
+    console.error(err);
+    alert("Inference failed: " + err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,7 @@
-import { Ionicons } from "@expo/vector-icons"; // ✅ search/reset icons
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -10,21 +11,39 @@ import {
   View,
 } from "react-native";
 import DiagnosisCard from "../../components/DiagnosisCard";
-import diagnoses from "../../data/dummy-diagnoses.json";
+import { getDiagnoses } from "../../lib/storage"; // ✅ import storage helper
 import { Diagnosis } from "../../types/diagnosis";
 
 export default function HomeScreen() {
+  const [records, setRecords] = useState<Diagnosis[]>([]);
   const [query, setQuery] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
-  // ✅ helper to strip time and only compare year/month/day
+  // ✅ load from AsyncStorage on mount
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const fetchData = async () => {
+        const stored = await getDiagnoses();
+        if (isActive) setRecords(stored);
+      };
+
+      fetchData();
+
+      return () => {
+        isActive = false; // cleanup to avoid state updates if screen unmounts
+      };
+    }, [])
+  );
+
   const normalizeDate = (d: Date) =>
     new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-  const filteredData = (diagnoses as Diagnosis[]).filter((item) => {
+  const filteredData = records.filter((item) => {
     const matchQuery = item.lesionType
       .toLowerCase()
       .includes(query.toLowerCase());
@@ -59,10 +78,7 @@ export default function HomeScreen() {
 
       {/* 📅 Date Filter + Reset */}
       <View style={styles.filterContainer}>
-        <Pressable
-          style={styles.dateButton}
-          onPress={() => setShowStartPicker(true)}
-        >
+        <Pressable style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
           <Text style={styles.dateButtonText}>
             {startDate
               ? startDate.toLocaleDateString("en-US", {
@@ -73,10 +89,7 @@ export default function HomeScreen() {
               : "Start Date"}
           </Text>
         </Pressable>
-        <Pressable
-          style={styles.dateButton}
-          onPress={() => setShowEndPicker(true)}
-        >
+        <Pressable style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
           <Text style={styles.dateButtonText}>
             {endDate
               ? endDate.toLocaleDateString("en-US", {
@@ -88,7 +101,6 @@ export default function HomeScreen() {
           </Text>
         </Pressable>
 
-        {/* 🔄 Reset Button */}
         <Pressable style={styles.resetButton} onPress={resetFilters}>
           <Ionicons name="refresh" size={18} color="white" />
           <Text style={styles.resetButtonText}>Reset</Text>
@@ -125,6 +137,11 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <DiagnosisCard item={item} />}
         contentContainerStyle={{ paddingBottom: 20 }}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 40, color: "#888" }}>
+            No records found
+          </Text>
+        }
       />
     </View>
   );

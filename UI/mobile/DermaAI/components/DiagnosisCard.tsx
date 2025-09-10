@@ -14,7 +14,7 @@ export default function DiagnosisCard({ item }: Props) {
         <View style={styles.info}>
           <Text style={styles.lesion}>{item.lesionType}</Text>
           <Text style={styles.confidence}>
-            Confidence: {item.confidence}%
+            Confidence: {(item.confidence * 100).toFixed(2)} %
           </Text>
           <Text style={styles.date}>
             {new Date(item.date).toLocaleDateString("en-US", {

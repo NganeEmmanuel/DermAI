@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Print from "expo-print";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -13,24 +13,42 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
-import description from "../../data/dummy-descriptions";
-import diagnoses from "../../data/dummy-diagnoses.json";
+import description from "../../data/dummy-descriptions"; // ✅ still static
+import { deleteDiagnosis, getDiagnoses } from "../../lib/storage"; // ✅ new helper functions
 import { Diagnosis } from "../../types/diagnosis";
 
 export default function DiagnosisDetail() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
   const { id } = useLocalSearchParams();
-  const item = (diagnoses as Diagnosis[]).find((d) => d.id === id);
-  const item_description = (description as Description[]).find((i) => i?.lessionType === item?.lesionType);
-  const [activeDescription, setActiveDescription] = useState(item_description?.overview)
-  const [activeTab, setActiveTab] = useState<"overview" | "details" | "advice">(
-    "overview"
+
+  const [item, setItem] = useState<Diagnosis | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "details" | "advice"
+  >("overview");
+  const [activeDescription, setActiveDescription] = useState<string | undefined>(
+    ""
   );
+
+  // ✅ Load record from AsyncStorage by id
+  useEffect(() => {
+    const fetchData = async () => {
+      const all = await getDiagnoses();
+      const found = all.find((d) => d.id === id);
+      setItem(found || null);
+
+      if (found) {
+        const desc = (description as Description[]).find(
+          (i) => i?.lessionType === found.lesionType
+        );
+        setActiveDescription(desc?.overview);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   if (!item) {
     return (
@@ -42,33 +60,35 @@ export default function DiagnosisDetail() {
 
   const handleDelete = async () => {
     setLoading(true);
-    setTimeout(() => {  // mock API delay
-      // delete logic here (remove from state / storage / db)
+    try {
+      await deleteDiagnosis(item.id); // ✅ remove from AsyncStorage
+      router.back();
+    } catch (e) {
+      Alert.alert("Error", "Could not delete record");
+    } finally {
       setLoading(false);
-      router.back(); // navigate back home
-    }, 1500);
+    }
   };
 
   const handleShare = () => {
     Share.share({
-      message: `Diagnosis: ${item.lesionType}\nConfidence: ${
-        (item.confidence).toFixed(1) + "%"
-      }`,
+      message: `Diagnosis: ${item.lesionType}\nConfidence: ${(
+        item.confidence * 100
+      ).toFixed(1)}%`,
     });
   };
 
-  const handleActiveTab = (tab: any) => {
-    setActiveTab(tab)
-    if(tab === "advice"){
-      setActiveDescription(item_description?.advice)
-    }else if(tab === "details"){
-      setActiveDescription(item_description?.details)
-    }else{
-      setActiveDescription(item_description?.overview)
-    }
-    
+  const handleActiveTab = (tab: "overview" | "details" | "advice") => {
+    setActiveTab(tab);
 
-  }
+    const desc = (description as Description[]).find(
+      (i) => i?.lessionType === item.lesionType
+    );
+
+    if (tab === "advice") setActiveDescription(desc?.advice);
+    else if (tab === "details") setActiveDescription(desc?.details);
+    else setActiveDescription(desc?.overview);
+  };
 
   const handleSavePdf = async () => {
     try {
@@ -81,22 +101,16 @@ export default function DiagnosisDetail() {
             <p>This report is for informational purposes only and does not replace professional medical advice. Please consult a healthcare provider.</p>
             <hr/>
             <h1>${item.lesionType} Diagnosis Report</h1>
-            <p><b>Confidence:</b> ${(item.confidence).toFixed(1)}%</p>
+            <p><b>Confidence:</b> ${(item.confidence * 100).toFixed(1)}%</p>
             <p><b>Date:</b> ${new Date(item.date).toLocaleDateString()}</p>
             <h2>Overview</h2>
-            <p>${item_description?.overview}</p>
-            <h2>Details</h2>
-            <p>${item_description?.details}</p>
-            <h2>Advice</h2>
-            <p>${item_description?.advice}</p>
+            <p>${activeDescription}</p>
           </body>
         </html>
       `;
 
-      // Generate PDF
       const { uri } = await Print.printToFileAsync({ html });
 
-      // Open system “Save / Share” dialog
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, {
           mimeType: "application/pdf",
@@ -121,17 +135,9 @@ export default function DiagnosisDetail() {
         </View>
       )}
 
-      {/* Image placeholder */}
+      {/* Image */}
       <View style={styles.imageBox}>
-              <Image
-        source={
-          item.image.startsWith("http")
-            ? { uri: item.image }
-            : "" //todo rememember to add this `require(`../../assets/images/${item.image}`)`
-        }
-        style={styles.image}
-      />
-
+        <Image source={{ uri: item.image }} style={styles.image} />
       </View>
 
       {/* Prediction */}
@@ -140,18 +146,18 @@ export default function DiagnosisDetail() {
       {/* Confidence */}
       <View style={styles.confidenceBox}>
         <Text style={styles.confidenceText}>
-          Confidence: {(item.confidence).toFixed(0)}%
+          Confidence: {(item.confidence * 100).toFixed(1)}%
         </Text>
       </View>
 
       {/* Date */}
       <Text style={styles.date}>
-                  {new Date(item.date).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                  })}
-              </Text>
+        {new Date(item.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      </Text>
 
       {/* Tabs */}
       <View style={styles.tabRow}>
@@ -159,7 +165,9 @@ export default function DiagnosisDetail() {
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
-            onPress={() => handleActiveTab(tab)}
+            onPress={() =>
+              handleActiveTab(tab as "overview" | "details" | "advice")
+            }
           >
             <Text
               style={[
@@ -175,7 +183,7 @@ export default function DiagnosisDetail() {
 
       {/* Content */}
       <ScrollView style={styles.content}>
-        <Markdown>{activeDescription}</Markdown>
+        <Markdown>{activeDescription || ""}</Markdown>
       </ScrollView>
 
       {/* Footer actions */}
@@ -190,8 +198,8 @@ export default function DiagnosisDetail() {
           <Text>Save as PDF</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.action}>
-          <Feather name="trash-2" size={20} color="black" onPress={handleDelete} />
+        <TouchableOpacity style={styles.action} onPress={handleDelete}>
+          <Feather name="trash-2" size={20} color="black" />
           <Text>Delete</Text>
         </TouchableOpacity>
       </View>
@@ -237,10 +245,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#eee",
   },
-  action: { alignItems: "center" , marginBottom: 35},
+  action: { alignItems: "center", marginBottom: 35 },
   overlay: {
     position: "absolute",
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",

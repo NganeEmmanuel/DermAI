@@ -975,10 +975,10 @@ The app will integrate the trained ResNet-18 model either **on-device** (for off
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.45\textwidth]{mobile_classification.png}
+    \includegraphics[width=0.45\textwidth]{diagnosi-result-page.png}
     \hfill
-    \includegraphics[width=0.45\textwidth]{mobile_class2.png}
-    \caption{Mobile UI mockup showing classification screen.}
+    \includegraphics[width=0.45\textwidth]{diagnosis-page.png}
+    \caption{Mobile UI mockup showing classification result screen.}
 \end{figure}
 
 ### Hosting and API Infrastructure
@@ -1701,6 +1701,37 @@ knitr::include_graphics("cnn-architecture.png")
 
 The synergy between the **system-level serverless architecture** and the **model-level CNN architecture** ensures both robust backend scalability and high clinical relevance of predictions.
 
+### Model Training Procedure
+
+To complement the architecture described above, this subsection outlines the step-by-step procedure adopted to train the DermaAI model. The process was carefully designed to ensure reproducibility, efficiency, and robustness while working within the computational limits of a CPU-based environment.
+
+#### Training Environment
+Model development and training were carried out on a CPU-only workstation using the PyTorch deep learning framework. Supporting Python libraries such as Torchvision, Scikit-learn, and Matplotlib were employed for data handling, metric calculation, and visualization. Although training on a CPU increased computation time compared to GPU acceleration, careful optimization of data loading and batch processing ensured steady progress.
+
+#### Data Handling and Preparation
+The dataset was accessed through PyTorch `DataLoader` utilities, with shuffling enabled to prevent order bias during training. A batch size of 32 was selected as a balance between memory efficiency and gradient stability. Images were preprocessed (resizing, normalization) and augmented (flips, rotations, color jittering) to enhance generalization across diverse lesion presentations.
+
+#### Transfer Learning Setup
+The ResNet-18 backbone was initialized with ImageNet weights to leverage pre-learned low-level features. Early layers responsible for generic edge and texture detection were kept frozen, while later layers and the final fully connected layer were fine-tuned. The classification head was modified to output probabilities for the 33 lesion classes in the dataset.
+
+#### Loss Function and Class Balancing
+Given the imbalance across classes, a weighted cross-entropy loss function was adopted. This approach ensured that underrepresented classes, such as rare malignant lesions, contributed proportionally during optimization and were not overshadowed by majority classes.
+
+#### Optimization and Regularization
+The Adam optimizer was used with an initial learning rate of 0.001 and weight decay of 1e-4 for regularization. A learning rate scheduler dynamically reduced the learning rate when validation accuracy plateaued. Early stopping was also employed: training was halted if no improvement was observed after several consecutive epochs, preventing overfitting and wasted computation.
+
+#### Monitoring and Logging
+Training and validation accuracy and loss values were logged at the end of each epoch. These metrics were visualized through Matplotlib to track convergence trends and identify potential issues such as overfitting or vanishing gradients.
+
+#### Outcome
+Through this structured training process, the model achieved consistent convergence on the validation set. Despite hardware constraints, the use of transfer learning, balanced loss, and careful regularization enabled DermaAI to reach reliable classification performance across both malignant and non-malignant lesions.
+
+```{r, echo=FALSE, fig.cap="Overview of DermaAI Model Training Process", fig.align='center', out.width='70%'}
+knitr::include_graphics("training-process-diagram.png")
+```
+
+The diagram above provides a high-level overview of the training pipeline, illustrating the sequence from dataset preparation, data loading, and augmentation through model initialization, optimization, and evaluation.
+
 ## User Interface Design
 
 The user interface (UI) design of the lesion detection system is critical in ensuring usability, accessibility, and effective interaction for different categories of end-users. Given the dual-interface approach, that is mobile application for general users and command-line interface (CLI) for health professionals and researchers, the system emphasizes both simplicity and technical flexibility.
@@ -1721,7 +1752,48 @@ The app provides immediate feedback in the form of:
 - **Confidence Score:** A percentage value reflecting model certainty.  
 - **AI-Generated Explanation:** Clear, user-friendly interpretation of the results, enhanced through integration with a Large Language Model (LLM) for contextual descriptions.  
 
-<!--  @todo **Placeholder for Mobile Application UI Mockup** -->
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-home.png}
+  \caption{Mobile Home Screen}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-result.png}
+  \caption{Mobile diagnosis result screen}
+\end{minipage}
+\end{figure}
+
+<!--
+
+```{r, echo=FALSE, fig.cap="Mobile Application UI 1", fig.align='center', out.width='45%'}
+knitr::include_graphics(c("mob-home.png", "mob-result.png"))
+```
+-->
+
+
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mob-diagnose.png}
+  \caption{Mobile Predict/Diagnose Screen}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{mobile-info.png}
+  \caption{Mobile info screen}
+\end{minipage}
+\end{figure}
+
+<!--
+```{r, echo=FALSE, fig.cap="Mobile Application UI 2", fig.align='center', out.width='45%'}
+knitr::include_graphics(c("mob-diagnose.png", "mobile-info.png"))
+```
+-->
 
 #### Additional Features (History, Notifications, Clinic Suggestions)
 
@@ -1747,11 +1819,11 @@ The CLI provides versatile output options, including:
 
 - **CSV/JSON:** For structured data storage and integration with analytical pipelines.  
 - **PDF Reports:** Automatically generated, summarizing results with statistics and visual representations.  
-- **Visual Overlays:** Highlighting lesion areas directly on the images for deeper clinical inspection.  
-
-<!--  @todo **Placeholder for CLI Output Example (CSV/Overlay Snapshot)** -->
 
 
+```{r, echo=FALSE, fig.cap="CLI Interface for DermaAI", fig.align='center', out.width='100%'}
+knitr::include_graphics("cli-interface.png")
+```
 
 ## Deployment Strategy
 
