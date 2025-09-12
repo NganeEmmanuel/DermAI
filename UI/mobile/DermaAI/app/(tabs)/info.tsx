@@ -32,10 +32,7 @@ export default function InfoScreen() {
             <TouchableOpacity
               key={item.id}
               style={styles.card}
-              onPress={() => {
-                console.log(item.id)
-                router.push(`/lesion/${item.id}`)
-              }}
+              onPress={() => router.push(`/lesion/${item.id}`)}
             >
               <Text style={styles.cardText}>{item.label}</Text>
             </TouchableOpacity>

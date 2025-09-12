@@ -69,33 +69,33 @@ export async function runInference(
   const response = await fetch(manipulated.uri);
   const imageData = await response.arrayBuffer();
   const rawImageTensor = decodeJpeg(new Uint8Array(imageData));
-  console.log('Raw image tensor shape:', rawImageTensor.shape);
+  // console.log('Raw image tensor shape:', rawImageTensor.shape);
 
   // Normalize and prepare input
 const normalized = tf.tidy(() => {
   const resized = tf.image.resizeBilinear(rawImageTensor, [IMAGE_SIZE, IMAGE_SIZE]);
-  console.log('Resized tensor shape:', resized.shape); // [224, 224, 3]
+  // console.log('Resized tensor shape:', resized.shape); // [224, 224, 3]
 
   const casted = resized.toFloat().div(tf.scalar(255));
   const offset = tf.tensor1d(MEAN).reshape([1, 1, 1, 3]);
   const scale = tf.tensor1d(STD).reshape([1, 1, 1, 3]);
   const norm = casted.sub(offset).div(scale); // shape: [224, 224, 3]
 
-  console.log('Normalized tensor shape before expandDims:', norm.shape);
+  // console.log('Normalized tensor shape before expandDims:', norm.shape);
   return norm // shape: [1, 224, 224, 3]
 });
 
- console.log('Final input tensor shape:', normalized.shape);
+//  console.log('Final input tensor shape:', normalized.shape);
 
   // Run prediction
-  console.log('Model inputs:', model.inputs);
+  // console.log('Model inputs:', model.inputs);
 
   const prediction = model.execute({ x: normalized }) as tf.Tensor;
 
-  console.log('Prediction tensor shape:', prediction.shape);
+  // console.log('Prediction tensor shape:', prediction.shape);
 
   const output = await prediction.data();
-  console.log('Raw prediction values:', output);
+  // console.log('Raw prediction values:', output);
 
   // Softmax
   const expScores = Array.from(output).map(Math.exp);
