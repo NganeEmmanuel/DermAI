@@ -1,0 +1,37 @@
+node_modules/
+.android/
+.ios/
+.expo/
+.expo-shared/
+build/
+dist/
+.git/
+.vscode/
+*.log
+
+
+# Node modules (rebuilt in cloud)
+UI/mobile/DermaAI/node_modules/
+UI/mobile/DermaAI/.vscode/
+UI/mobile/DermaAI/.expo/
+UI/mobile/DermaAI/.expo-shared/
+UI/mobile/DermaAI/build/
+UI/mobile/DermaAI/dist/
+UI/mobile/DermaAI/android/
+UI/mobile/DermaAI/ios/
+UI/CLI
+
+android/
+ios/
+.expo/
+.expo-shared/
+build/
+dist/
+.git/
+.vscode/
+*.log
+
+# Monorepo folders to ignore
+backend/
+doc/
+
