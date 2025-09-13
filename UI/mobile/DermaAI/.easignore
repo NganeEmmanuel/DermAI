@@ -1,0 +1,30 @@
+# Ignore node_modules (rebuilt in the cloud anyway)
+node_modules
+
+# Ignore git stuff
+.git
+.gitignore
+
+# Ignore datasets, models, and binaries
+*.onnx
+*.pt
+*.zip
+*.rar
+*.tar
+*.7z
+*.h5
+*.csv
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Ignore OS/system files
+*.DS_Store
+thumbs.db
+
+# Ignore local build artifacts
+dist
+build
+.expo
+.expo-shared
