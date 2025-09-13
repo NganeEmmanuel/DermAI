@@ -35,3 +35,13 @@ dist/
 backend/
 doc/
 
+# Large assets not needed at build
+*.csv
+*.zip
+*.rar
+*.7z
+*.h5
+*.mp4
+*.mov
+*.avi
+*.mkv
