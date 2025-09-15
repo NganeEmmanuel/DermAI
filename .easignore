@@ -1,15 +1,3 @@
-node_modules/
-.android/
-.ios/
-.expo/
-.expo-shared/
-build/
-dist/
-.git/
-.vscode/
-*.log
-
-
 # Node modules (rebuilt in cloud)
 UI/mobile/DermaAI/node_modules/
 UI/mobile/DermaAI/.vscode/
@@ -21,27 +9,7 @@ UI/mobile/DermaAI/android/
 UI/mobile/DermaAI/ios/
 UI/CLI/
 
-android/
-ios/
-.expo/
-.expo-shared/
-build/
-dist/
-.git/
-.vscode/
-*.log
-
 # Monorepo folders to ignore
 backend/
 doc/
-
-# Large assets not needed at build
-*.csv
-*.zip
-*.rar
-*.7z
-*.h5
-*.mp4
-*.mov
-*.avi
-*.mkv
+.git/
